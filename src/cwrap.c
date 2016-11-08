@@ -20,6 +20,25 @@
 
 
 static Map* map;
+
+Map *initializeMap(int capacity){
+	int i;
+	Map *map=(Map*)malloc(sizeof(Map));
+
+	map->opened_files=(opened_dir_struct*)malloc(capacity*sizeof(opened_dir_struct));
+	assert(map->opened_files!=NULL);
+	map->capacity=capacity;
+	map->length=0;
+	return map;
+
+}
+
+Map* getMap(){
+	if(map==0){
+		map=initializeMap(4);
+	}
+	return map;
+}
 //split file from path
 char* split_path_file(char *relative_path) {
     const char slash='/';
@@ -30,16 +49,16 @@ char* split_path_file(char *relative_path) {
 	return dirName;
 }
 //check the capacity of map
-int checkCapacity(Map*map){
-	if(map->length<=map->capacity)
-		return 0;
-	else
+int checkCapacity(){
+	if(map->length>=map->capacity)
 		return -1;
+	else
+		return 0;
 }
 // increases the capacity of map
-Map* increaseMapCapacity(Map *map){
+Map* increaseMapCapacity(){
 	int i;
-	Map *new_map=(Map*)malloc((2*map->capacity)*sizeof(Map));
+	Map *new_map=(Map*)malloc(sizeof(Map));
 	assert(new_map!=NULL);
 	new_map->opened_files=(opened_dir_struct*)malloc((2*map->capacity)*sizeof(new_map->opened_files));
 	assert(new_map->opened_files!=NULL);
@@ -47,7 +66,7 @@ Map* increaseMapCapacity(Map *map){
 	new_map->length=0;
 
 		for(i=0;i<map->length;i++){
-			new_map[i]=map[i];
+			new_map->opened_files[i]=map->opened_files[i];
 			new_map->length++;
 		}
 		free(map->opened_files);
@@ -75,8 +94,8 @@ int pathCheck(char *path){
    the directory path in a structure
 */
 
-void open_directory(char* file_path,opened_dir_struct *ods){
-	int dir_fd,k; char * dirname;
+opened_dir_struct * open_directory(char* file_path,opened_dir_struct *dos){
+	int dir_fd,k,j; char * dirname;
 	DIR *dir;
 	k=pathCheck(file_path);
 
@@ -89,45 +108,38 @@ void open_directory(char* file_path,opened_dir_struct *ods){
 	dir=opendir(dirname);
 
 	if(dir !=NULL){
-		ods->dirfd=dirfd(dir);
-		ods->dirname=dirname;
-		ods->flags=0;
+		dir_fd=dirfd(dir);
+		dos->dirfd=dir_fd;
+		dos->dirname=dirname;
 
 	}
-	else
-     		printf("Error opening %s \n ",ods->dirname);
+	else{
+		perror("");
+	}
+
+	return dos;
 
 }
 
-Map *initializeMap(int capacity){
-	int i;
-	Map *map=(Map*)malloc(capacity*sizeof(Map));
 
-	map->opened_files=(opened_dir_struct*)malloc(capacity*sizeof(opened_dir_struct));
-	assert(map->opened_files!=NULL);
-	map->capacity=capacity;
-	map->length=0;
-	return map;
-
-}
-Map* getMap(){
-	if(map==0){
-		map=initializeMap(4);
-	}
-	return map;
-}
-Map* preopen(char* file,int mode,int flag){
-	int i,j,k;
-	char* dirname;
-	k=checkCapacity(map);
-	if(k<0){
-		map=increaseMapCapacity(map);
-	}
-
-	open_directory( file,map[map->length].opened_files);
-
+Map* add_Opened_dirpath_map(Map *map,opened_dir_struct ods){
+	int current=map->length,i;
+	map->opened_files[map->length]=ods;
 	map->length++;
+	return map;
+}
+Map* preopen(Map* map,char* file,int mode){
+	int k;
+	char* dirname;
+	opened_dir_struct ods;
+	opened_dir_struct * odsp;
+	k=checkCapacity();
+	if(k<0){
+		map=increaseMapCapacity();
+	}
 
+	odsp=open_directory( file,&ods);
+	map=add_Opened_dirpath_map(map,*odsp);
 	return map;
 }
 
@@ -157,10 +169,9 @@ int findMatchingChars(char *A,char *B){
  Returns the dirfd of the opened path with highest matched number
  and relative path to the dirfd
 */
-matched_path  getMostMatchedPath(int matches[],char *newPath,int mode, int flag){
-	int highestnumber=0,i,highest_num_index;
+int  getMostMatchedPath(int matches[]){
+	int highestnumber=0,i,highest_num_index=0;
 
-	matched_path  matchedPath;
 	for(i=0;i<map->length;i++){
 		if(matches[i]>highestnumber){
 			highestnumber=matches[i];
@@ -169,38 +180,73 @@ matched_path  getMostMatchedPath(int matches[],char *newPath,int mode, int flag)
 		}
 
 	}
-	if(matches[highest_num_index]<=1){
-		map=preopen(newPath,mode,flag);
-		matchedPath.dirfd=map[map->length-1].opened_files->dirfd;
-		matchedPath.relative_path=newPath+strlen(map[map->length-1].opened_files->dirname)+1;
-	}
-	else{
-		matchedPath.dirfd=map[highest_num_index].opened_files->dirfd;
-		matchedPath.relative_path=newPath+(highestnumber+1);
-	}
-	return matchedPath;
+
+	return matches[highest_num_index];
 
 }
+/*compares matched path and see if the matched path is already opened
+ * if not it opens the matched path else it returns the matched path dirfd
+ * and relative path.
+ */
+matched_path compareMatched(Map* map,int best_matched_num,char *newPath,int mode){
+	char * temp_dir,*t_dir,*filename;
+	//const char* slash ="/";
+	int i,status;
+	matched_path  matchedPath;
+	if(best_matched_num==0){
+		map=preopen(map,newPath,mode);
+		matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
+		matchedPath.relative_path=newPath+strlen(map->opened_files[map->length-1].dirname);
+	}
+	else{
+
+				t_dir=newPath+best_matched_num;
+				temp_dir=strndup(newPath,strlen(newPath)- strlen(t_dir));
+				for(i=0;i<map->length;i++){
+					status=strcmp(temp_dir,map->opened_files[i].dirname);
+					if(status==0){
+						matchedPath.dirfd=map->opened_files[i].dirfd;
+						matchedPath.relative_path=t_dir;
+						break;
+					}
+				}
+				if(status !=0){
+					map=preopen(map,temp_dir,mode);
+					matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
+					matchedPath.relative_path=t_dir;
+				}
+
+	}
+	return matchedPath;
+}
 /*
- Search for the best matching path in an array that matches a path argument
- Open and store the directoryfd and directory path in the array if no matching
- path is found in the array
+ * Uses other function to return matched path
 */
 
-matched_path map_path(Map  *map,char* a_filepath){
-	int i;
-	matched_path mp;
-	int mode=O_RDWR;
-	int flag=0;
+matched_path map_path(Map* map,const char* a_filepath,int mode){
+	int i; char * filename,*t_dir;
+	int best_matched_num;
+	matched_path matchedPath;
 	int matched_num[map->length];
+	filename=(char*)a_filepath;
+	if(map->length==0){
+				map=preopen(map,filename, O_RDONLY);
+				t_dir=filename+strlen(map->opened_files[map->length-1].dirname);
+				matchedPath.relative_path=t_dir;
+				matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
 
-	for(i=0;i<map->length;i++){
+			}
+	else{
+		for(i=0;i<map->length;i++){
 
-		matched_num[i]=findMatchingChars(a_filepath,map->opened_files->dirname);
+				matched_num[i]=findMatchingChars(filename,map->opened_files[i].dirname);
+			}
+		best_matched_num=getMostMatchedPath(matched_num);
+		matchedPath=compareMatched(map,best_matched_num,filename, mode);
 	}
-	mp=getMostMatchedPath(matched_num,a_filepath,mode,flag);
 
 
-	return mp;
+
+	return matchedPath;
 }
 

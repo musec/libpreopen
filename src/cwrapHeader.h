@@ -23,16 +23,16 @@ typedef struct{
 	size_t length;
 }Map;
 
-Map* preopen(char* file,int mode,int flag);
+Map* preopen(Map*map,char* file,int mode);
 Map* initializeMap(int );
-matched_path map_path(Map *map,  char * path);
+matched_path map_path(Map* map, const char * path, int mode);
 Map* getMap();
 char* split_path_file(char *relative_path);
 int pathCheck(char *path);
-void open_directory(char* relative_path,opened_dir_struct *ods);
-int checkCapacity(Map*map);
-Map* increaseMapCapacity(Map *map);
+opened_dir_struct * open_directory(char* relative_path,opened_dir_struct *);
+int checkCapacity();
+Map* increaseMapCapacity();
 int findMatchingChars(char *A,char *B);
-matched_path  getMostMatchedPath(int matches[],char *newPath,int mode, int flag);
-
-
+int  getMostMatchedPath(int matches[]);
+Map* add_Opened_dirpath_map(Map*map,opened_dir_struct ods);
+matched_path compareMatched(Map* map,int num,char* character,int mode);

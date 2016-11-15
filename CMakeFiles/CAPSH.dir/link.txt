@@ -1,0 +1,1 @@
+/usr/bin/cc     CMakeFiles/CAPSH.dir/src/interceptAccess.c.o CMakeFiles/CAPSH.dir/src/cwrap.c.o CMakeFiles/CAPSH.dir/src/interceptOpen.c.o CMakeFiles/CAPSH.dir/src/directoryfd.c.o  -o CAPSH  

@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-#include"cwrapHeader.h"
+#include"../include/cwrapHeader.h"
 #include <limits.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -22,7 +22,6 @@
 static Map* map;
 
 Map *initializeMap(int capacity){
-	int i;
 	Map *map=(Map*)malloc(sizeof(Map));
 
 	map->opened_files=(opened_dir_struct*)malloc(capacity*sizeof(opened_dir_struct));
@@ -57,50 +56,48 @@ int checkCapacity(){
 }
 // increases the capacity of map
 Map* increaseMapCapacity(){
-	int i;
-	Map *new_map=(Map*)malloc(sizeof(Map));
-	assert(new_map!=NULL);
-	new_map->opened_files=(opened_dir_struct*)malloc((2*map->capacity)*sizeof(new_map->opened_files));
-	assert(new_map->opened_files!=NULL);
-	new_map->capacity=2*map->capacity;
-	new_map->length=0;
+	int i;opened_dir_struct *new_opened_files;
+	new_opened_files=(opened_dir_struct*)malloc((2*map->capacity)*sizeof(opened_dir_struct));
+	assert(new_opened_files!=NULL);
+	map->capacity=2*map->capacity;
 
 		for(i=0;i<map->length;i++){
-			new_map->opened_files[i]=map->opened_files[i];
-			new_map->length++;
+			new_opened_files[i]=map->opened_files[i];
+
 		}
 		free(map->opened_files);
-		free(map);
-		return new_map;
+		map->opened_files=new_opened_files;
+		return map;
 
 }
 //check if file path is a file or a directory
 int pathCheck(char *path){
-	int i;
+	int i=0;
 	struct stat statbuf;
 
-		if(stat(path,&statbuf)==0){
-			if (S_ISREG (statbuf.st_mode)){
-				i=0;
-			}
-			 if (S_ISDIR (statbuf.st_mode)) {
-			        i=-1;
-			    }
+	stat(path,&statbuf);
+	if (S_ISREG (statbuf.st_mode)){
+		i=0;
+	}
+	else if (S_ISDIR (statbuf.st_mode)) {
+		i=-1;
+	}
 
-		}
-		return i;
+	
+	return i;
 }
 /* Opens a directory and store both the directoryfd and
    the directory path in a structure
 */
 
 opened_dir_struct * open_directory(char* file_path,opened_dir_struct *dos){
-	int dir_fd,k,j; char * dirname;
+	int dir_fd,k; char * dirname;
 	DIR *dir;
 	k=pathCheck(file_path);
 
 	if(k==0){
-		dirname=split_path_file(file_path);
+		dirname=NULL;
+		perror("");
 	}
 	else{
 		dirname=file_path;
@@ -122,15 +119,14 @@ opened_dir_struct * open_directory(char* file_path,opened_dir_struct *dos){
 }
 
 
-Map* add_Opened_dirpath_map(Map *map,opened_dir_struct ods){
-	int current=map->length,i;
+Map* add_Opened_dirpath_map(opened_dir_struct ods){
+	
 	map->opened_files[map->length]=ods;
 	map->length++;
 	return map;
 }
-Map* preopen(Map* map,char* file,int mode){
+Map* preopen(char* file,int mode){
 	int k;
-	char* dirname;
 	opened_dir_struct ods;
 	opened_dir_struct * odsp;
 	k=checkCapacity();
@@ -139,7 +135,7 @@ Map* preopen(Map* map,char* file,int mode){
 	}
 
 	odsp=open_directory( file,&ods);
-	map=add_Opened_dirpath_map(map,*odsp);
+	map=add_Opened_dirpath_map(*odsp);
 	return map;
 }
 
@@ -189,12 +185,12 @@ int  getMostMatchedPath(int matches[]){
  * and relative path.
  */
 matched_path compareMatched(Map* map,int best_matched_num,char *newPath,int mode){
-	char * temp_dir,*t_dir,*filename;
+	char * temp_dir,*t_dir;
 	//const char* slash ="/";
 	int i,status;
 	matched_path  matchedPath;
 	if(best_matched_num==0){
-		map=preopen(map,newPath,mode);
+		map=preopen(newPath,mode);
 		matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
 		matchedPath.relative_path=newPath+strlen(map->opened_files[map->length-1].dirname);
 	}
@@ -211,7 +207,7 @@ matched_path compareMatched(Map* map,int best_matched_num,char *newPath,int mode
 					}
 				}
 				if(status !=0){
-					map=preopen(map,temp_dir,mode);
+					map=preopen(temp_dir,mode);
 					matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
 					matchedPath.relative_path=t_dir;
 				}
@@ -230,7 +226,7 @@ matched_path map_path(Map* map,const char* a_filepath,int mode){
 	int matched_num[map->length];
 	filename=(char*)a_filepath;
 	if(map->length==0){
-				map=preopen(map,filename, O_RDONLY);
+				map=preopen(filename, O_RDONLY);
 				t_dir=filename+strlen(map->opened_files[map->length-1].dirname);
 				matchedPath.relative_path=t_dir;
 				matchedPath.dirfd=map->opened_files[map->length-1].dirfd;

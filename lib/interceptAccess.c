@@ -14,7 +14,7 @@
 #include<sys/types.h>
 #include<dirent.h>
 #include<fcntl.h>
-#include"cwrapHeader.h"
+#include"../include/cwrapHeader.h"
 
 int (*real_faccessat)(int fd1,const char* pathname1,int mode,int flag)=NULL;
 int access(const char *pathname,int mode){

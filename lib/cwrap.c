@@ -22,6 +22,7 @@
 static Map* map;
 
 Map *initializeMap(int capacity){
+	int i;
 	Map *map=(Map*)malloc(sizeof(Map));
 
 	map->opened_files=(opened_dir_struct*)malloc(capacity*sizeof(opened_dir_struct));
@@ -72,31 +73,30 @@ Map* increaseMapCapacity(){
 }
 //check if file path is a file or a directory
 int pathCheck(char *path){
-	int i=0;
+	int i;
 	struct stat statbuf;
 
-	stat(path,&statbuf);
-	if (S_ISREG (statbuf.st_mode)){
-		i=0;
-	}
-	else if (S_ISDIR (statbuf.st_mode)) {
-		i=-1;
-	}
+		if(stat(path,&statbuf)==0){
+			if (S_ISREG (statbuf.st_mode)){
+				i=0;
+			}
+			 if (S_ISDIR (statbuf.st_mode)) {
+			        i=-1;
+			    }
 
-	
-	return i;
+		}
+		return i;
 }
 /* Opens a directory and store both the directoryfd and
    the directory path in a structure
 */
 
 opened_dir_struct * open_directory(char* file_path,opened_dir_struct *dos){
-	int dir_fd,k; char * dirname;
+	int dir_fd,k,j; char * dirname;
 	DIR *dir;
 	k=pathCheck(file_path);
 
 	if(k==0){
-		dirname=NULL;
 		perror("");
 	}
 	else{
@@ -120,13 +120,14 @@ opened_dir_struct * open_directory(char* file_path,opened_dir_struct *dos){
 
 
 Map* add_Opened_dirpath_map(opened_dir_struct ods){
-	
+	int current=map->length,i;
 	map->opened_files[map->length]=ods;
 	map->length++;
 	return map;
 }
 Map* preopen(char* file,int mode){
 	int k;
+	char* dirname;
 	opened_dir_struct ods;
 	opened_dir_struct * odsp;
 	k=checkCapacity();
@@ -185,10 +186,10 @@ int  getMostMatchedPath(int matches[]){
  * and relative path.
  */
 matched_path compareMatched(Map* map,int best_matched_num,char *newPath,int mode){
-	char * temp_dir,*t_dir;
+	char * temp_dir,*t_dir,*filename;
 	//const char* slash ="/";
 	int i,status;
-	matched_path  matchedPath;
+	matched_path  matchedPath ={0};
 	if(best_matched_num==0){
 		map=preopen(newPath,mode);
 		matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
@@ -198,6 +199,7 @@ matched_path compareMatched(Map* map,int best_matched_num,char *newPath,int mode
 
 				t_dir=newPath+best_matched_num;
 				temp_dir=strndup(newPath,strlen(newPath)- strlen(t_dir));
+
 				for(i=0;i<map->length;i++){
 					status=strcmp(temp_dir,map->opened_files[i].dirname);
 					if(status==0){
@@ -207,9 +209,8 @@ matched_path compareMatched(Map* map,int best_matched_num,char *newPath,int mode
 					}
 				}
 				if(status !=0){
-					map=preopen(temp_dir,mode);
-					matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
-					matchedPath.relative_path=t_dir;
+					map=preopen(newPath,mode);
+
 				}
 
 	}
@@ -222,15 +223,11 @@ matched_path compareMatched(Map* map,int best_matched_num,char *newPath,int mode
 matched_path map_path(Map* map,const char* a_filepath,int mode){
 	int i; char * filename,*t_dir;
 	int best_matched_num;
-	matched_path matchedPath;
+	matched_path matchedPath={0};
 	int matched_num[map->length];
 	filename=(char*)a_filepath;
 	if(map->length==0){
-				map=preopen(filename, O_RDONLY);
-				t_dir=filename+strlen(map->opened_files[map->length-1].dirname);
-				matchedPath.relative_path=t_dir;
-				matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
-
+				map=preopen(filename,mode);
 			}
 	else{
 		for(i=0;i<map->length;i++){

@@ -1,9 +1,3 @@
-/*
- * cwrap.c
- *
- *  Created on: Oct 17, 2016
- *      Author: ujay
- */
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -19,13 +13,13 @@
 #include<assert.h>
 
 
-static Map* map;
+static struct Map* map;
 
-Map *initializeMap(int capacity){
+struct Map *initializeMap(int capacity){
 	int i;
-	Map *map=(Map*)malloc(sizeof(Map));
+	struct Map *map=(struct Map*)malloc(sizeof(struct Map));
 
-	map->opened_files=(opened_dir_struct*)malloc(capacity*sizeof(opened_dir_struct));
+	map->opened_files=(struct opened_dir_struct*)malloc(capacity*sizeof(struct opened_dir_struct));
 	assert(map->opened_files!=NULL);
 	map->capacity=capacity;
 	map->length=0;
@@ -33,7 +27,7 @@ Map *initializeMap(int capacity){
 
 }
 
-Map* getMap(){
+struct Map* getMap(){
 	if(map==0){
 		map=initializeMap(4);
 	}
@@ -50,15 +44,16 @@ char* split_path_file(char *relative_path) {
 }
 //check the capacity of map
 int checkCapacity(){
+
 	if(map->length>=map->capacity)
 		return -1;
 	else
 		return 0;
 }
 // increases the capacity of map
-Map* increaseMapCapacity(){
-	int i;opened_dir_struct *new_opened_files;
-	new_opened_files=(opened_dir_struct*)malloc((2*map->capacity)*sizeof(opened_dir_struct));
+struct Map* increaseMapCapacity(){
+	int i;struct opened_dir_struct *new_opened_files;
+	new_opened_files=(struct opened_dir_struct*)malloc((2*map->capacity)*sizeof(struct opened_dir_struct));
 	assert(new_opened_files!=NULL);
 	map->capacity=2*map->capacity;
 
@@ -91,7 +86,7 @@ int pathCheck(char *path){
    the directory path in a structure
 */
 
-opened_dir_struct * open_directory(char* file_path,opened_dir_struct *dos){
+struct opened_dir_struct * open_directory(char* file_path,struct opened_dir_struct *dos){
 	int dir_fd,k,j; char * dirname;
 	DIR *dir;
 	k=pathCheck(file_path);
@@ -119,21 +114,25 @@ opened_dir_struct * open_directory(char* file_path,opened_dir_struct *dos){
 }
 
 
-Map* add_Opened_dirpath_map(opened_dir_struct ods){
+struct Map* add_Opened_dirpath_map(struct opened_dir_struct ods){
 	int current=map->length,i;
 	map->opened_files[map->length]=ods;
 	map->length++;
 	return map;
 }
-Map* preopen(char* file,int mode){
+struct Map* preopen(char* file,int mode){
 	int k;
 	char* dirname;
-	opened_dir_struct ods;
-	opened_dir_struct * odsp;
-	k=checkCapacity();
-	if(k<0){
-		map=increaseMapCapacity();
+	struct opened_dir_struct ods;
+	struct opened_dir_struct * odsp;
+	if(map->length!=0){
+		k=checkCapacity();
+		if(k<0){
+				map=increaseMapCapacity();
+			}
 	}
+
+
 
 	odsp=open_directory( file,&ods);
 	map=add_Opened_dirpath_map(*odsp);
@@ -185,11 +184,11 @@ int  getMostMatchedPath(int matches[]){
  * if not it opens the matched path else it returns the matched path dirfd
  * and relative path.
  */
-matched_path compareMatched(Map* map,int best_matched_num,char *newPath,int mode){
+struct matched_path compareMatched(struct Map* map,int best_matched_num,char *newPath,int mode){
 	char * temp_dir,*t_dir,*filename;
 	//const char* slash ="/";
 	int i,status;
-	matched_path  matchedPath ={0};
+	struct matched_path  matchedPath ={0};
 	if(best_matched_num==0){
 		map=preopen(newPath,mode);
 		matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
@@ -220,10 +219,10 @@ matched_path compareMatched(Map* map,int best_matched_num,char *newPath,int mode
  * Uses other function to return matched path
 */
 
-matched_path map_path(Map* map,const char* a_filepath,int mode){
+struct matched_path map_path(struct Map* map,const char* a_filepath,int mode){
 	int i; char * filename,*t_dir;
 	int best_matched_num;
-	matched_path matchedPath={0};
+	struct matched_path matchedPath={0};
 	int matched_num[map->length];
 	filename=(char*)a_filepath;
 	if(map->length==0){

@@ -1,0 +1,476 @@
+The system is: FreeBSD - 10.3-RELEASE - amd64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/bin/cc 
+Build flags: 
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is Clang, found in "/usr/home/ujay/Documents/capwrap/CMakeFiles/3.4.1/CompilerIdC/a.out"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /usr/bin/CC 
+Build flags: 
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is Clang, found in "/usr/home/ujay/Documents/capwrap/CMakeFiles/3.4.1/CompilerIdCXX/a.out"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/gmake" "cmTC_1363c/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_1363c.dir/build.make CMakeFiles/cmTC_1363c.dir/build
+gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_1363c.dir/testCCompiler.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_1363c.dir/testCCompiler.c.o   -c /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_1363c
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1363c.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_1363c.dir/testCCompiler.c.o  -o cmTC_1363c  
+gmake[1]: Leaving directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/gmake" "cmTC_e03d4/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_e03d4.dir/build.make CMakeFiles/cmTC_e03d4.dir/build
+gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e03d4.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_e03d4.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_e03d4
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e03d4.dir/link.txt --verbose=1
+/usr/bin/cc      -v CMakeFiles/cmTC_e03d4.dir/CMakeCCompilerABI.c.o  -o cmTC_e03d4   
+FreeBSD clang version 3.4.1 (tags/RELEASE_34/dot1-final 208032) 20140512
+Target: x86_64-unknown-freebsd10.3
+Thread model: posix
+Selected GCC installation: 
+ "/usr/bin/ld" --eh-frame-hdr -dynamic-linker /libexec/ld-elf.so.1 --hash-style=both --enable-new-dtags -o cmTC_e03d4 /usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtbegin.o -L/usr/lib CMakeFiles/cmTC_e03d4.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/crtend.o /usr/lib/crtn.o
+gmake[1]: Leaving directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/local/bin/gmake" "cmTC_e03d4/fast"]
+  ignore line: [/usr/local/bin/gmake -f CMakeFiles/cmTC_e03d4.dir/build.make CMakeFiles/cmTC_e03d4.dir/build]
+  ignore line: [gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_e03d4.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc     -o CMakeFiles/cmTC_e03d4.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_e03d4]
+  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e03d4.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc      -v CMakeFiles/cmTC_e03d4.dir/CMakeCCompilerABI.c.o  -o cmTC_e03d4   ]
+  ignore line: [FreeBSD clang version 3.4.1 (tags/RELEASE_34/dot1-final 208032) 20140512]
+  ignore line: [Target: x86_64-unknown-freebsd10.3]
+  ignore line: [Thread model: posix]
+  ignore line: [Selected GCC installation: ]
+  link line: [ "/usr/bin/ld" --eh-frame-hdr -dynamic-linker /libexec/ld-elf.so.1 --hash-style=both --enable-new-dtags -o cmTC_e03d4 /usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtbegin.o -L/usr/lib CMakeFiles/cmTC_e03d4.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/crtend.o /usr/lib/crtn.o]
+    arg [/usr/bin/ld] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/libexec/ld-elf.so.1] ==> ignore
+    arg [--hash-style=both] ==> ignore
+    arg [--enable-new-dtags] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_e03d4] ==> ignore
+    arg [/usr/lib/crt1.o] ==> ignore
+    arg [/usr/lib/crti.o] ==> ignore
+    arg [/usr/lib/crtbegin.o] ==> ignore
+    arg [-L/usr/lib] ==> dir [/usr/lib]
+    arg [CMakeFiles/cmTC_e03d4.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [/usr/lib/crtend.o] ==> ignore
+    arg [/usr/lib/crtn.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc_s]
+  remove lib [gcc]
+  remove lib [gcc_s]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
+  implicit libs: [c]
+  implicit dirs: [/usr/lib]
+  implicit fwks: []
+
+
+
+
+Detecting C [-std=c11] compiler features compiled with the following output:
+Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/gmake" "cmTC_fa68e/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_fa68e.dir/build.make CMakeFiles/cmTC_fa68e.dir/build
+gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_fa68e.dir/feature_tests.c.o
+/usr/bin/cc    -std=c11 -o CMakeFiles/cmTC_fa68e.dir/feature_tests.c.o   -c /usr/home/ujay/Documents/capwrap/CMakeFiles/feature_tests.c
+Linking C executable cmTC_fa68e
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fa68e.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_fa68e.dir/feature_tests.c.o  -o cmTC_fa68e  
+gmake[1]: Leaving directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:1c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c99] compiler features compiled with the following output:
+Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/gmake" "cmTC_126ae/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_126ae.dir/build.make CMakeFiles/cmTC_126ae.dir/build
+gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_126ae.dir/feature_tests.c.o
+/usr/bin/cc    -std=c99 -o CMakeFiles/cmTC_126ae.dir/feature_tests.c.o   -c /usr/home/ujay/Documents/capwrap/CMakeFiles/feature_tests.c
+Linking C executable cmTC_126ae
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_126ae.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_126ae.dir/feature_tests.c.o  -o cmTC_126ae  
+gmake[1]: Leaving directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c90] compiler features compiled with the following output:
+Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/gmake" "cmTC_689e2/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_689e2.dir/build.make CMakeFiles/cmTC_689e2.dir/build
+gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_689e2.dir/feature_tests.c.o
+/usr/bin/cc    -std=c90 -o CMakeFiles/cmTC_689e2.dir/feature_tests.c.o   -c /usr/home/ujay/Documents/capwrap/CMakeFiles/feature_tests.c
+Linking C executable cmTC_689e2
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_689e2.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_689e2.dir/feature_tests.c.o  -o cmTC_689e2  
+gmake[1]: Leaving directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:0c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:0c_variadic_macros
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/gmake" "cmTC_688b9/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_688b9.dir/build.make CMakeFiles/cmTC_688b9.dir/build
+gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_688b9.dir/testCXXCompiler.cxx.o
+/usr/bin/CC      -o CMakeFiles/cmTC_688b9.dir/testCXXCompiler.cxx.o -c /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_688b9
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_688b9.dir/link.txt --verbose=1
+/usr/bin/CC        CMakeFiles/cmTC_688b9.dir/testCXXCompiler.cxx.o  -o cmTC_688b9  
+gmake[1]: Leaving directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/gmake" "cmTC_64c59/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_64c59.dir/build.make CMakeFiles/cmTC_64c59.dir/build
+gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_64c59.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/CC      -o CMakeFiles/cmTC_64c59.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_64c59
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_64c59.dir/link.txt --verbose=1
+/usr/bin/CC       -v CMakeFiles/cmTC_64c59.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_64c59   
+FreeBSD clang version 3.4.1 (tags/RELEASE_34/dot1-final 208032) 20140512
+Target: x86_64-unknown-freebsd10.3
+Thread model: posix
+Selected GCC installation: 
+ "/usr/bin/ld" --eh-frame-hdr -dynamic-linker /libexec/ld-elf.so.1 --hash-style=both --enable-new-dtags -o cmTC_64c59 /usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtbegin.o -L/usr/lib CMakeFiles/cmTC_64c59.dir/CMakeCXXCompilerABI.cpp.o -lc++ -lm -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/crtend.o /usr/lib/crtn.o
+gmake[1]: Leaving directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/local/bin/gmake" "cmTC_64c59/fast"]
+  ignore line: [/usr/local/bin/gmake -f CMakeFiles/cmTC_64c59.dir/build.make CMakeFiles/cmTC_64c59.dir/build]
+  ignore line: [gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_64c59.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/CC      -o CMakeFiles/cmTC_64c59.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTC_64c59]
+  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_64c59.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/CC       -v CMakeFiles/cmTC_64c59.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_64c59   ]
+  ignore line: [FreeBSD clang version 3.4.1 (tags/RELEASE_34/dot1-final 208032) 20140512]
+  ignore line: [Target: x86_64-unknown-freebsd10.3]
+  ignore line: [Thread model: posix]
+  ignore line: [Selected GCC installation: ]
+  link line: [ "/usr/bin/ld" --eh-frame-hdr -dynamic-linker /libexec/ld-elf.so.1 --hash-style=both --enable-new-dtags -o cmTC_64c59 /usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtbegin.o -L/usr/lib CMakeFiles/cmTC_64c59.dir/CMakeCXXCompilerABI.cpp.o -lc++ -lm -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/crtend.o /usr/lib/crtn.o]
+    arg [/usr/bin/ld] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/libexec/ld-elf.so.1] ==> ignore
+    arg [--hash-style=both] ==> ignore
+    arg [--enable-new-dtags] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_64c59] ==> ignore
+    arg [/usr/lib/crt1.o] ==> ignore
+    arg [/usr/lib/crti.o] ==> ignore
+    arg [/usr/lib/crtbegin.o] ==> ignore
+    arg [-L/usr/lib] ==> dir [/usr/lib]
+    arg [CMakeFiles/cmTC_64c59.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lc++] ==> lib [c++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [/usr/lib/crtend.o] ==> ignore
+    arg [/usr/lib/crtn.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc_s]
+  remove lib [gcc]
+  remove lib [gcc_s]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
+  implicit libs: [c++;m;c]
+  implicit dirs: [/usr/lib]
+  implicit fwks: []
+
+
+
+
+Detecting CXX [-std=c++1y] compiler features compiled with the following output:
+Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/gmake" "cmTC_8baed/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_8baed.dir/build.make CMakeFiles/cmTC_8baed.dir/build
+gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_8baed.dir/feature_tests.cxx.o
+/usr/bin/CC     -std=c++1y -o CMakeFiles/cmTC_8baed.dir/feature_tests.cxx.o -c /usr/home/ujay/Documents/capwrap/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_8baed
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8baed.dir/link.txt --verbose=1
+/usr/bin/CC        CMakeFiles/cmTC_8baed.dir/feature_tests.cxx.o  -o cmTC_8baed  
+gmake[1]: Leaving directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:1cxx_alias_templates
+    Feature record: CXX_FEATURE:1cxx_alignas
+    Feature record: CXX_FEATURE:1cxx_alignof
+    Feature record: CXX_FEATURE:1cxx_attributes
+    Feature record: CXX_FEATURE:1cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:1cxx_auto_type
+    Feature record: CXX_FEATURE:1cxx_binary_literals
+    Feature record: CXX_FEATURE:1cxx_constexpr
+    Feature record: CXX_FEATURE:1cxx_contextual_conversions
+    Feature record: CXX_FEATURE:1cxx_decltype
+    Feature record: CXX_FEATURE:1cxx_decltype_auto
+    Feature record: CXX_FEATURE:1cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:1cxx_default_function_template_args
+    Feature record: CXX_FEATURE:1cxx_defaulted_functions
+    Feature record: CXX_FEATURE:1cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:1cxx_delegating_constructors
+    Feature record: CXX_FEATURE:1cxx_deleted_functions
+    Feature record: CXX_FEATURE:1cxx_digit_separators
+    Feature record: CXX_FEATURE:1cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:1cxx_explicit_conversions
+    Feature record: CXX_FEATURE:1cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:1cxx_extern_templates
+    Feature record: CXX_FEATURE:1cxx_final
+    Feature record: CXX_FEATURE:1cxx_func_identifier
+    Feature record: CXX_FEATURE:1cxx_generalized_initializers
+    Feature record: CXX_FEATURE:1cxx_generic_lambdas
+    Feature record: CXX_FEATURE:1cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:1cxx_inline_namespaces
+    Feature record: CXX_FEATURE:1cxx_lambdas
+    Feature record: CXX_FEATURE:1cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:1cxx_local_type_template_args
+    Feature record: CXX_FEATURE:1cxx_long_long_type
+    Feature record: CXX_FEATURE:1cxx_noexcept
+    Feature record: CXX_FEATURE:1cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:1cxx_nullptr
+    Feature record: CXX_FEATURE:1cxx_override
+    Feature record: CXX_FEATURE:1cxx_range_for
+    Feature record: CXX_FEATURE:1cxx_raw_string_literals
+    Feature record: CXX_FEATURE:1cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:1cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:1cxx_return_type_deduction
+    Feature record: CXX_FEATURE:1cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:1cxx_rvalue_references
+    Feature record: CXX_FEATURE:1cxx_sizeof_member
+    Feature record: CXX_FEATURE:1cxx_static_assert
+    Feature record: CXX_FEATURE:1cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:1cxx_thread_local
+    Feature record: CXX_FEATURE:1cxx_trailing_return_types
+    Feature record: CXX_FEATURE:1cxx_unicode_literals
+    Feature record: CXX_FEATURE:1cxx_uniform_initialization
+    Feature record: CXX_FEATURE:1cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:1cxx_user_literals
+    Feature record: CXX_FEATURE:1cxx_variable_templates
+    Feature record: CXX_FEATURE:1cxx_variadic_macros
+    Feature record: CXX_FEATURE:1cxx_variadic_templates
+
+
+Detecting CXX [-std=c++11] compiler features compiled with the following output:
+Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/gmake" "cmTC_fa184/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_fa184.dir/build.make CMakeFiles/cmTC_fa184.dir/build
+gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_fa184.dir/feature_tests.cxx.o
+/usr/bin/CC     -std=c++11 -o CMakeFiles/cmTC_fa184.dir/feature_tests.cxx.o -c /usr/home/ujay/Documents/capwrap/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_fa184
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fa184.dir/link.txt --verbose=1
+/usr/bin/CC        CMakeFiles/cmTC_fa184.dir/feature_tests.cxx.o  -o cmTC_fa184  
+gmake[1]: Leaving directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:1cxx_alias_templates
+    Feature record: CXX_FEATURE:1cxx_alignas
+    Feature record: CXX_FEATURE:1cxx_alignof
+    Feature record: CXX_FEATURE:1cxx_attributes
+    Feature record: CXX_FEATURE:0cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:1cxx_auto_type
+    Feature record: CXX_FEATURE:0cxx_binary_literals
+    Feature record: CXX_FEATURE:1cxx_constexpr
+    Feature record: CXX_FEATURE:0cxx_contextual_conversions
+    Feature record: CXX_FEATURE:1cxx_decltype
+    Feature record: CXX_FEATURE:0cxx_decltype_auto
+    Feature record: CXX_FEATURE:1cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:1cxx_default_function_template_args
+    Feature record: CXX_FEATURE:1cxx_defaulted_functions
+    Feature record: CXX_FEATURE:1cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:1cxx_delegating_constructors
+    Feature record: CXX_FEATURE:1cxx_deleted_functions
+    Feature record: CXX_FEATURE:0cxx_digit_separators
+    Feature record: CXX_FEATURE:1cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:1cxx_explicit_conversions
+    Feature record: CXX_FEATURE:1cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:1cxx_extern_templates
+    Feature record: CXX_FEATURE:1cxx_final
+    Feature record: CXX_FEATURE:1cxx_func_identifier
+    Feature record: CXX_FEATURE:1cxx_generalized_initializers
+    Feature record: CXX_FEATURE:0cxx_generic_lambdas
+    Feature record: CXX_FEATURE:1cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:1cxx_inline_namespaces
+    Feature record: CXX_FEATURE:1cxx_lambdas
+    Feature record: CXX_FEATURE:0cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:1cxx_local_type_template_args
+    Feature record: CXX_FEATURE:1cxx_long_long_type
+    Feature record: CXX_FEATURE:1cxx_noexcept
+    Feature record: CXX_FEATURE:1cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:1cxx_nullptr
+    Feature record: CXX_FEATURE:1cxx_override
+    Feature record: CXX_FEATURE:1cxx_range_for
+    Feature record: CXX_FEATURE:1cxx_raw_string_literals
+    Feature record: CXX_FEATURE:1cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:0cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:0cxx_return_type_deduction
+    Feature record: CXX_FEATURE:1cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:1cxx_rvalue_references
+    Feature record: CXX_FEATURE:1cxx_sizeof_member
+    Feature record: CXX_FEATURE:1cxx_static_assert
+    Feature record: CXX_FEATURE:1cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:1cxx_thread_local
+    Feature record: CXX_FEATURE:1cxx_trailing_return_types
+    Feature record: CXX_FEATURE:1cxx_unicode_literals
+    Feature record: CXX_FEATURE:1cxx_uniform_initialization
+    Feature record: CXX_FEATURE:1cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:1cxx_user_literals
+    Feature record: CXX_FEATURE:0cxx_variable_templates
+    Feature record: CXX_FEATURE:1cxx_variadic_macros
+    Feature record: CXX_FEATURE:1cxx_variadic_templates
+
+
+Detecting CXX [-std=c++98] compiler features compiled with the following output:
+Change Dir: /usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/gmake" "cmTC_2e8da/fast"
+/usr/local/bin/gmake -f CMakeFiles/cmTC_2e8da.dir/build.make CMakeFiles/cmTC_2e8da.dir/build
+gmake[1]: Entering directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_2e8da.dir/feature_tests.cxx.o
+/usr/bin/CC     -std=c++98 -o CMakeFiles/cmTC_2e8da.dir/feature_tests.cxx.o -c /usr/home/ujay/Documents/capwrap/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_2e8da
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2e8da.dir/link.txt --verbose=1
+/usr/bin/CC        CMakeFiles/cmTC_2e8da.dir/feature_tests.cxx.o  -o cmTC_2e8da  
+gmake[1]: Leaving directory '/usr/home/ujay/Documents/capwrap/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:0cxx_alias_templates
+    Feature record: CXX_FEATURE:0cxx_alignas
+    Feature record: CXX_FEATURE:0cxx_alignof
+    Feature record: CXX_FEATURE:0cxx_attributes
+    Feature record: CXX_FEATURE:0cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:0cxx_auto_type
+    Feature record: CXX_FEATURE:0cxx_binary_literals
+    Feature record: CXX_FEATURE:0cxx_constexpr
+    Feature record: CXX_FEATURE:0cxx_contextual_conversions
+    Feature record: CXX_FEATURE:0cxx_decltype
+    Feature record: CXX_FEATURE:0cxx_decltype_auto
+    Feature record: CXX_FEATURE:0cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:0cxx_default_function_template_args
+    Feature record: CXX_FEATURE:0cxx_defaulted_functions
+    Feature record: CXX_FEATURE:0cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:0cxx_delegating_constructors
+    Feature record: CXX_FEATURE:0cxx_deleted_functions
+    Feature record: CXX_FEATURE:0cxx_digit_separators
+    Feature record: CXX_FEATURE:0cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:0cxx_explicit_conversions
+    Feature record: CXX_FEATURE:0cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:0cxx_extern_templates
+    Feature record: CXX_FEATURE:0cxx_final
+    Feature record: CXX_FEATURE:0cxx_func_identifier
+    Feature record: CXX_FEATURE:0cxx_generalized_initializers
+    Feature record: CXX_FEATURE:0cxx_generic_lambdas
+    Feature record: CXX_FEATURE:0cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:0cxx_inline_namespaces
+    Feature record: CXX_FEATURE:0cxx_lambdas
+    Feature record: CXX_FEATURE:0cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:0cxx_local_type_template_args
+    Feature record: CXX_FEATURE:0cxx_long_long_type
+    Feature record: CXX_FEATURE:0cxx_noexcept
+    Feature record: CXX_FEATURE:0cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:0cxx_nullptr
+    Feature record: CXX_FEATURE:0cxx_override
+    Feature record: CXX_FEATURE:0cxx_range_for
+    Feature record: CXX_FEATURE:0cxx_raw_string_literals
+    Feature record: CXX_FEATURE:0cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:0cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:0cxx_return_type_deduction
+    Feature record: CXX_FEATURE:0cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:0cxx_rvalue_references
+    Feature record: CXX_FEATURE:0cxx_sizeof_member
+    Feature record: CXX_FEATURE:0cxx_static_assert
+    Feature record: CXX_FEATURE:0cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:0cxx_thread_local
+    Feature record: CXX_FEATURE:0cxx_trailing_return_types
+    Feature record: CXX_FEATURE:0cxx_unicode_literals
+    Feature record: CXX_FEATURE:0cxx_uniform_initialization
+    Feature record: CXX_FEATURE:0cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:0cxx_user_literals
+    Feature record: CXX_FEATURE:0cxx_variable_templates
+    Feature record: CXX_FEATURE:0cxx_variadic_macros
+    Feature record: CXX_FEATURE:0cxx_variadic_templates

@@ -11,7 +11,7 @@
 #include<stdlib.h>
 #include<sys/stat.h>
 #include<unistd.h>
-#include"../include/cwrapHeader.h"
+#include"cwrapHeader.h"
 
 
 int (*real_openat)(int fd1,const char* pathname1, int flags1)=NULL;

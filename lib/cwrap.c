@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-#include"../include/cwrapHeader.h"
+#include"cwrapHeader.h"
 #include <limits.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -16,7 +16,7 @@
 static struct Map* map;
 
 struct Map *initializeMap(int capacity){
-	int i;
+	
 	struct Map *map=(struct Map*)malloc(sizeof(struct Map));
 
 	map->opened_files=(struct opened_dir_struct*)malloc(capacity*sizeof(struct opened_dir_struct));
@@ -80,6 +80,9 @@ int pathCheck(char *path){
 			    }
 
 		}
+		else{
+			i=1;
+		}
 		return i;
 }
 /* Opens a directory and store both the directoryfd and
@@ -87,7 +90,7 @@ int pathCheck(char *path){
 */
 
 struct opened_dir_struct * open_directory(char* file_path,struct opened_dir_struct *dos){
-	int dir_fd,k,j; char * dirname;
+	int dir_fd,k; char * dirname;
 	DIR *dir;
 	k=pathCheck(file_path);
 
@@ -115,14 +118,12 @@ struct opened_dir_struct * open_directory(char* file_path,struct opened_dir_stru
 
 
 struct Map* add_Opened_dirpath_map(struct opened_dir_struct ods){
-	int current=map->length,i;
 	map->opened_files[map->length]=ods;
 	map->length++;
 	return map;
 }
 struct Map* preopen(char* file,int mode){
 	int k;
-	char* dirname;
 	struct opened_dir_struct ods;
 	struct opened_dir_struct * odsp;
 	if(map->length!=0){
@@ -185,7 +186,7 @@ int  getMostMatchedPath(int matches[]){
  * and relative path.
  */
 struct matched_path compareMatched(struct Map* map,int best_matched_num,char *newPath,int mode){
-	char * temp_dir,*t_dir,*filename;
+	char * temp_dir,*t_dir;
 	//const char* slash ="/";
 	int i,status;
 	struct matched_path  matchedPath ={0};
@@ -220,7 +221,7 @@ struct matched_path compareMatched(struct Map* map,int best_matched_num,char *ne
 */
 
 struct matched_path map_path(struct Map* map,const char* a_filepath,int mode){
-	int i; char * filename,*t_dir;
+	int i; char * filename;
 	int best_matched_num;
 	struct matched_path matchedPath={0};
 	int matched_num[map->length];

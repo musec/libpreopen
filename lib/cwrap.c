@@ -35,7 +35,7 @@ struct Map* getMap(){
 }
 //split file from path
 char* split_path_file(char *relative_path) {
-    const char slash='/';
+	const char slash='/';
    	char *filename;
 	char *dirName;
 	filename= strrchr(relative_path, slash);
@@ -50,7 +50,7 @@ int checkCapacity(){
 	else
 		return 0;
 }
-// increases the capacity of map
+// increases the capacity of map by allocating more memory
 struct Map* increaseMapCapacity(){
 	int i;struct opened_dir_struct *new_opened_files;
 	new_opened_files=(struct opened_dir_struct*)malloc((2*map->capacity)*sizeof(struct opened_dir_struct));
@@ -66,7 +66,7 @@ struct Map* increaseMapCapacity(){
 		return map;
 
 }
-//check if file path is a file or a directory
+
 int pathCheck(char *path){
 	int i;
 	struct stat statbuf;
@@ -116,12 +116,13 @@ struct opened_dir_struct * open_directory(char* file_path,struct opened_dir_stru
 
 }
 
-
+//add an opened path the pointer to opened_dir_struct field of the Map struct
 struct Map* add_Opened_dirpath_map(struct opened_dir_struct ods){
 	map->opened_files[map->length]=ods;
 	map->length++;
 	return map;
 }
+//Opens a file path
 struct Map* preopen(char* file,int mode){
 	int k;
 	struct opened_dir_struct ods;

@@ -55,16 +55,44 @@ struct Map{
 	size_t length;
 };
 
+//Opens a file path
 struct Map* preopen(char* file,int mode);
 struct Map* initializeMap(int );
 struct matched_path map_path(struct Map* map, const char * path, int mode);
+// returns pointer to the Map structure
 struct Map* getMap();
 char* split_path_file(char *relative_path);
+
+//check if path is  a file or a directory
 int pathCheck(char *path);
+
+/* Opens a directory and store both the directoryfd and
+   the directory path in the opened_dir_struct structure
+*/
+
 struct opened_dir_struct * open_directory(char* relative_path,struct opened_dir_struct *);
+
 int checkCapacity();
+// increases the capacity of map by allocating more memory
 struct Map* increaseMapCapacity();
+
+/*
+  Finds how many characters in a string is in another
+  string begining from the first character
+*/
 int findMatchingChars(char *A,char *B);
+
+/*
+ Returns the dirfd of the opened path with highest matched char number to the path to be opened
+* or zero if no match is found
+*/
 int  getMostMatchedPath(int matches[]);
+
+//add an opened path to the pointer to opened_dir_struct field of the Map struct
 struct Map* add_Opened_dirpath_map(struct opened_dir_struct ods);
+
+/*
+ * Uses other function to return the matched path if any or opened the pathed to be matched 
+*/
+
 struct matched_path compareMatched(struct Map* map,int num,char* character,int mode);

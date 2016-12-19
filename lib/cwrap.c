@@ -1,3 +1,34 @@
+
+/*-
+ * Copyright (c) 2016 Stanley Uche Godfrey
+ * All rights reserved.
+ *
+ * This software was developed at Memorial University under the
+ * NSERC Discovery program (RGPIN-2015-06048).
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -34,21 +65,13 @@ struct Map* getMap(){
 	return map;
 }
 //split file from path
-char* split_path_file(char *relative_path) {
+char* split_path_file(char *relative_path,int length) {
 	const char slash='/';
    	char *filename;
 	char *dirName;
 	filename= strrchr(relative_path, slash);
-	dirName=strndup(relative_path,strlen(relative_path)- strlen(filename));
+	dirName=strndup(relative_path,length- strlen(filename));
 	return dirName;
-}
-//check the capacity of map
-int checkCapacity(){
-
-	if(map->length>=map->capacity)
-		return -1;
-	else
-		return 0;
 }
 // increases the capacity of map by allocating more memory
 struct Map* increaseMapCapacity(){
@@ -67,23 +90,14 @@ struct Map* increaseMapCapacity(){
 
 }
 
-int pathCheck(char *path){
-	int i;
+int po_isdir(char *path){
 	struct stat statbuf;
 
-		if(stat(path,&statbuf)==0){
-			if (S_ISREG (statbuf.st_mode)){
-				i=0;
-			}
-			 if (S_ISDIR (statbuf.st_mode)) {
-			        i=-1;
-			    }
-
-		}
-		else{
-			i=1;
-		}
-		return i;
+	if(stat(path,&statbuf)!=0){
+		return 0;
+	}
+			
+	return (S_ISDIR (statbuf.st_mode));
 }
 /* Opens a directory and store both the directoryfd and
    the directory path in a structure
@@ -92,10 +106,10 @@ int pathCheck(char *path){
 struct opened_dir_struct * open_directory(char* file_path,struct opened_dir_struct *dos){
 	int dir_fd,k; char * dirname;
 	DIR *dir;
-	k=pathCheck(file_path);
+	k=po_isdir(file_path);
 
 	if(k==0){
-		perror("");
+		return NULL;
 	}
 	else{
 		dirname=file_path;
@@ -109,7 +123,7 @@ struct opened_dir_struct * open_directory(char* file_path,struct opened_dir_stru
 
 	}
 	else{
-		perror("");
+		return NULL;
 	}
 
 	return dos;
@@ -128,8 +142,8 @@ struct Map* preopen(char* file,int mode){
 	struct opened_dir_struct ods;
 	struct opened_dir_struct * odsp;
 	if(map->length!=0){
-		k=checkCapacity();
-		if(k<0){
+		k=map->capacity-map->length;
+		if(k<2){
 				map=increaseMapCapacity();
 			}
 	}

@@ -51,8 +51,8 @@ struct matched_path{
 */
 struct Map{
 	struct opened_dir_struct * opened_files;
-	size_t capacity;
-	size_t length;
+	size_t capacity;//The size of the Map pointer
+	size_t length;// Number of elements in the Map pointer
 };
 
 //Opens a file path
@@ -61,10 +61,10 @@ struct Map* initializeMap(int );
 struct matched_path map_path(struct Map* map, const char * path, int mode);
 // returns pointer to the Map structure
 struct Map* getMap();
-char* split_path_file(char *relative_path);
+char* split_path_file(char *relative_path,int length);
 
 //check if path is  a file or a directory
-int pathCheck(char *path);
+int po_isdir(char *path);
 
 /* Opens a directory and store both the directoryfd and
    the directory path in the opened_dir_struct structure
@@ -72,7 +72,7 @@ int pathCheck(char *path);
 
 struct opened_dir_struct * open_directory(char* relative_path,struct opened_dir_struct *);
 
-int checkCapacity();
+
 // increases the capacity of map by allocating more memory
 struct Map* increaseMapCapacity();
 

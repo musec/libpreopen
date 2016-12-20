@@ -210,21 +210,21 @@ struct matched_path compareMatched(struct Map* map,int best_matched_num,char *ne
 	}
 	else{
 
-				t_dir=newPath+best_matched_num;
-				temp_dir=strndup(newPath,strlen(newPath)- strlen(t_dir));
+		t_dir=newPath+best_matched_num;
+		temp_dir=strndup(newPath,strlen(newPath)- strlen(t_dir));
 
-				for(i=0;i<map->length;i++){
-					status=strcmp(temp_dir,map->opened_files[i].dirname);
-					if(status==0){
-						matchedPath.dirfd=map->opened_files[i].dirfd;
-						matchedPath.relative_path=t_dir;
-						break;
-					}
-				}
-				if(status !=0){
-					map=preopen(newPath,mode);
+		for(i=0;i<map->length;i++){
+			status=strcmp(temp_dir,map->opened_files[i].dirname);
+			if(status==0){
+				matchedPath.dirfd=map->opened_files[i].dirfd;
+				matchedPath.relative_path=t_dir;
+				break;
+			}
+		}
+		if(status !=0){
+			map=preopen(newPath,mode);
 
-				}
+		}
 
 	}
 	return matchedPath;

@@ -77,8 +77,11 @@ struct opened_dir_struct * open_directory(char* relative_path,struct opened_dir_
 struct Map* increaseMapCapacity();
 
 /*
-  Finds how many characters in a string is in another
-  string begining from the first character
+  *Finds how many characters in a string is in another
+  *string begining from the first character
+  *@param A a directory path in the array containing opened directories
+  *@param B a path to be opened
+  *Makes sure that none of the parameters are NULL
 */
 int findMatchingChars(char *A,char *B);
 
@@ -86,7 +89,7 @@ int findMatchingChars(char *A,char *B);
  Returns the dirfd of the opened path with highest matched char number to the path to be opened
 * or zero if no match is found
 */
-int  getMostMatchedPath(int matches[]);
+int  getMostMatchedPath(int matches[],int arraylength,struct Map *map);
 
 //add an opened path to the pointer to opened_dir_struct field of the Map struct
 struct Map* add_Opened_dirpath_map(struct opened_dir_struct ods);

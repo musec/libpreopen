@@ -181,19 +181,18 @@ int findMatchingChars(char *A,char *B){
  Returns the dirfd of the opened path with highest matched number
  and relative path to the dirfd
 */
-int  getMostMatchedPath(int matches[]){
-	int highestnumber=0,i,highest_num_index=0;
-
-	for(i=0;i<map->length;i++){
+int  getMostMatchedPath(int matches[],int length,struct Map *map){
+	int highestnumber=0,i;
+	length=map->length;
+	for(i=0;i<length;i++){
 		if(matches[i]>highestnumber){
 			highestnumber=matches[i];
-			highest_num_index=i;
 
 		}
 
 	}
 
-	return matches[highest_num_index];
+	return highestnumber;
 
 }
 /*compares matched path and see if the matched path is already opened
@@ -202,7 +201,6 @@ int  getMostMatchedPath(int matches[]){
  */
 struct matched_path compareMatched(struct Map* map,int best_matched_num,char *newPath,int mode){
 	char * temp_dir,*t_dir;
-	//const char* slash ="/";
 	int i,status;
 	struct matched_path  matchedPath ={0};
 	if(best_matched_num==0){
@@ -236,20 +234,20 @@ struct matched_path compareMatched(struct Map* map,int best_matched_num,char *ne
 */
 
 struct matched_path map_path(struct Map* map,const char* a_filepath,int mode){
-	int i; char * filename;
+	int i, length=map->length; char * filename;
 	int best_matched_num;
 	struct matched_path matchedPath={0};
-	int matched_num[map->length];
+	int matched_num[length];
 	filename=(char*)a_filepath;
-	if(map->length==0){
+	if(length==0){
 				map=preopen(filename,mode);
 			}
 	else{
-		for(i=0;i<map->length;i++){
+		for(i=0;i<length;i++){
 
 				matched_num[i]=findMatchingChars(filename,map->opened_files[i].dirname);
 			}
-		best_matched_num=getMostMatchedPath(matched_num);
+		best_matched_num=getMostMatchedPath(matched_num,length,map);
 		matchedPath=compareMatched(map,best_matched_num,filename, mode);
 	}
 

@@ -1,1 +1,0 @@
-/usr/bin/cc  -fPIC   -shared -Wl,-soname,libcapwrap.so -o libcapwrap.so CMakeFiles/capwrap.dir/cwrap.c.o CMakeFiles/capwrap.dir/interceptAccess.c.o CMakeFiles/capwrap.dir/interceptOpen.c.o 

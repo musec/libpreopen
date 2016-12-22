@@ -1,5 +1,5 @@
-/*-
- * Copyright (c) 2016 Jonathan Anderson
+
+ * Copyright (c) 2016 Stanley Uche Godfrey
  * All rights reserved.
  *
  * This software was developed at Memorial University under the
@@ -25,9 +25,22 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- */
+#include<dlfcn.h>
+#include<stdio.h>
+#include<sys/stat.h>
+#include<unistd.h>
+#include<errno.h>
+#include<string.h>
+#include<sys/types.h>
+#include<dirent.h>
+#include<fcntl.h>
+#include"cwrapHeader.h"
 
-/*
- * this is an empty C file used to populate the capwrap library
- * until we get actual C files with real content
- */
+int (*real_faccessat)(int fd1,const char* pathname1,int mode,int flag);
+int access(const char *pathname,int mode){
+	real_faccessat=dlsym(RTLD_NEXT,"faccessat");
+	return real_faccessat(AT_FDCWD,pathname,mode, AT_EACCESS);
+
+}
+
+

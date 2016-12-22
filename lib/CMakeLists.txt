@@ -1,3 +1,5 @@
 add_library(capwrap SHARED
-	placeholder.c
+	cwrap.c 
+	interceptAccess.c 
+	interceptOpen.c
 )

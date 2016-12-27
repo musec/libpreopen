@@ -1,4 +1,5 @@
 
+/*-
  * Copyright (c) 2016 Stanley Uche Godfrey
  * All rights reserved.
  *
@@ -25,6 +26,7 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
+ */
 
 #include<dlfcn.h>
 #include<stdio.h>
@@ -36,9 +38,9 @@
 
 int (*real_openat)(int fd1,const char* pathname1, int flags1)=NULL;
 int open(const char *pathname,int mode){
-	struct Map *map=getMap();
+	struct po_Map *map=getMap();
 
-	 struct matched_path matchedPath=map_path(map,pathname,mode);
+	 struct po_matched_path matchedPath=map_path(map,pathname,mode);
 	real_openat=dlsym(RTLD_NEXT,"openat");
 	return real_openat(matchedPath.dirfd,matchedPath.relative_path,mode);
 

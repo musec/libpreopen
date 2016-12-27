@@ -44,13 +44,13 @@
 #include<assert.h>
 
 
-static struct Map* map;
+static struct po_Map* map;
 
-struct Map *initializeMap(int capacity){
+struct po_Map *initializeMap(int capacity){
 	
-	struct Map *map=(struct Map*)malloc(sizeof(struct Map));
+	struct po_Map *map=(struct po_Map*)malloc(sizeof(struct po_Map));
 
-	map->opened_files=(struct opened_dir_struct*)malloc(capacity*sizeof(struct opened_dir_struct));
+	map->opened_files=(struct po_opened_dir_struct*)malloc(capacity*sizeof(struct po_opened_dir_struct));
 	assert(map->opened_files!=NULL);
 	map->capacity=capacity;
 	map->length=0;
@@ -58,7 +58,7 @@ struct Map *initializeMap(int capacity){
 
 }
 
-struct Map* getMap(){
+struct po_Map* getMap(){
 	if(map==0){
 		map=initializeMap(4);
 	}
@@ -74,9 +74,9 @@ char* split_path_file(char *relative_path,int length) {
 	return dirName;
 }
 // increases the capacity of map by allocating more memory
-struct Map* increaseMapCapacity(){
-	int i;struct opened_dir_struct *new_opened_files;
-	new_opened_files=(struct opened_dir_struct*)malloc((2*map->capacity)*sizeof(struct opened_dir_struct));
+struct po_Map* increaseMapCapacity(){
+	int i;struct po_opened_dir_struct *new_opened_files;
+	new_opened_files=(struct po_opened_dir_struct*)malloc((2*map->capacity)*sizeof(struct po_opened_dir_struct));
 	assert(new_opened_files!=NULL);
 	map->capacity=2*map->capacity;
 
@@ -103,7 +103,7 @@ int po_isdir(char *path){
    the directory path in a structure
 */
 
-struct opened_dir_struct * open_directory(char* file_path,struct opened_dir_struct *dos){
+struct po_opened_dir_struct * open_directory(char* file_path,struct po_opened_dir_struct *dos){
 	int dir_fd,k; char * dirname;
 	DIR *dir;
 	k=po_isdir(file_path);
@@ -131,16 +131,16 @@ struct opened_dir_struct * open_directory(char* file_path,struct opened_dir_stru
 }
 
 //add an opened path the pointer to opened_dir_struct field of the Map struct
-struct Map* add_Opened_dirpath_map(struct opened_dir_struct ods){
+struct po_Map* add_Opened_dirpath_map(struct po_opened_dir_struct ods){
 	map->opened_files[map->length]=ods;
 	map->length++;
 	return map;
 }
 //Opens a file path
-struct Map* preopen(char* file,int mode){
+struct po_Map* preopen(char* file,int mode){
 	int k;
-	struct opened_dir_struct ods;
-	struct opened_dir_struct * odsp;
+	struct po_opened_dir_struct ods;
+	struct po_opened_dir_struct * odsp;
 	if(map->length!=0){
 		k=map->capacity-map->length;
 		if(k<2){
@@ -181,7 +181,7 @@ int findMatchingChars(char *A,char *B){
  Returns the dirfd of the opened path with highest matched number
  and relative path to the dirfd
 */
-int  getMostMatchedPath(int matches[],int length,struct Map *map){
+int  getMostMatchedPath(int matches[],int length,struct po_Map *map){
 	int highestnumber=0,i;
 	length=map->length;
 	for(i=0;i<length;i++){
@@ -199,10 +199,10 @@ int  getMostMatchedPath(int matches[],int length,struct Map *map){
  * if not it opens the matched path else it returns the matched path dirfd
  * and relative path.
  */
-struct matched_path compareMatched(struct Map* map,int best_matched_num,char *newPath,int mode){
+struct po_matched_path compareMatched(struct po_Map* map,int best_matched_num,char *newPath,int mode){
 	char * temp_dir,*t_dir;
 	int i,status;
-	struct matched_path  matchedPath ={0};
+	struct po_matched_path  matchedPath ={0};
 	if(best_matched_num==0){
 		map=preopen(newPath,mode);
 		matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
@@ -233,10 +233,10 @@ struct matched_path compareMatched(struct Map* map,int best_matched_num,char *ne
  * Uses other function to return matched path
 */
 
-struct matched_path map_path(struct Map* map,const char* a_filepath,int mode){
+struct po_matched_path map_path(struct po_Map* map,const char* a_filepath,int mode){
 	int i, length=map->length; char * filename;
 	int best_matched_num;
-	struct matched_path matchedPath={0};
+	struct po_matched_path matchedPath={0};
 	int matched_num[length];
 	filename=(char*)a_filepath;
 	if(length==0){

@@ -38,7 +38,7 @@
 
 int (*real_openat)(int fd1,const char* pathname1, int flags1)=NULL;
 int open(const char *pathname,int mode){
-	struct po_Map *map=getMap();
+	struct po_map *map=getMap();
 
 	 struct po_matched_path matchedPath=map_path(map,pathname,mode);
 	real_openat=dlsym(RTLD_NEXT,"openat");

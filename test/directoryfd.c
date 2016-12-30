@@ -4,6 +4,9 @@
  *
  *  Created on: Oct 15, 2016
  *      Author: ujay
+ *
+ * This test doesn't actually run yet:
+ * XFAIL: *
  */
 #include <stdlib.h>
 #include <stdio.h>

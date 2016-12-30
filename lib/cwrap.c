@@ -137,7 +137,7 @@ struct po_map* add_Opened_dirpath_map(struct po_opened_dir_struct ods){
 	return map;
 }
 //Opens a file path
-struct po_map* preopen(char* file,int mode){
+struct po_map* preopen(struct po_map *map, char* file,int mode){
 	int k;
 	struct po_opened_dir_struct ods;
 	struct po_opened_dir_struct * odsp;
@@ -204,7 +204,7 @@ struct po_matched_path compareMatched(struct po_map* map,int best_matched_num,ch
 	int i,status;
 	struct po_matched_path  matchedPath ={0};
 	if(best_matched_num==0){
-		map=preopen(newPath,mode);
+		map=preopen(map, newPath,mode);
 		matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
 		matchedPath.relative_path=newPath+strlen(map->opened_files[map->length-1].dirname);
 	}
@@ -222,7 +222,7 @@ struct po_matched_path compareMatched(struct po_map* map,int best_matched_num,ch
 			}
 		}
 		if(status !=0){
-			map=preopen(newPath,mode);
+			map=preopen(map, newPath,mode);
 
 		}
 
@@ -240,7 +240,7 @@ struct po_matched_path map_path(struct po_map* map,const char* a_filepath,int mo
 	int matched_num[length];
 	filename=(char*)a_filepath;
 	if(length==0){
-				map=preopen(filename,mode);
+				map=preopen(map, filename,mode);
 			}
 	else{
 		for(i=0;i<length;i++){

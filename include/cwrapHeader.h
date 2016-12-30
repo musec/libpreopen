@@ -57,8 +57,8 @@ struct po_map{
 
 //Opens a file path
 struct po_map* po_preopen(struct po_map*, char* file,int mode);
-struct po_map* initializeMap(int );
-struct po_matched_path map_path(struct po_map* map, const char * path, int mode);
+struct po_map* po_map_create(int );
+struct po_matched_path po_find(struct po_map* map, const char * path, int mode);
 // returns pointer to the Map structure
 struct po_map* getMap();
 char* split_path_file(char *relative_path,int length);

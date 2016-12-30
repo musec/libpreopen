@@ -46,7 +46,7 @@
 
 static struct po_map* map;
 
-struct po_map *initializeMap(int capacity){
+struct po_map *po_map_create(int capacity){
 	
 	struct po_map *map=(struct po_map*)malloc(sizeof(struct po_map));
 
@@ -60,7 +60,7 @@ struct po_map *initializeMap(int capacity){
 
 struct po_map* getMap(){
 	if(map==0){
-		map=initializeMap(4);
+		map=po_map_create(4);
 	}
 	return map;
 }
@@ -233,7 +233,7 @@ struct po_matched_path compareMatched(struct po_map* map,int best_matched_num,ch
  * Uses other function to return matched path
 */
 
-struct po_matched_path map_path(struct po_map* map,const char* a_filepath,int mode){
+struct po_matched_path po_find(struct po_map* map,const char* a_filepath,int mode){
 	int i, length=map->length; char * filename;
 	int best_matched_num;
 	struct po_matched_path matchedPath={0};

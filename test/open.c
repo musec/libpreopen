@@ -38,7 +38,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "cwrapHeader.h"
+#include "libpo.h"
 
 
 int main(int argc, char *argv[])

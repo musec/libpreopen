@@ -19,7 +19,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "cwrapHeader.h"
+#include "libpo.h"
 
 int main(){
 	int g,j,i;

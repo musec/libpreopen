@@ -92,7 +92,7 @@ int findMatchingChars(char *A,char *B);
 int  getMostMatchedPath(int matches[],int arraylength,struct po_map *map);
 
 //add an opened path to the pointer to opened_dir_struct field of the Map struct
-struct po_map* add_Opened_dirpath_map(struct po_dir ods);
+struct po_map* add_Opened_dirpath_map(struct po_map *, struct po_dir ods);
 
 /*
  * Uses other function to return the matched path if any or opened the pathed to be matched 

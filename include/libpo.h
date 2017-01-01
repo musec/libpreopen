@@ -28,8 +28,6 @@
  * SUCH DAMAGE.
  */
 
-#include <stdlib.h>
-
 
 // Holds opened directory fd and path
 struct po_dir{

@@ -41,7 +41,7 @@ struct po_dir{
 
 //Holds dirfd of a matched path  and path relative to that dirfd
 struct po_matched_path{
-	char * relative_path;
+	const char *relative_path;
 	int dirfd;
 };
 
@@ -58,7 +58,7 @@ struct po_map{
 //Opens a file path
 struct po_map* po_preopen(struct po_map*, char* file,int mode);
 struct po_map* po_map_create(int );
-struct po_matched_path po_find(struct po_map* map, const char * path, int mode);
+struct po_matched_path po_find(struct po_map *map, const char *path);
 // returns pointer to the Map structure
 struct po_map* getMap();
 char* split_path_file(char *relative_path,int length);
@@ -75,12 +75,6 @@ struct po_dir * open_directory(char* relative_path,struct po_dir *);
 
 // increases the capacity of map by allocating more memory
 struct po_map* increaseMapCapacity();
-
-/*
- Returns the dirfd of the opened path with highest matched char number to the path to be opened
-* or zero if no match is found
-*/
-int  getMostMatchedPath(int matches[],int arraylength,struct po_map *map);
 
 //add an opened path to the pointer to opened_dir_struct field of the Map struct
 struct po_map* add_Opened_dirpath_map(struct po_map *, struct po_dir ods);

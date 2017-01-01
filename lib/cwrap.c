@@ -175,87 +175,23 @@ bool po_isprefix(const char *dir, size_t dirlen, const char *path)
 	return path[i] == '/' || path[i] == '\0';
 }
 
+struct po_matched_path po_find(struct po_map* map, const char *path){
+	struct po_matched_path match;
+	size_t bestlen = 0;
+	int best = -1;
 
-/*
- Returns the dirfd of the opened path with highest matched number
- and relative path to the dirfd
-*/
-int  getMostMatchedPath(int matches[],int length,struct po_map *map){
-	int highestnumber=0,i;
-	length=map->length;
-	for(i=0;i<length;i++){
-		if(matches[i]>highestnumber){
-			highestnumber=matches[i];
+	for(size_t i = 0; i < map->length; i++){
+		const char *dirname = map->opened_files[i].dirname;
+		size_t len = strnlen(dirname, MAXPATHLEN);
 
+		if (po_isprefix(dirname, len, path) && len > bestlen) {
+			best = i;
+			bestlen = len;
 		}
-
 	}
 
-	return highestnumber;
+	match.relative_path = path + bestlen;
+	match.dirfd = map->opened_files[best].dirfd;
 
+	return match;
 }
-/*compares matched path and see if the matched path is already opened
- * if not it opens the matched path else it returns the matched path dirfd
- * and relative path.
- */
-struct po_matched_path compareMatched(struct po_map* map,int best_matched_num,char *newPath,int mode){
-	char * temp_dir,*t_dir;
-	int i,status;
-	struct po_matched_path  matchedPath ={0};
-	if(best_matched_num==0){
-		map=po_preopen(map, newPath,mode);
-		matchedPath.dirfd=map->opened_files[map->length-1].dirfd;
-		matchedPath.relative_path=newPath+strlen(map->opened_files[map->length-1].dirname);
-	}
-	else{
-
-		t_dir=newPath+best_matched_num;
-		temp_dir=strndup(newPath,strlen(newPath)- strlen(t_dir));
-
-		for(i=0;i<map->length;i++){
-			status=strcmp(temp_dir,map->opened_files[i].dirname);
-			if(status==0){
-				matchedPath.dirfd=map->opened_files[i].dirfd;
-				matchedPath.relative_path=t_dir;
-				break;
-			}
-		}
-		if(status !=0){
-			map=po_preopen(map, newPath,mode);
-
-		}
-
-	}
-	return matchedPath;
-}
-/*
- * Uses other function to return matched path
-*/
-
-struct po_matched_path po_find(struct po_map* map,const char* a_filepath,int mode){
-	int i, length=map->length; char * filename;
-	int best_matched_num;
-	struct po_matched_path matchedPath={0};
-	int matched_num[length];
-	filename=(char*)a_filepath;
-	if(length==0){
-				map=po_preopen(map, filename,mode);
-			}
-	else{
-		for(i=0;i<length;i++){
-			const char *dirname = map->opened_files[i].dirname;
-			size_t len = strnlen(dirname, MAXPATHLEN);
-
-			if (po_isprefix(dirname, len, filename)) {
-				matched_num[i] = len;
-			}
-		}
-		best_matched_num=getMostMatchedPath(matched_num,length,map);
-		matchedPath=compareMatched(map,best_matched_num,filename, mode);
-	}
-
-
-
-	return matchedPath;
-}
-

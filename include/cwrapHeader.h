@@ -77,15 +77,6 @@ struct po_dir * open_directory(char* relative_path,struct po_dir *);
 struct po_map* increaseMapCapacity();
 
 /*
-  *Finds how many characters in a string is in another
-  *string begining from the first character
-  *@param A a directory path in the array containing opened directories
-  *@param B a path to be opened
-  *Makes sure that none of the parameters are NULL
-*/
-int findMatchingChars(char *A,char *B);
-
-/*
  Returns the dirfd of the opened path with highest matched char number to the path to be opened
 * or zero if no match is found
 */

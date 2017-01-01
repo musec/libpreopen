@@ -28,6 +28,7 @@
  * SUCH DAMAGE.
  */
 
+#include <sys/param.h>
 
 #include <limits.h>
 #include <stdlib.h>
@@ -42,6 +43,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include<assert.h>
+
+#include "internal.h"
 
 
 static struct po_map *global_map;
@@ -155,27 +158,23 @@ struct po_map* po_preopen(struct po_map *map, char* file,int mode){
 	return map;
 }
 
-/*
-  Finds how many characters in a string is in another
-  string begining from the first character
-*/
-int findMatchingChars(char *A,char *B){
-	//argu *A is path to be matched
-	//argu *B is a preopened dir path in the map pointer
-	int lenA,lenB,matchedNum=0,i;
-	assert(A!=NULL && B!=NULL);
-	lenA=strlen(A);
-	lenB=strlen(B);
-	for(i=0;i<lenB;i++){
-		if(A[i]==B[i]){
-			matchedNum++;
-		}
-		else{
-			break;
-		}
+
+bool po_isprefix(const char *dir, size_t dirlen, const char *path)
+{
+	size_t i;
+
+	assert(dir != NULL);
+	assert(path != NULL);
+
+	for (i = 0; i < dirlen; i++)
+	{
+		if (path[i] != dir[i])
+			return false;
 	}
-	return matchedNum;
+
+	return path[i] == '/' || path[i] == '\0';
 }
+
 
 /*
  Returns the dirfd of the opened path with highest matched number
@@ -244,9 +243,13 @@ struct po_matched_path po_find(struct po_map* map,const char* a_filepath,int mod
 			}
 	else{
 		for(i=0;i<length;i++){
+			const char *dirname = map->opened_files[i].dirname;
+			size_t len = strnlen(dirname, MAXPATHLEN);
 
-				matched_num[i]=findMatchingChars(filename,map->opened_files[i].dirname);
+			if (po_isprefix(dirname, len, filename)) {
+				matched_num[i] = len;
 			}
+		}
 		best_matched_num=getMostMatchedPath(matched_num,length,map);
 		matchedPath=compareMatched(map,best_matched_num,filename, mode);
 	}

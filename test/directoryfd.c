@@ -8,15 +8,18 @@
  * This test doesn't actually run yet:
  * XFAIL: *
  */
+
+#include <sys/types.h>
+
+#include <dirent.h>
+#include <fcntl.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
-#include <limits.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include<fcntl.h>
-#include<string.h>
-#include"cwrapHeader.h"
+
+#include "cwrapHeader.h"
 
 int main(){
 	int g,j,i;

@@ -27,8 +27,7 @@
  * SUCH DAMAGE.
  */
 
-#include<stdlib.h>
-#include<string.h>
+#include <stdlib.h>
 
 
 // Holds opened directory fd and path

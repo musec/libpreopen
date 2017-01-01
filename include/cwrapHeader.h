@@ -32,7 +32,7 @@
 
 
 // Holds opened directory fd and path
-struct po_opened_dir_struct{
+struct po_dir{
 	int dirfd;
 	char*dirname;
 	int flags;
@@ -50,7 +50,7 @@ struct po_matched_path{
 *The number of elements currently in the array
 */
 struct po_map{
-	struct po_opened_dir_struct * opened_files;
+	struct po_dir * opened_files;
 	size_t capacity;//The size of the Map pointer
 	size_t length;// Number of elements in the Map pointer
 };
@@ -70,7 +70,7 @@ int po_isdir(char *path);
    the directory path in the opened_dir_struct structure
 */
 
-struct po_opened_dir_struct * open_directory(char* relative_path,struct po_opened_dir_struct *);
+struct po_dir * open_directory(char* relative_path,struct po_dir *);
 
 
 // increases the capacity of map by allocating more memory
@@ -92,7 +92,7 @@ int findMatchingChars(char *A,char *B);
 int  getMostMatchedPath(int matches[],int arraylength,struct po_map *map);
 
 //add an opened path to the pointer to opened_dir_struct field of the Map struct
-struct po_map* add_Opened_dirpath_map(struct po_opened_dir_struct ods);
+struct po_map* add_Opened_dirpath_map(struct po_dir ods);
 
 /*
  * Uses other function to return the matched path if any or opened the pathed to be matched 

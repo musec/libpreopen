@@ -50,7 +50,7 @@ struct po_map *po_map_create(int capacity){
 	
 	struct po_map *map=(struct po_map*)malloc(sizeof(struct po_map));
 
-	map->opened_files=(struct po_opened_dir_struct*)malloc(capacity*sizeof(struct po_opened_dir_struct));
+	map->opened_files=(struct po_dir*)malloc(capacity*sizeof(struct po_dir));
 	assert(map->opened_files!=NULL);
 	map->capacity=capacity;
 	map->length=0;
@@ -75,8 +75,8 @@ char* split_path_file(char *relative_path,int length) {
 }
 // increases the capacity of map by allocating more memory
 struct po_map* increaseMapCapacity(){
-	int i;struct po_opened_dir_struct *new_opened_files;
-	new_opened_files=(struct po_opened_dir_struct*)malloc((2*map->capacity)*sizeof(struct po_opened_dir_struct));
+	int i;struct po_dir *new_opened_files;
+	new_opened_files=(struct po_dir*)malloc((2*map->capacity)*sizeof(struct po_dir));
 	assert(new_opened_files!=NULL);
 	map->capacity=2*map->capacity;
 
@@ -103,7 +103,7 @@ int po_isdir(char *path){
    the directory path in a structure
 */
 
-struct po_opened_dir_struct * open_directory(char* file_path,struct po_opened_dir_struct *dos){
+struct po_dir * open_directory(char* file_path,struct po_dir *dos){
 	int dir_fd,k; char * dirname;
 	DIR *dir;
 	k=po_isdir(file_path);
@@ -131,7 +131,7 @@ struct po_opened_dir_struct * open_directory(char* file_path,struct po_opened_di
 }
 
 //add an opened path the pointer to opened_dir_struct field of the Map struct
-struct po_map* add_Opened_dirpath_map(struct po_opened_dir_struct ods){
+struct po_map* add_Opened_dirpath_map(struct po_dir ods){
 	map->opened_files[map->length]=ods;
 	map->length++;
 	return map;
@@ -139,8 +139,8 @@ struct po_map* add_Opened_dirpath_map(struct po_opened_dir_struct ods){
 //Opens a file path
 struct po_map* po_preopen(struct po_map *map, char* file,int mode){
 	int k;
-	struct po_opened_dir_struct ods;
-	struct po_opened_dir_struct * odsp;
+	struct po_dir ods;
+	struct po_dir * odsp;
 	if(map->length!=0){
 		k=map->capacity-map->length;
 		if(k<2){

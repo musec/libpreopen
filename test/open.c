@@ -33,6 +33,7 @@
  * RUN: %filecheck %s -input-file %t.out
  */
 
+#include <assert.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,11 +44,13 @@
 
 int main(int argc, char *argv[])
 {
-	struct po_map *map = getMap();
+	struct po_map *map = po_map_get();
 	
-	map = getMap();
-	map = po_preopen(map, TEST_DATA_DIR "/foo", O_RDONLY);
-	map = po_preopen(map, TEST_DATA_DIR "/baz/wibble", O_RDONLY);
+	int foo = po_preopen(map, TEST_DATA_DIR "/foo");
+	assert(foo != -1);
+
+	int wibble = po_preopen(map, TEST_DATA_DIR "/baz/wibble");
+	assert(wibble != -1);
 
 	// CHECK: Opening foo/bar/hi.txt...
 	printf("Opening foo/bar/hi.txt...\n");

@@ -98,12 +98,5 @@ struct po_map* po_add(struct po_map *map, const char *path, int fd);
 int po_preopen(struct po_map *, const char *path);
 
 struct po_relpath po_find(struct po_map *map, const char *path);
-char* split_path_file(const char *relative_path,int length);
-
-/*
- * Uses other function to return the matched path if any or opened the pathed to be matched 
-*/
-
-struct po_relpath compareMatched(struct po_map* map,int num,char* character,int mode);
 
 #endif /* !LIBPO_H */

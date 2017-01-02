@@ -31,6 +31,12 @@
 #ifndef LIBPO_H
 #define LIBPO_H
 
+#ifdef WITH_CAPSICUM
+#include <sys/capsicum.h>
+#else
+#define cap_rights_t void
+#endif
+
 /**
  * A mapping from paths to pre-opened directories.
  *
@@ -97,6 +103,17 @@ struct po_map* po_add(struct po_map *map, const char *path, int fd);
  */
 int po_preopen(struct po_map *, const char *path);
 
-struct po_relpath po_find(struct po_map *map, const char *path);
+/**
+ * Find a directory whose path is a prefix of @b path and (on platforms that
+ * support Capsicum) that has the rights required by @b rights.
+ *
+ * @param   map     the map to look for a directory in
+ * @param   path    the path we want to find a pre-opened prefix for
+ * @param   rights  if non-NULL on a platform with Capsicum support,
+ *                  the rights any directory descriptor must have to
+ *                  qualify as a match
+ */
+struct po_relpath po_find(struct po_map *map, const char *path,
+	cap_rights_t *rights);
 
 #endif /* !LIBPO_H */

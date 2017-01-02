@@ -42,7 +42,7 @@ int open(const char *pathname, int mode, ...)
 {
 	struct po_map *map = po_map_get();
 
-	struct po_relpath matchedPath = po_find(map, pathname);
+	struct po_relpath matchedPath = po_find(map, pathname, NULL);
 	return openat(matchedPath.dirfd,matchedPath.relative_path,mode);
 
 }

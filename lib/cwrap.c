@@ -191,22 +191,38 @@ bool po_isprefix(const char *dir, size_t dirlen, const char *path)
 	return path[i] == '/' || path[i] == '\0';
 }
 
-struct po_relpath po_find(struct po_map* map, const char *path){
+struct po_relpath
+po_find(struct po_map* map, const char *path, cap_rights_t *rights)
+{
 	struct po_relpath match;
 	size_t bestlen = 0;
 	int best = -1;
 
 	for(size_t i = 0; i < map->length; i++){
-		const char *dirname = map->opened_files[i].dirname;
+		const struct po_dir *d = map->opened_files + i;
+		const char *dirname = d->dirname;
 		size_t len = strnlen(dirname, MAXPATHLEN);
 
-		if (po_isprefix(dirname, len, path) && len > bestlen) {
-			best = i;
-			bestlen = len;
+		if ((len <= bestlen) || !po_isprefix(dirname, len, path)) {
+			continue;
 		}
+
+#ifdef WITH_CAPSICUM
+		if (rights && !cap_rights_contains(&d->rights, rights)) {
+			continue;
+		}
+#endif
+
+		best = i;
+		bestlen = len;
 	}
 
-	match.relative_path = path + bestlen;
+	const char *relpath = path + bestlen;
+	if (*relpath == '/') {
+		relpath++;
+	}
+
+	match.relative_path = relpath;
 	match.dirfd = map->opened_files[best].dirfd;
 
 	return match;

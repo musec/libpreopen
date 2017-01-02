@@ -1,0 +1,6 @@
+#!/bin/sh
+
+preload_dir="$1"
+shift
+
+LD_PRELOAD="$preload_dir" $*

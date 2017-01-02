@@ -29,7 +29,7 @@
 /*
  * RUN: %cc -c %cflags -D TEST_DATA_DIR="\"%p/Inputs\"" %s -o %t.o
  * RUN: %cc %t.o %ldflags -o %t
- * RUN: %t > %t.out
+ * RUN: %p/run-with-preload %lib %t > %t.out
  * RUN: %filecheck %s -input-file %t.out
  */
 

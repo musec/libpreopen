@@ -1,5 +1,6 @@
 /*-
  * Copyright (c) 2016 Stanley Uche Godfrey
+ * Copyright (c) 2016 Jonathan Anderson
  * All rights reserved.
  *
  * This software was developed at Memorial University under the

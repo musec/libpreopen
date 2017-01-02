@@ -41,15 +41,18 @@
 
 #include "libpo.h"
 
+#define TEST_DIR(name) \
+	"/" TEST_DATA_DIR name
+
 
 int main(int argc, char *argv[])
 {
 	struct po_map *map = po_map_get();
 	
-	int foo = po_preopen(map, TEST_DATA_DIR "/foo");
+	int foo = po_preopen(map, TEST_DIR("/foo"));
 	assert(foo != -1);
 
-	int wibble = po_preopen(map, TEST_DATA_DIR "/baz/wibble");
+	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"));
 	assert(wibble != -1);
 
 	// CHECK: Opening foo/bar/hi.txt...

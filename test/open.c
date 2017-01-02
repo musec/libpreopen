@@ -42,15 +42,15 @@
 #include "libpo.h"
 
 #define TEST_DIR(name) \
-	"/" TEST_DATA_DIR name
+	TEST_DATA_DIR name
 
 
 int main(int argc, char *argv[])
 {
 	struct po_map *map = po_map_get();
 	
-	int foo = po_preopen(map, TEST_DIR("/foo"));
-	assert(foo != -1);
+	int foo = openat(AT_FDCWD, TEST_DIR("/foo"), O_RDONLY);
+	po_add(map, "foo", foo);
 
 	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"));
 	assert(wibble != -1);
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 
 	// CHECK: Opening baz/wibble/bye.txt...
 	printf("Opening baz/wibble/bye.txt...\n");
-	fd = open("baz/wibble/bye.txt", O_RDONLY);
+	fd = open(TEST_DIR("/baz/wibble") "/bye.txt", O_RDONLY);
 
 	// CHECK-NOT: bye.txt: -1
 	printf("bye.txt: %d\n", fd);

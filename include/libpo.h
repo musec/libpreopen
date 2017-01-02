@@ -57,11 +57,16 @@ struct po_relpath {
  */
 struct po_map* po_map_create(int capacity);
 
+/**
+ * Retrieve (and possibly create) the default map.
+ *
+ * This can fail if there is no existing map and memory allocation fails.
+ */
+struct po_map* po_map_get();
+
 //Opens a file path
 struct po_map* po_preopen(struct po_map*, char* file,int mode);
 struct po_relpath po_find(struct po_map *map, const char *path);
-// returns pointer to the Map structure
-struct po_map* getMap();
 char* split_path_file(char *relative_path,int length);
 
 /*

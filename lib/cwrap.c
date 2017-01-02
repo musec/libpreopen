@@ -69,12 +69,15 @@ po_map_create(int capacity)
 	return (map);
 }
 
-struct po_map* getMap(){
-	if (global_map == NULL){
+struct po_map*
+po_map_get()
+{
+	if (global_map == NULL) {
 		global_map = po_map_create(4);
 	}
-	return global_map;
+	return (global_map);
 }
+
 //split file from path
 char* split_path_file(char *relative_path,int length) {
 	const char slash='/';

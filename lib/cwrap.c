@@ -89,6 +89,16 @@ po_map_get()
 	return (global_map);
 }
 
+void
+po_map_set(struct po_map *map)
+{
+	if (global_map != NULL) {
+		po_map_free(global_map);
+	}
+
+	global_map = map;
+}
+
 //split file from path
 char* split_path_file(char *relative_path,int length) {
 	const char slash='/';

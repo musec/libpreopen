@@ -69,6 +69,15 @@ void po_map_free(struct po_map *);
  */
 struct po_map* po_map_get();
 
+/**
+ * Set the default map, taking ownership of its memory allocation(s).
+ *
+ * If there is an existing default map, it will be freed before it is replaced.
+ * It is permissible to pass in a NULL map in order to clear the current
+ * default map.
+ */
+void po_map_set(struct po_map*);
+
 //Opens a file path
 struct po_map* po_preopen(struct po_map*, char* file,int mode);
 struct po_relpath po_find(struct po_map *map, const char *path);

@@ -28,6 +28,8 @@
  * SUCH DAMAGE.
  */
 
+#ifndef LIBPO_H
+#define LIBPO_H
 
 /**
  * A mapping from paths to pre-opened directories.
@@ -58,3 +60,5 @@ char* split_path_file(char *relative_path,int length);
 */
 
 struct po_matched_path compareMatched(struct po_map* map,int num,char* character,int mode);
+
+#endif /* !LIBPO_H */

@@ -85,12 +85,4 @@ bool po_isdir(const char *path);
  */
 bool po_isprefix(const char *dir, size_t dirlen, const char *path);
 
-char* split_path_file(const char *relative_path,int length);
-
-/*
- * Uses other function to return the matched path if any or opened the pathed to be matched 
-*/
-
-struct po_relpath compareMatched(struct po_map* map,int num,char* character,int mode);
-
 #endif /* LIBPO_INTERNAL_H */

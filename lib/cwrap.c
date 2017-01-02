@@ -137,15 +137,6 @@ po_preopen(struct po_map *map, const char *path)
 	return (fd);
 }
 
-//split file from path
-char* split_path_file(const char *relative_path,int length) {
-	const char slash='/';
-   	char *filename;
-	char *dirName;
-	filename= strrchr(relative_path, slash);
-	dirName=strndup(relative_path,length- strlen(filename));
-	return dirName;
-}
 // increases the capacity of map by allocating more memory
 struct po_map* increaseMapCapacity(struct po_map *map) {
 	int i;struct po_dir *new_opened_files;

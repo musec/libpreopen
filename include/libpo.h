@@ -58,6 +58,11 @@ struct po_relpath {
 struct po_map* po_map_create(int capacity);
 
 /**
+ * Free a @ref po_map and all of its owned memory.
+ */
+void po_map_free(struct po_map *);
+
+/**
  * Retrieve (and possibly create) the default map.
  *
  * This can fail if there is no existing map and memory allocation fails.

@@ -69,6 +69,17 @@ po_map_create(int capacity)
 	return (map);
 }
 
+void
+po_map_free(struct po_map *map)
+{
+	if (map == NULL) {
+		return;
+	}
+
+	free(map->opened_files);
+	free(map);
+}
+
 struct po_map*
 po_map_get()
 {

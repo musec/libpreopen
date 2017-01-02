@@ -53,14 +53,11 @@ struct po_dir{
 #endif
 };
 
-/* Contains array of  opened_dir_struct
-*The capacity of the array
-*The number of elements currently in the array
-*/
-struct po_map{
-	struct po_dir * opened_files;
-	size_t capacity;//The size of the Map pointer
-	size_t length;// Number of elements in the Map pointer
+// Documented in external header file
+struct po_map {
+	struct po_dir *entries;
+	size_t capacity;
+	size_t length;
 };
 
 /**

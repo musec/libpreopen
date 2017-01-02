@@ -56,8 +56,8 @@ po_map_create(int capacity)
 		return (NULL);
 	}
 
-	map->opened_files = calloc(sizeof(struct po_dir), capacity);
-	if (map->opened_files == NULL) {
+	map->entries = calloc(sizeof(struct po_dir), capacity);
+	if (map->entries == NULL) {
 		free(map);
 		return (NULL);
 	}
@@ -75,7 +75,7 @@ po_map_free(struct po_map *map)
 		return;
 	}
 
-	free(map->opened_files);
+	free(map->entries);
 	free(map);
 }
 
@@ -101,7 +101,7 @@ po_map_set(struct po_map *map)
 struct po_map*
 po_add(struct po_map *map, const char *path, int fd)
 {
-	struct po_dir *d = map->opened_files + map->length;
+	struct po_dir *d = map->entries + map->length;
 	map->length++;
 
 	d->dirname = path;
@@ -140,17 +140,17 @@ po_preopen(struct po_map *map, const char *path)
 
 // increases the capacity of map by allocating more memory
 struct po_map* increaseMapCapacity(struct po_map *map) {
-	int i;struct po_dir *new_opened_files;
-	new_opened_files=(struct po_dir*)malloc((2*map->capacity)*sizeof(struct po_dir));
-	assert(new_opened_files!=NULL);
+	int i;struct po_dir *new_entries;
+	new_entries=(struct po_dir*)malloc((2*map->capacity)*sizeof(struct po_dir));
+	assert(new_entries!=NULL);
 	map->capacity=2*map->capacity;
 
 		for(i=0;i<map->length;i++){
-			new_opened_files[i]=map->opened_files[i];
+			new_entries[i]=map->entries[i];
 
 		}
-		free(map->opened_files);
-		map->opened_files=new_opened_files;
+		free(map->entries);
+		map->entries=new_entries;
 		return map;
 
 }
@@ -179,7 +179,7 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 	int best = -1;
 
 	for(size_t i = 0; i < map->length; i++){
-		const struct po_dir *d = map->opened_files + i;
+		const struct po_dir *d = map->entries + i;
 		const char *dirname = d->dirname;
 		size_t len = strnlen(dirname, MAXPATHLEN);
 
@@ -203,7 +203,7 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 	}
 
 	match.relative_path = relpath;
-	match.dirfd = map->opened_files[best].dirfd;
+	match.dirfd = map->entries[best].dirfd;
 
 	return match;
 }

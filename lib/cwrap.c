@@ -156,42 +156,6 @@ po_preopen(struct po_map *map, const char *path)
 	return (fd);
 }
 
-struct po_map*
-po_map_enlarge(struct po_map *map)
-{
-	struct po_dir *enlarged;
-
-	enlarged = calloc(sizeof(struct po_dir), 2 * map->capacity);
-	if (enlarged == NULL) {
-		return (NULL);
-	}
-
-	memcpy(enlarged, map->entries, map->length * sizeof(*enlarged));
-	free(map->entries);
-
-	map->entries = enlarged;
-	map->capacity = 2 * map->capacity;
-
-	return map;
-}
-
-bool
-po_isprefix(const char *dir, size_t dirlen, const char *path)
-{
-	size_t i;
-
-	assert(dir != NULL);
-	assert(path != NULL);
-
-	for (i = 0; i < dirlen; i++)
-	{
-		if (path[i] != dir[i])
-			return false;
-	}
-
-	return path[i] == '/' || path[i] == '\0';
-}
-
 struct po_relpath
 po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 {
@@ -227,4 +191,42 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 	match.dirfd = map->entries[best].dirfd;
 
 	return match;
+}
+
+/* Internal (service) functions: */
+
+struct po_map*
+po_map_enlarge(struct po_map *map)
+{
+	struct po_dir *enlarged;
+
+	enlarged = calloc(sizeof(struct po_dir), 2 * map->capacity);
+	if (enlarged == NULL) {
+		return (NULL);
+	}
+
+	memcpy(enlarged, map->entries, map->length * sizeof(*enlarged));
+	free(map->entries);
+
+	map->entries = enlarged;
+	map->capacity = 2 * map->capacity;
+
+	return map;
+}
+
+bool
+po_isprefix(const char *dir, size_t dirlen, const char *path)
+{
+	size_t i;
+
+	assert(dir != NULL);
+	assert(path != NULL);
+
+	for (i = 0; i < dirlen; i++)
+	{
+		if (path[i] != dir[i])
+			return false;
+	}
+
+	return path[i] == '/' || path[i] == '\0';
 }

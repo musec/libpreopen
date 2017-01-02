@@ -38,7 +38,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "libpo.h"
+#include "libpreopen.h"
 
 int access(const char *pathname,int mode)
 {

@@ -1,7 +1,7 @@
-# capwrap
+# libpreopen
 
-This is a library for wrapping `libc` functions that require ambient authority
-and replacing them with capability-safe variants.
+`libpreopen` supports compartmentalized applications by storing pre-opened
+directory descriptors and using them in capability-safe `libc` wrappers.
 
 Many `libc` functions require *ambient authority*:
 the ability to access global namespaces.
@@ -17,6 +17,3 @@ common C functions such as `access(2)`, `open(2)`, `stat(2)`, etc.
 Adapting applications to play nicely within a sandbox can require a significant
 amount of manual adaptation from `open(2)` to `openat(2)` or even, in the worst
 case, to complex IPC primitives.
-
-`libcapwrap` is designed to ease the task of compartmentalization by allowing
-some simple applications to be executed, unmodified, in a sandbox.

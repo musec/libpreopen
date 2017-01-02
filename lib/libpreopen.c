@@ -39,7 +39,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "libpo.h"
+#include "libpreopen.h"
 #include "internal.h"
 
 

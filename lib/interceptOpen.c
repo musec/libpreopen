@@ -30,7 +30,7 @@
 
 #include <fcntl.h>
 
-#include "libpo.h"
+#include "libpreopen.h"
 
 int open(const char *path, int mode, ...)
 {

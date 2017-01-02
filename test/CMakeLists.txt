@@ -29,4 +29,4 @@ add_custom_target(check
 	COMMENT "Running unit tests"
 )
 
-add_dependencies(check po)
+add_dependencies(check preopen)

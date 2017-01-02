@@ -59,15 +59,15 @@ int main(int argc, char *argv[])
 	printf("Opening foo/bar/hi.txt...\n");
 	int fd = open("foo/bar/hi.txt", O_RDONLY);
 
-	// CHECK: Got FD: 4
-	printf("Got FD: %d\n", fd);
+	// CHECK-NOT: hi.txt: -1
+	printf("hi.txt: %d\n", fd);
 
 	// CHECK: Opening baz/wibble/bye.txt...
 	printf("Opening baz/wibble/bye.txt...\n");
 	fd = open("baz/wibble/bye.txt", O_RDONLY);
 
-	// CHECK: Got FD: 5
-	printf("Got FD: %d\n", fd);
+	// CHECK-NOT: bye.txt: -1
+	printf("bye.txt: %d\n", fd);
 
 	return 0;
 }

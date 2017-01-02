@@ -29,7 +29,6 @@
  */
 
 #include <sys/param.h>
-#include <sys/stat.h>
 
 #include <assert.h>
 #include <errno.h>
@@ -137,14 +136,9 @@ po_add(struct po_map *map, const char *path, int fd)
 int
 po_preopen(struct po_map *map, const char *path)
 {
-	struct stat statbuf;
 	int fd;
 
-	if((stat(path, &statbuf) != 0) || !S_ISDIR (statbuf.st_mode)) {
-		return (-1);
-	}
-
-	fd = open(path, O_RDONLY);
+	fd = open(path, O_DIRECTORY);
 	if (fd == -1) {
 		return (-1);
 	}

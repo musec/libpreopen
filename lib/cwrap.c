@@ -166,7 +166,8 @@ po_map_enlarge(struct po_map *map)
 	return map;
 }
 
-bool po_isprefix(const char *dir, size_t dirlen, const char *path)
+bool
+po_isprefix(const char *dir, size_t dirlen, const char *path)
 {
 	size_t i;
 

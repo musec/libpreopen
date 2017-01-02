@@ -42,9 +42,6 @@ struct po_dir{
 
 	/** The directory's descriptor */
 	int dirfd;
-
-	/** Flags (if any) that the directory was opened with. */ int flags;
-
 };
 
 /* Contains array of  opened_dir_struct
@@ -65,11 +62,6 @@ struct po_map{
  * map will remain valid.
  */
 struct po_map* increaseMapCapacity();
-
-/**
- * Add an already-opened path to a @ref po_map.
- */
-struct po_map* add_Opened_dirpath_map(struct po_map *, struct po_dir);
 
 /** Is this path a directory? */
 bool po_isdir(char *path);

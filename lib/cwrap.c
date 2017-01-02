@@ -99,6 +99,18 @@ po_map_set(struct po_map *map)
 	global_map = map;
 }
 
+struct po_map*
+po_add(struct po_map *map, const char *path, int fd)
+{
+	struct po_dir *d = map->opened_files + map->length;
+	map->length++;
+
+	d->dirname = path;
+	d->dirfd = fd;
+
+	return (map);
+}
+
 //split file from path
 char* split_path_file(char *relative_path,int length) {
 	const char slash='/';
@@ -167,12 +179,6 @@ struct po_dir * open_directory(char* file_path,struct po_dir *dos){
 
 }
 
-//add an opened path the pointer to opened_dir_struct field of the Map struct
-struct po_map* add_Opened_dirpath_map(struct po_map *map, struct po_dir ods){
-	map->opened_files[map->length]=ods;
-	map->length++;
-	return map;
-}
 //Opens a file path
 struct po_map* po_preopen(struct po_map *map, char* file,int mode){
 	int k;
@@ -188,7 +194,7 @@ struct po_map* po_preopen(struct po_map *map, char* file,int mode){
 
 
 	odsp=open_directory( file,&ods);
-	map=add_Opened_dirpath_map(map, *odsp);
+	map = po_add(map, ods.dirname, ods.dirfd);
 	return map;
 }
 

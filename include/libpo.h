@@ -78,6 +78,16 @@ struct po_map* po_map_get();
  */
 void po_map_set(struct po_map*);
 
+/**
+ * Add an already-opened directory to a @ref po_map.
+ *
+ * @param   map     the map to add the path->fd mapping to
+ * @param   path    the path that will map to this directory
+ *                  (which may or may not be the path used to open it)
+ * @param   fd      the directory descriptor (must be a directory!)
+ */
+struct po_map* po_add(struct po_map *map, const char *path, int fd);
+
 //Opens a file path
 struct po_map* po_preopen(struct po_map*, char* file,int mode);
 struct po_relpath po_find(struct po_map *map, const char *path);

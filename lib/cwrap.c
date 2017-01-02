@@ -47,16 +47,26 @@
 
 static struct po_map *global_map;
 
-struct po_map *po_map_create(int capacity){
+struct po_map*
+po_map_create(int capacity)
+{
+	struct po_map *map;
 	
-	struct po_map *map=(struct po_map*)malloc(sizeof(struct po_map));
+	map = malloc(sizeof(struct po_map));
+	if (map == NULL) {
+		return (NULL);
+	}
 
-	map->opened_files=(struct po_dir*)malloc(capacity*sizeof(struct po_dir));
-	assert(map->opened_files!=NULL);
-	map->capacity=capacity;
-	map->length=0;
-	return map;
+	map->opened_files = calloc(sizeof(struct po_dir), capacity);
+	if (map->opened_files == NULL) {
+		free(map);
+		return (NULL);
+	}
 
+	map->capacity = capacity;
+	map->length = 0;
+
+	return (map);
 }
 
 struct po_map* getMap(){

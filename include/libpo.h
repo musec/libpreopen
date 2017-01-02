@@ -52,9 +52,13 @@ struct po_relpath {
 };
 
 
+/**
+ * Create a @ref po_map of at least the specified capacity.
+ */
+struct po_map* po_map_create(int capacity);
+
 //Opens a file path
 struct po_map* po_preopen(struct po_map*, char* file,int mode);
-struct po_map* po_map_create(int );
 struct po_relpath po_find(struct po_map *map, const char *path);
 // returns pointer to the Map structure
 struct po_map* getMap();

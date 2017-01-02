@@ -72,9 +72,6 @@ struct po_map{
  */
 struct po_map* increaseMapCapacity();
 
-/** Is this path a directory? */
-bool po_isdir(const char *path);
-
 /**
  * Is a directory a prefix of a given path?
  *

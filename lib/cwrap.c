@@ -119,9 +119,10 @@ po_add(struct po_map *map, const char *path, int fd)
 int
 po_preopen(struct po_map *map, const char *path)
 {
+	struct stat statbuf;
 	int fd;
 
-	if (!po_isdir(path)) {
+	if((stat(path, &statbuf) != 0) || !S_ISDIR (statbuf.st_mode)) {
 		return (-1);
 	}
 
@@ -152,18 +153,6 @@ struct po_map* increaseMapCapacity(struct po_map *map) {
 		map->opened_files=new_opened_files;
 		return map;
 
-}
-
-bool
-po_isdir(const char *path)
-{
-	struct stat statbuf;
-
-	if(stat(path,&statbuf)!=0){
-		return 0;
-	}
-			
-	return (S_ISDIR (statbuf.st_mode));
 }
 
 bool po_isprefix(const char *dir, size_t dirlen, const char *path)

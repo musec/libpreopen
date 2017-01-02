@@ -40,17 +40,22 @@
 struct po_map;
 
 
-//Holds dirfd of a matched path  and path relative to that dirfd
-struct po_matched_path{
-	const char *relative_path;
+/**
+ * A filesystem path, relative to a directory descriptor.
+ */
+struct po_relpath {
+	/** The directory the path is relative to */
 	int dirfd;
+
+	/** The path, relative to the directory represented by @ref dirfd */
+	const char *relative_path;
 };
 
 
 //Opens a file path
 struct po_map* po_preopen(struct po_map*, char* file,int mode);
 struct po_map* po_map_create(int );
-struct po_matched_path po_find(struct po_map *map, const char *path);
+struct po_relpath po_find(struct po_map *map, const char *path);
 // returns pointer to the Map structure
 struct po_map* getMap();
 char* split_path_file(char *relative_path,int length);
@@ -59,6 +64,6 @@ char* split_path_file(char *relative_path,int length);
  * Uses other function to return the matched path if any or opened the pathed to be matched 
 */
 
-struct po_matched_path compareMatched(struct po_map* map,int num,char* character,int mode);
+struct po_relpath compareMatched(struct po_map* map,int num,char* character,int mode);
 
 #endif /* !LIBPO_H */

@@ -173,8 +173,8 @@ bool po_isprefix(const char *dir, size_t dirlen, const char *path)
 	return path[i] == '/' || path[i] == '\0';
 }
 
-struct po_matched_path po_find(struct po_map* map, const char *path){
-	struct po_matched_path match;
+struct po_relpath po_find(struct po_map* map, const char *path){
+	struct po_relpath match;
 	size_t bestlen = 0;
 	int best = -1;
 

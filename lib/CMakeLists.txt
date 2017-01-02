@@ -3,7 +3,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES FreeBSD)
 endif ()
 
 add_library(preopen SHARED
-	libpreopen.c 
-	interceptAccess.c 
+	libpreopen.c
+	interceptAccess.c
 	interceptOpen.c
 )

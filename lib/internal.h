@@ -85,9 +85,4 @@ bool po_isdir(const char *path);
  */
 bool po_isprefix(const char *dir, size_t dirlen, const char *path);
 
-/**
- * Open a directory and store its details in a @ref po_dir structure.
- */
-struct po_dir* open_directory(const char *relative_path, struct po_dir *);
-
 #endif /* LIBPO_INTERNAL_H */

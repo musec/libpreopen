@@ -32,7 +32,6 @@
 #include <sys/stat.h>
 
 #include <assert.h>
-#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -117,6 +116,27 @@ po_add(struct po_map *map, const char *path, int fd)
 	return (map);
 }
 
+int
+po_preopen(struct po_map *map, const char *path)
+{
+	int fd;
+
+	if (!po_isdir(path)) {
+		return (-1);
+	}
+
+	fd = open(path, O_RDONLY);
+	if (fd == -1) {
+		return (-1);
+	}
+
+	if (po_add(map, path, fd) == NULL) {
+		return (-1);
+	}
+
+	return (fd);
+}
+
 //split file from path
 char* split_path_file(const char *relative_path,int length) {
 	const char slash='/';
@@ -154,56 +174,6 @@ po_isdir(const char *path)
 			
 	return (S_ISDIR (statbuf.st_mode));
 }
-/* Opens a directory and store both the directoryfd and
-   the directory path in a structure
-*/
-
-struct po_dir * open_directory(const char* file_path,struct po_dir *dos){
-	int dir_fd,k; const char * dirname;
-	DIR *dir;
-	k=po_isdir(file_path);
-
-	if(k==0){
-		return NULL;
-	}
-	else{
-		dirname=file_path;
-	}
-	dir=opendir(dirname);
-
-	if(dir !=NULL){
-		dir_fd=dirfd(dir);
-		dos->dirfd=dir_fd;
-		dos->dirname=dirname;
-
-	}
-	else{
-		return NULL;
-	}
-
-	return dos;
-
-}
-
-//Opens a file path
-struct po_map* po_preopen(struct po_map *map, char* file,int mode){
-	int k;
-	struct po_dir ods;
-	struct po_dir * odsp;
-	if(map->length!=0){
-		k=map->capacity-map->length;
-		if(k<2){
-				map=increaseMapCapacity(map);
-			}
-	}
-
-
-
-	odsp=open_directory( file,&ods);
-	map = po_add(map, ods.dirname, ods.dirfd);
-	return map;
-}
-
 
 bool po_isprefix(const char *dir, size_t dirlen, const char *path)
 {

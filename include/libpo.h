@@ -88,8 +88,15 @@ void po_map_set(struct po_map*);
  */
 struct po_map* po_add(struct po_map *map, const char *path, int fd);
 
-//Opens a file path
-struct po_map* po_preopen(struct po_map*, char* file,int mode);
+/**
+ * Pre-open a path and store it in a @ref po_map for later use.
+ *
+ * @returns the file descriptor of the opened directory or -1 if
+ *          @b path is not a directory or cannot be opened or if
+ *          the @ref po_map cannot store the directory (e.g., resizing fails)
+ */
+int po_preopen(struct po_map *, const char *path);
+
 struct po_relpath po_find(struct po_map *map, const char *path);
 char* split_path_file(const char *relative_path,int length);
 

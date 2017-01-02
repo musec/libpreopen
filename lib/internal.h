@@ -1,4 +1,5 @@
 /*-
+ * Copyright (c) 2016 Stanley Uche Godfrey
  * Copyright (c) 2016 Jonathan Anderson
  * All rights reserved.
  *
@@ -33,6 +34,47 @@
 #include <stdbool.h>
 
 /**
+ * A directory that has been pre-opened.
+ */
+struct po_dir{
+	/** The path that maps to this directory */
+	const char *dirname;
+
+	/** The directory's descriptor */
+	int dirfd;
+
+	/** Flags (if any) that the directory was opened with. */ int flags;
+
+};
+
+/* Contains array of  opened_dir_struct
+*The capacity of the array
+*The number of elements currently in the array
+*/
+struct po_map{
+	struct po_dir * opened_files;
+	size_t capacity;//The size of the Map pointer
+	size_t length;// Number of elements in the Map pointer
+};
+
+/**
+ * Enlarge a @ref po_map's capacity.
+ *
+ * This results in new memory being allocated and existing entries being copied.
+ * If the allocation fails, the function will return NULL but the original
+ * map will remain valid.
+ */
+struct po_map* increaseMapCapacity();
+
+/**
+ * Add an already-opened path to a @ref po_map.
+ */
+struct po_map* add_Opened_dirpath_map(struct po_map *, struct po_dir);
+
+/** Is this path a directory? */
+int po_isdir(char *path);
+
+/**
  * Is a directory a prefix of a given path?
  *
  * @param   dir     a directory path, e.g., `/foo/bar`
@@ -41,5 +83,10 @@
  *                  e.g., `/foo/bar/baz`
  */
 bool po_isprefix(const char *dir, size_t dirlen, const char *path);
+
+/**
+ * Open a directory and store its details in a @ref po_dir structure.
+ */
+struct po_dir* open_directory(char *relative_path, struct po_dir *);
 
 #endif /* LIBPO_INTERNAL_H */

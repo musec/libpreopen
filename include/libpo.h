@@ -112,6 +112,10 @@ int po_preopen(struct po_map *, const char *path);
  * @param   rights  if non-NULL on a platform with Capsicum support,
  *                  the rights any directory descriptor must have to
  *                  qualify as a match
+ *
+ * @returns a @ref po_relpath containing the descriptor of the best-match
+ *          directory in the map (or -1 if none was found) and the remaining
+ *          path, relative to the file (or undefined if no match found)
  */
 struct po_relpath po_find(struct po_map *map, const char *path,
 	cap_rights_t *rights);

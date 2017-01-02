@@ -7,3 +7,5 @@ add_library(preopen SHARED
 	interceptAccess.c
 	interceptOpen.c
 )
+
+install(TARGETS preopen DESTINATION lib)

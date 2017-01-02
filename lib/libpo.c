@@ -172,7 +172,7 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 		}
 #endif
 
-		best = i;
+		best = d->dirfd;
 		bestlen = len;
 	}
 
@@ -182,7 +182,7 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 	}
 
 	match.relative_path = relpath;
-	match.dirfd = map->entries[best].dirfd;
+	match.dirfd = best;
 
 	return match;
 }

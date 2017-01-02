@@ -1,4 +1,3 @@
-
 /*-
  * Copyright (c) 2016 Stanley Uche Godfrey
  * Copyright (c) 2016 Jonathan Anderson

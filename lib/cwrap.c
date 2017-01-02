@@ -125,7 +125,9 @@ struct po_map* increaseMapCapacity(struct po_map *map) {
 
 }
 
-int po_isdir(char *path){
+bool
+po_isdir(char *path)
+{
 	struct stat statbuf;
 
 	if(stat(path,&statbuf)!=0){

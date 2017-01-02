@@ -72,7 +72,7 @@ struct po_map* increaseMapCapacity();
 struct po_map* add_Opened_dirpath_map(struct po_map *, struct po_dir);
 
 /** Is this path a directory? */
-int po_isdir(char *path);
+bool po_isdir(char *path);
 
 /**
  * Is a directory a prefix of a given path?

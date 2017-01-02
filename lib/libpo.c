@@ -138,7 +138,7 @@ po_preopen(struct po_map *map, const char *path)
 {
 	int fd;
 
-	fd = open(path, O_DIRECTORY);
+	fd = openat(AT_FDCWD, path, O_DIRECTORY);
 	if (fd == -1) {
 		return (-1);
 	}

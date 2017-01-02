@@ -31,6 +31,10 @@
 #ifndef LIBPO_INTERNAL_H
 #define LIBPO_INTERNAL_H
 
+#ifdef WITH_CAPSICUM
+#include <sys/capsicum.h>
+#endif
+
 #include <stdbool.h>
 
 /**
@@ -42,6 +46,11 @@ struct po_dir{
 
 	/** The directory's descriptor */
 	int dirfd;
+
+#ifdef WITH_CAPSICUM
+	/** Capability rights associated with the directory. */
+	cap_rights_t rights;
+#endif
 };
 
 /* Contains array of  opened_dir_struct

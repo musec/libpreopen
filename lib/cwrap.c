@@ -108,6 +108,12 @@ po_add(struct po_map *map, const char *path, int fd)
 	d->dirname = path;
 	d->dirfd = fd;
 
+#ifdef WITH_CAPSICUM
+	if (cap_rights_get(fd, &d->rights) != 0) {
+		return (NULL);
+	}
+#endif
+
 	return (map);
 }
 

@@ -46,6 +46,15 @@
 
 static struct po_map *global_map;
 
+/**
+ * Enlarge a @ref po_map's capacity.
+ *
+ * This results in new memory being allocated and existing entries being copied.
+ * If the allocation fails, the function will return NULL but the original
+ * map will remain valid.
+ */
+static struct po_map* po_map_enlarge(struct po_map *map);
+
 struct po_map*
 po_map_create(int capacity)
 {
@@ -104,7 +113,7 @@ po_add(struct po_map *map, const char *path, int fd)
 	struct po_dir *d;
 
 	if (map->length == map->capacity) {
-		map = po_map_enlarge();
+		map = po_map_enlarge(map);
 		if (map == NULL) {
 			return (NULL);
 		}

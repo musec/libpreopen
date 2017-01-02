@@ -61,15 +61,6 @@ struct po_map {
 };
 
 /**
- * Enlarge a @ref po_map's capacity.
- *
- * This results in new memory being allocated and existing entries being copied.
- * If the allocation fails, the function will return NULL but the original
- * map will remain valid.
- */
-struct po_map* po_map_enlarge();
-
-/**
  * Is a directory a prefix of a given path?
  *
  * @param   dir     a directory path, e.g., `/foo/bar`

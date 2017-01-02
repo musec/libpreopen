@@ -67,7 +67,7 @@ struct po_map {
  * If the allocation fails, the function will return NULL but the original
  * map will remain valid.
  */
-struct po_map* increaseMapCapacity();
+struct po_map* po_map_enlarge();
 
 /**
  * Is a directory a prefix of a given path?

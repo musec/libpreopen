@@ -101,7 +101,16 @@ po_map_set(struct po_map *map)
 struct po_map*
 po_add(struct po_map *map, const char *path, int fd)
 {
-	struct po_dir *d = map->entries + map->length;
+	struct po_dir *d;
+
+	if (map->length == map->capacity) {
+		map = po_map_enlarge();
+		if (map == NULL) {
+			return (NULL);
+		}
+	}
+	
+	d = map->entries + map->length;
 	map->length++;
 
 	d->dirname = path;
@@ -138,21 +147,23 @@ po_preopen(struct po_map *map, const char *path)
 	return (fd);
 }
 
-// increases the capacity of map by allocating more memory
-struct po_map* increaseMapCapacity(struct po_map *map) {
-	int i;struct po_dir *new_entries;
-	new_entries=(struct po_dir*)malloc((2*map->capacity)*sizeof(struct po_dir));
-	assert(new_entries!=NULL);
-	map->capacity=2*map->capacity;
+struct po_map*
+po_map_enlarge(struct po_map *map)
+{
+	struct po_dir *enlarged;
 
-		for(i=0;i<map->length;i++){
-			new_entries[i]=map->entries[i];
+	enlarged = calloc(sizeof(struct po_dir), 2 * map->capacity);
+	if (enlarged == NULL) {
+		return (NULL);
+	}
 
-		}
-		free(map->entries);
-		map->entries=new_entries;
-		return map;
+	memcpy(enlarged, map->entries, map->length * sizeof(*enlarged));
+	free(map->entries);
 
+	map->entries = enlarged;
+	map->capacity = 2 * map->capacity;
+
+	return map;
 }
 
 bool po_isprefix(const char *dir, size_t dirlen, const char *path)

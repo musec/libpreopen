@@ -73,7 +73,7 @@ struct po_map{
 struct po_map* increaseMapCapacity();
 
 /** Is this path a directory? */
-bool po_isdir(char *path);
+bool po_isdir(const char *path);
 
 /**
  * Is a directory a prefix of a given path?
@@ -88,6 +88,6 @@ bool po_isprefix(const char *dir, size_t dirlen, const char *path);
 /**
  * Open a directory and store its details in a @ref po_dir structure.
  */
-struct po_dir* open_directory(char *relative_path, struct po_dir *);
+struct po_dir* open_directory(const char *relative_path, struct po_dir *);
 
 #endif /* LIBPO_INTERNAL_H */

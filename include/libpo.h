@@ -91,7 +91,7 @@ struct po_map* po_add(struct po_map *map, const char *path, int fd);
 //Opens a file path
 struct po_map* po_preopen(struct po_map*, char* file,int mode);
 struct po_relpath po_find(struct po_map *map, const char *path);
-char* split_path_file(char *relative_path,int length);
+char* split_path_file(const char *relative_path,int length);
 
 /*
  * Uses other function to return the matched path if any or opened the pathed to be matched 

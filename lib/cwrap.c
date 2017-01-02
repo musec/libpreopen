@@ -118,7 +118,7 @@ po_add(struct po_map *map, const char *path, int fd)
 }
 
 //split file from path
-char* split_path_file(char *relative_path,int length) {
+char* split_path_file(const char *relative_path,int length) {
 	const char slash='/';
    	char *filename;
 	char *dirName;
@@ -144,7 +144,7 @@ struct po_map* increaseMapCapacity(struct po_map *map) {
 }
 
 bool
-po_isdir(char *path)
+po_isdir(const char *path)
 {
 	struct stat statbuf;
 
@@ -158,8 +158,8 @@ po_isdir(char *path)
    the directory path in a structure
 */
 
-struct po_dir * open_directory(char* file_path,struct po_dir *dos){
-	int dir_fd,k; char * dirname;
+struct po_dir * open_directory(const char* file_path,struct po_dir *dos){
+	int dir_fd,k; const char * dirname;
 	DIR *dir;
 	k=po_isdir(file_path);
 

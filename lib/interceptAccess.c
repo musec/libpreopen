@@ -32,7 +32,6 @@
 #include <sys/stat.h>
 
 #include <dirent.h>
-#include <dlfcn.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -41,11 +40,7 @@
 
 #include "libpo.h"
 
-int (*real_faccessat)(int fd1,const char* pathname1,int mode,int flag);
-int access(const char *pathname,int mode){
-	real_faccessat=dlsym(RTLD_NEXT,"faccessat");
-	return real_faccessat(AT_FDCWD,pathname,mode, AT_EACCESS);
-
+int access(const char *pathname,int mode)
+{
+	return faccessat(AT_FDCWD,pathname,mode, AT_EACCESS);
 }
-
-

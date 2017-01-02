@@ -30,7 +30,7 @@
 
 #include <sys/stat.h>
 
-#include <dlfcn.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -38,13 +38,12 @@
 #include "libpo.h"
 
 
-int (*real_openat)(int fd1,const char* pathname1, int flags1)=NULL;
-int open(const char *pathname,int mode){
+int open(const char *pathname, int mode, ...)
+{
 	struct po_map *map=getMap();
 
 	struct po_relpath matchedPath = po_find(map, pathname);
-	real_openat=dlsym(RTLD_NEXT,"openat");
-	return real_openat(matchedPath.dirfd,matchedPath.relative_path,mode);
+	return openat(matchedPath.dirfd,matchedPath.relative_path,mode);
 
 }
 

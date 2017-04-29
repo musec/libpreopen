@@ -29,7 +29,6 @@
  */
 
 #include <sys/param.h>
-
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -38,7 +37,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
+#include <sys/mman.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "libpreopen.h"
 #include "internal.h"
 
@@ -187,6 +189,94 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 	return match;
 }
 
+void 
+po_errormessage(const char *msg){
+	perror(msg);
+  	exit(EXIT_FAILURE);
+}
+int po_create_shmdata(struct po_map* map){
+	int fd,i,r,trailer_len=0,offset=0;
+	char* trailerstring;
+	struct po_shmstruct* data_array=NULL;
+	for(i=0;i<map->length;i++){
+		trailer_len+=strlen(map->entries[i].dirname);
+		
+	}
+	const size_t shardmemory_blocksize=sizeof(struct po_shmstruct)+(map->length)*sizeof(struct po_offset)+(trailer_len)*sizeof(char);
+	
+  	fd = shm_open(SHM_ANON, O_CREAT |O_RDWR, 0666);
+	if (fd == -1){
+		po_errormessage("shm_open");
+	}
+	r = ftruncate(fd,shardmemory_blocksize);
+	void *ptr = mmap(0,shardmemory_blocksize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+  	if (ptr == MAP_FAILED)
+    		po_errormessage("shm_open");
+  	else{
+		data_array=(struct po_shmstruct*)ptr;
+ 	}
+	data_array->data=(struct po_offset*)data_array+sizeof(struct po_shmstruct);//(map->length)*sizeof(struct po_offset)+(trailer_len)*sizeof(char);
+	trailerstring =(char*)data_array->data+(map->length)*sizeof(struct po_offset);
+	assert(trailerstring !=NULL);
+	for(i=0;i<map->length;i++){
+		strcat(trailerstring,map->entries[i].dirname);
+	}
+	data_array->count=map->length;
+	data_array->trailer_len=trailer_len;
+	data_array->capacity=map->capacity;
+	for(i=0;i<map->length;i++){
+		data_array->data[i].offset=offset;
+		data_array->data[i].len=strlen(map->entries[i].dirname);
+		data_array->data[i].fd=map->entries[i].dirfd;
+		offset+=data_array->data[i].len;	
+	}
+	return fd;
+}
+struct po_map* po_reverse_create_shmdata(int fd){
+	struct po_map *map;
+	struct stat fdStat;
+	struct po_shmstruct* data_array=NULL;
+	char *trailerstring, *tempstr;
+	int i;
+	 if(fstat(fd,&fdStat) < 0){
+		po_errormessage("fdStat");
+	}    
+       	void *ptr = mmap(0,fdStat.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	if (ptr == MAP_FAILED)
+    		po_errormessage("mmap");
+  	else{
+		data_array=(struct po_shmstruct*)ptr;
+ 	}
+	data_array->data=(struct po_offset*)data_array+sizeof(struct po_shmstruct);
+	trailerstring =(char*)data_array->data+data_array->count*sizeof(struct po_offset);
+	assert(data_array->data !=NULL);
+	assert(trailerstring !=NULL);
+	map = malloc(sizeof(struct po_map));
+	if (map == NULL) {
+		return (NULL);
+	}
+
+	map->entries = calloc(sizeof(struct po_dir),data_array->count);
+	if (map->entries == NULL) {
+		free(map);
+		return (NULL);
+	}
+
+	map->capacity = data_array->capacity;
+	map->length =data_array->count;
+	for(i=0;i<map->length;i++){
+		map->entries[i].dirfd=data_array->data[i].fd;
+		tempstr=trailerstring+data_array->data[i].offset;
+		map->entries[i].dirname=strndup(tempstr,data_array->data[i].len);
+	}
+	return map;	
+}
+int get_map_length(struct po_map* map){
+	return (int)map->length;
+}
+char *  get_map_dirname(struct po_map *map,int k){
+	return (char*)map->entries[k].dirname;
+}
 /* Internal (service) functions: */
 
 struct po_map*
@@ -224,3 +314,4 @@ po_isprefix(const char *dir, size_t dirlen, const char *path)
 
 	return path[i] == '/' || path[i] == '\0';
 }
+

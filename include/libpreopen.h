@@ -1,3 +1,4 @@
+
 /*-
  * Copyright (c) 2016 Stanley Uche Godfrey
  * Copyright (c) 2016 Jonathan Anderson
@@ -56,7 +57,26 @@ struct po_relpath {
 	/** The path, relative to the directory represented by @ref dirfd */
 	const char *relative_path;
 };
-
+/**
+*The structure holds the offset and the length of a string element
+*of the trailer string pointer
+*/
+struct po_offset{
+	int offset;//offset of the string element in trailer string  
+	int len;// length of the string element  in the trailer string
+	int fd;// the directory the path is relative to
+};
+/**
+*The structure holds counter to the trailer string,
+*The length of total trailer string,
+*An po_offset type with a pointer to the trailer string
+*/
+struct po_shmstruct{
+	int count;//counter to the relative paths in trailer string  
+	int trailer_len;// length of the  trailer string
+	int capacity; // the capacity of  *data
+	struct po_offset *data; //pointer to po_offset struct and a reserved memory for the trailer string
+};
 
 /**
  * Create a @ref po_map of at least the specified capacity.
@@ -73,7 +93,7 @@ void po_map_free(struct po_map *);
  *
  * This can fail if there is no existing map and memory allocation fails.
  */
-struct po_map* po_map_get();
+struct po_map* po_map_get(void);
 
 /**
  * Set the default map, taking ownership of its memory allocation(s).
@@ -119,5 +139,32 @@ int po_preopen(struct po_map *, const char *path);
  */
 struct po_relpath po_find(struct po_map *map, const char *path,
 	cap_rights_t *rights);
-
+/**
+*Prints and error message when an error occurs
+*@param  msg the error message to be printed alongside system error message
+*/
+void po_errormessage(const char *msg);
+/**
+*creates a shared memory block which points to po_shmstruct 
+*returns a fd of the shared memory created.
+*@param map  the map to map into the shared memory block
+*/
+int po_create_shmdata(struct po_map *map);
+/**
+*create a po_map* from the fd returned by the po_create_shmdata function
+*by accessing the shared memory block created by po_create_shmdata function
+*@param fd     the file descriptor returned by po_create_shmdata function
+*/
+struct po_map* po_reverse_create_shmdata(int fd);
+/**
+*Returns the number of elements in the pointer to the map struct
+*@param map the map struct pointer which its lenght will be returned
+*/
+int  get_map_length(struct po_map *map);
+/**
+*Returns the directory name at index  in the pointer to the map struct
+*@param map the map struct pointer which contains the directory name to be returned
+*@param k   index at which to look for the directory name to be returned
+*/
+char *  get_map_dirname(struct po_map *map,int k);
 #endif /* !LIBPO_H */

@@ -40,7 +40,11 @@
 
 #include "libpreopen.h"
 
-int access(const char *pathname,int mode)
+int access(const char *path, int mode)
 {
-	return faccessat(AT_FDCWD,pathname,mode, AT_EACCESS);
+	struct po_map *map = po_map_get();
+
+	struct po_relpath rel = po_find(map, path, NULL);
+
+	return faccessat(rel.dirfd, rel.relative_path, mode,AT_EACCESS );
 }

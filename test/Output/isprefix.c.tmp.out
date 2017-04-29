@@ -1,0 +1,7 @@
+'/foo' IS a prefix of '/foo'
+'/foo' IS a prefix of '/foo/'
+'/foo' IS a prefix of '/foo/bar'
+'/foo' IS a prefix of '/foo/bar/baz/wibble'
+'/foo' IS NOT a prefix of 'foo'
+'/foo' IS NOT a prefix of '/bar'
+'/foo' IS NOT a prefix of '/foobar'

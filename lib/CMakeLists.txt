@@ -4,8 +4,9 @@ endif ()
 
 add_library(preopen SHARED
 	libpreopen.c
-	interceptAccess.c
-	interceptOpen.c
+	interceptaccess.c
+	interceptopen.c
+	interceptstat.c
 )
 
 install(TARGETS preopen DESTINATION lib)

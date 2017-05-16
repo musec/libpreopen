@@ -73,7 +73,7 @@ void po_map_free(struct po_map *);
  *
  * This can fail if there is no existing map and memory allocation fails.
  */
-struct po_map* po_map_get();
+struct po_map* po_map_get(void);
 
 /**
  * Set the default map, taking ownership of its memory allocation(s).

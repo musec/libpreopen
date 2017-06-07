@@ -215,7 +215,7 @@ int po_create_shmdata(struct po_map* map){
   	else{
 		data_array=(struct po_shmstruct*)ptr;
  	}
-	data_array->data=(struct po_offset*)data_array+sizeof(struct po_shmstruct);//(map->length)*sizeof(struct po_offset)+(trailer_len)*sizeof(char);
+	data_array->data=(struct po_offset*)data_array+sizeof(struct po_shmstruct);
 	trailerstring =(char*)data_array->data+(map->length)*sizeof(struct po_offset);
 	assert(trailerstring !=NULL);
 	for(i=0;i<map->length;i++){
@@ -276,6 +276,9 @@ int get_map_length(struct po_map* map){
 }
 char *  get_map_dirname(struct po_map *map,int k){
 	return (char*)map->entries[k].dirname;
+}
+int po_map_get_fd_at(struct po_map *map,int k){
+	return map->entries[k].dirfd;
 }
 /* Internal (service) functions: */
 

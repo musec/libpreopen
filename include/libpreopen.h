@@ -162,9 +162,15 @@ struct po_map* po_reverse_create_shmdata(int fd);
 */
 int  get_map_length(struct po_map *map);
 /**
-*Returns the directory name at index  in the pointer to the map struct
+*Returns the directory name at an index  in the pointer to the map struct
 *@param map the map struct pointer which contains the directory name to be returned
 *@param k   index at which to look for the directory name to be returned
 */
 char *  get_map_dirname(struct po_map *map,int k);
+/**
+*Returns the directoy fd at an index  in the pointer to the map struct
+*@param map the map struct pointer which contains the directory name to be returned
+*@param k   index at which to look for the directory name to be returned
+*/
+int po_map_get_fd_at(struct po_map *map,int k);
 #endif /* !LIBPO_H */

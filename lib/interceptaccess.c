@@ -37,14 +37,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/mman.h>
 
 #include "libpreopen.h"
 
 int access(const char *path, int mode)
 {
+		
 	struct po_map *map = po_map_get();
 
 	struct po_relpath rel = po_find(map, path, NULL);
+
 
 	return faccessat(rel.dirfd, rel.relative_path, mode,AT_EACCESS );
 }

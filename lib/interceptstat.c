@@ -31,13 +31,12 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
- 
+#include<stdio.h>
 #include "libpreopen.h"
 
 int stat(const char *path, struct stat *st)
 {
 	struct po_map *map = po_map_get();
-
 	struct po_relpath rel = po_find(map, path, NULL);
 	return fstatat(rel.dirfd, rel.relative_path,st,AT_SYMLINK_NOFOLLOW);
 }

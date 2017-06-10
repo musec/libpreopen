@@ -213,12 +213,14 @@ int po_pack(struct po_map *map){
   	fd = shm_open(SHM_ANON, O_CREAT |O_RDWR, 0666);
 	if (fd == -1){
 		po_errormessage("shm_open");
+		return (-1);
 	}
 	r = ftruncate(fd,shardmemory_blocksize);
 	void *ptr = mmap(0,shardmemory_blocksize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  	if (ptr == MAP_FAILED)
-    		po_errormessage("shm_open");
-  	else{
+	if (ptr == MAP_FAILED) {
+		po_errormessage("shm_open");
+		return (-1);
+	} else{
 		data_array=(struct po_packed_map*)ptr;
  	}
 	data_array->entries=(struct po_packed_entry*)data_array+sizeof(struct po_packed_map);
@@ -246,11 +248,13 @@ struct po_map* po_unpack(int fd){
 	int i;
 	 if(fstat(fd,&fdStat) < 0){
 		po_errormessage("fdStat");
+		return (NULL);
 	}    
        	void *ptr = mmap(0,fdStat.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-	if (ptr == MAP_FAILED)
+	if (ptr == MAP_FAILED) {
     		po_errormessage("mmap");
-  	else{
+		return (NULL);
+	} else{
 		data_array=(struct po_packed_map*)ptr;
  	}
 	data_array->entries=(struct po_packed_entry*)data_array+sizeof(struct po_packed_map);

@@ -2,11 +2,9 @@
  * Copyright (c) 2016 Stanley Uche Godfrey
  * Copyright (c) 2016 Jonathan Anderson
  * All rights reserved.
- *
- * This software was developed at Memorial University under the
+ *This software was developed at Memorial University under the
  * NSERC Discovery program (RGPIN-2015-06048).
- *
- * Redistribution and use in source and binary forms, with or without
+ *Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1. Redistributions of source code must retain the above copyright
@@ -14,8 +12,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ *THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
@@ -27,8 +24,6 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-
-
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -55,7 +50,6 @@ static struct po_map *global_map;
  * map will remain valid.
  */
 static struct po_map* po_map_enlarge(struct po_map *map);
-
 struct po_map*
 po_map_create(int capacity)
 {
@@ -194,8 +188,7 @@ po_errormessage(char *msg){
 
 	asprintf(&msg,"%s\n",strerror(errno));
 	
-  	
-}
+ }
 int po_create_shmdata(struct po_map *map){
 	int fd,i,r,trailer_len,offset;
 	char* trailerstring;
@@ -259,14 +252,11 @@ struct po_map* po_unpack_shm(int fd){
 	if (map == NULL) {
 		return (NULL);
 	}
-
 	map->entries = calloc(sizeof(struct po_dir),data_array->count);
 	if (map->entries == NULL) {
 		free(map);
 		return (NULL);
 	}
-
-	//map->capacity = data_array->capacity;
 	map->length =data_array->count;
 	for(i=0;i<map->length;i++){
 		map->entries[i].dirfd=data_array->data[i].fd;
@@ -278,7 +268,7 @@ struct po_map* po_unpack_shm(int fd){
 int po_map_length(struct po_map* map){
 	return (int)map->length;
 }
-char *  get_map_dirname(struct po_map *map,int k){
+char *  po_map_dirname(struct po_map *map,int k){
 	return (char*)map->entries[k].dirname;
 }
 int po_map_fd(struct po_map *map,int k){

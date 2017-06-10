@@ -1,12 +1,10 @@
 
-/*-
+/*
  * Copyright (c) 2016 Stanley Uche Godfrey
  * Copyright (c) 2016 Jonathan Anderson
  * All rights reserved.
- *
- * This software was developed at Memorial University under the
+ *This software was developed at Memorial University under the
  * NSERC Discovery program (RGPIN-2015-06048).
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -15,8 +13,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ *THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
@@ -45,15 +42,12 @@
  * a set (with no particular ordering guarantees) of path->dirfd mappings.
  */
 struct po_map;
-
-
 /**
  * A filesystem path, relative to a directory descriptor.
  */
 struct po_relpath {
 	/** The directory the path is relative to */
 	int dirfd;
-
 	/** The path, relative to the directory represented by @ref dirfd */
 	const char *relative_path;
 };
@@ -71,13 +65,11 @@ struct po_offset{
 *The length of total trailer string,
 *An po_offset type with a pointer to the trailer string
 */
-struct po_shmstruct{
+struct po_packed_map{
 	int count;//counter to the relative paths in trailer string  
 	int trailer_len;// length of the  trailer string
-	int capacity; // the capacity of  *data
 	struct po_offset *data; //pointer to po_offset struct and a reserved memory for the trailer string
 };
-
 /**
  * Create a @ref po_map of at least the specified capacity.
  */
@@ -87,18 +79,14 @@ struct po_map* po_map_create(int capacity);
  * Free a @ref po_map and all of its owned memory.
  */
 void po_map_free(struct po_map *);
-
 /**
  * Retrieve (and possibly create) the default map.
- *
  * This can fail if there is no existing map and memory allocation fails.
  */
 struct po_map* po_map_get(void);
-
 /**
  * Set the default map, taking ownership of its memory allocation(s).
- *
- * If there is an existing default map, it will be freed before it is replaced.
+ *If there is an existing default map, it will be freed before it is replaced.
  * It is permissible to pass in a NULL map in order to clear the current
  * default map.
  */
@@ -143,7 +131,7 @@ struct po_relpath po_find(struct po_map *map, const char *path,
 *Prints and error message when an error occurs
 *@param  msg the error message to be printed alongside system error message
 */
-void po_errormessage(const char *msg);
+void po_errormessage(char *msg);
 /**
 *creates a shared memory block which points to po_shmstruct 
 *returns a fd of the shared memory created.
@@ -155,22 +143,22 @@ int po_create_shmdata(struct po_map *map);
 *by accessing the shared memory block created by po_create_shmdata function
 *@param fd     the file descriptor returned by po_create_shmdata function
 */
-struct po_map* po_reverse_create_shmdata(int fd);
+struct po_map* po_unpack_shm(int fd);
 /**
 *Returns the number of elements in the pointer to the map struct
 *@param map the map struct pointer which its lenght will be returned
 */
-int  get_map_length(struct po_map *map);
+int  po_map_length(struct po_map *map);
 /**
 *Returns the directory name at an index  in the pointer to the map struct
 *@param map the map struct pointer which contains the directory name to be returned
 *@param k   index at which to look for the directory name to be returned
 */
-char *  get_map_dirname(struct po_map *map,int k);
+char *  po_map_dirname(struct po_map *map,int k);
 /**
 *Returns the directoy fd at an index  in the pointer to the map struct
 *@param map the map struct pointer which contains the directory name to be returned
 *@param k   index at which to look for the directory name to be returned
 */
-int po_map_get_fd_at(struct po_map *map,int k);
+int po_map_fd(struct po_map *map,int k);
 #endif /* !LIBPO_H */

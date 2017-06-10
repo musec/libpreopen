@@ -38,9 +38,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 #include "libpreopen.h"
-
 #define TEST_DIR(name) \
 	"/" TEST_DATA_DIR name
 

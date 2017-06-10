@@ -1,11 +1,9 @@
 
 /*
- * Copyright (c) 2016 Jonathan Anderson
- * All rights reserved.
- *
- * This software was developed at Memorial University under the
+ * Copyright (c) 2016 Stanley Uche Godfrey
+  All rights reserved.
+ *This software was developed at Memorial University under the
  * NSERC Discovery program (RGPIN-2015-06048).
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -14,8 +12,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ *THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
@@ -27,35 +24,23 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-/*
- * RUN: %cc -D PARENT %cflags -D LIBPRELOAD="\"%dir\"lib" -D TEST_DATA_DIR="\"%p/Inputs\"" %s %ldflags -o %t.parent
+
+/* RUN: %cc -D PARENT %cflags -D LIBPRELOAD="\"%dir\"lib" -D TEST_DATA_DIR="\"%p/Inputs\"" %s %ldflags -o %t.parent
  * RUN: %cc -D CHILD %cflags -D TEST_DATA_DIR="\"%p/Inputs\"" %s %ldflags -o %t.child
  * RUN: %t.parent %t.child > %t.out
  * RUN: %filecheck %s -input-file %t.out
  */
-
-#ifdef PARENT
-
-#include<stdio.h>
-#include<stdlib.h>
-#include<unistd.h>
 #include <assert.h>
-#include <unistd.h>
 #include <sys/capsicum.h>
-#include <sys/file.h>
 #include <sys/mman.h>
-#include <string.h>
-#include <fcntl.h>
-#include <sys/stat.h>
+#include<stdlib.h>
+#include<stdio.h>
 #include"libpreopen.h"
 
+#ifdef PARENT
 #define TEST_DIR(name) \
 	TEST_DATA_DIR name
-
-
 char **environ;
-
-
 int main(int arg, char *argv[]){
 	int k,i,j;
 	char buffer [20];
@@ -64,7 +49,7 @@ int main(int arg, char *argv[]){
 	po_add(map, "foo", foo);
 	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"));
 	assert(wibble != -1);
-	i=get_map_length( map);
+	i= po_map_length( map);
 	char env_data[j];
 	k=po_create_shmdata(map);
 	i=snprintf (buffer, sizeof(buffer),"%d",k);
@@ -80,37 +65,24 @@ int main(int arg, char *argv[]){
 }
 
 #else
-
-#include<stdio.h>
-#include<stdlib.h>
-#include<unistd.h>
-#include <assert.h>
-#include <unistd.h>
-#include <sys/capsicum.h>
-#include <sys/file.h>
-#include <sys/mman.h>
-#include <string.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include"libpreopen.h"
-
 #define TEST_DIR(name) \
 	TEST_DATA_DIR name
+
+#include <sys/stat.h>
 
 int main(int arg, char *args[]){
 	struct stat st; int i,j;
 	struct po_map *map;
 	char shm_string[20];
 	int shmfd;
-	shmfd=(int)atoi(getenv("LIB_PO_MAP"));
-	//printf("env value is %d\n",shmfd);
+	shmfd=atoi(getenv("LIB_PO_MAP"));
 	// CHECK: Opening foo/bar/hi.txt...
 	printf("Opening foo/bar/hi.txt...\n");
-	map=po_reverse_create_shmdata(shmfd);
+	map=po_unpack_shm(shmfd);
 	po_map_set(map);
 	printf("map dir fd before passing eviro variable\n");
-	for(i=0;i<get_map_length(map);i++){
-		printf("%d\n", po_map_get_fd_at(map,i));
+	for(i=0;i<po_map_length(map);i++){
+		printf("%d\n",po_map_fd(map,i));
 	}
 	cap_enter();
 	j=stat(TEST_DIR("/baz/wibble") "/bye.txt", &st);

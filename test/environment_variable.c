@@ -59,47 +59,27 @@ char **environ;
 int main(int arg, char *argv[]){
 	int k,i,j;
 	char buffer [20];
-  
- 
-	struct po_map *map = po_map_get();
-	
+  	struct po_map *map = po_map_get();
 	int foo = openat(AT_FDCWD, TEST_DIR("/foo"), O_RDONLY);
 	po_add(map, "foo", foo);
-
 	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"));
 	assert(wibble != -1);
-	
 	i=get_map_length( map);
 	char env_data[j];
 	k=po_create_shmdata(map);
-	
-	
-	 i=snprintf (buffer, sizeof(buffer),"%d",k);
+	i=snprintf (buffer, sizeof(buffer),"%d",k);
 	if(fcntl(k,  F_GETFD)!=0){
 		fcntl(k,F_SETFD,0);
 	}
 	printf("buffer %s\n", buffer);
-	
-	
 	setenv("LIB_PO_MAP",buffer,1);
-	
-	//setenv( "LD_PRELOAD", LIBPRELOAD, 1);
-	//putenv("LD_PRELOAD=/usr/home/sug670/Documents/libpreopen/build/lib/libpreopen.so");
 	execve(argv[1],argv+1,environ);
 	perror("execve");	
 
 	return 0;
-
-	
-	
-	
-	
-
 }
 
 #else
-
-
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -133,36 +113,25 @@ int main(int arg, char *args[]){
 		printf("%d\n", po_map_get_fd_at(map,i));
 	}
 	cap_enter();
-	
-	
-		j=stat(TEST_DIR("/baz/wibble") "/bye.txt", &st);
-
-		
-		if(j==0){
+	j=stat(TEST_DIR("/baz/wibble") "/bye.txt", &st);
+	if(j==0){
+		 printf("%4d\n", st.st_nlink);
+	}
+	else{
+		perror("stat");
 			
-   			 printf("%4d\n", st.st_nlink);
-
-		}
-		else{
-			perror("stat");
-			
-		}
-		j=stat("foo/bar/hi.txt", &st);
-		if(j==0){
-			
-   			 printf("%4d\n", st.st_nlink);
-
-		}
-		else{
-			perror("stat");
-			
-		}
+	}
+	j=stat("foo/bar/hi.txt", &st);
+	if(j==0){
+		printf("%4d\n", st.st_nlink);
+	}
+	else{
+		perror("stat");
+	}
 		
 
 	// CHECK: Opening baz/wibble/bye.txt...
 	printf("Opening baz/wibble/bye.txt...\n");
-	
-	
 	return 0;
 }
 

@@ -201,10 +201,20 @@ po_errormessage(const char *msg)
 	         msg, strerror(errno));
 }
 
-int po_pack(struct po_map *map){
-	int fd,i,r,trailer_len,offset;
+const char*
+po_last_error()
+{
+
+	return (error_buffer);
+}
+
+int
+po_pack(struct po_map *map)
+{
 	char* trailerstring;
-	struct po_packed_map* data_array=NULL;
+	struct po_packed_map* data_array;
+	int fd, i, r, trailer_len, offset;
+
 	trailer_len=0;
 	for(i=0;i<map->length;i++){
 		trailer_len+=strlen(map->entries[i].dirname);

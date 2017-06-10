@@ -53,25 +53,7 @@ struct po_relpath {
 	/** The path, relative to the directory represented by @ref dirfd */
 	const char *relative_path;
 };
-/**
-*The structure holds the offset and the length of a string element
-*of the trailer string pointer
-*/
-struct po_offset{
-	int offset;//offset of the string element in trailer string  
-	int len;// length of the string element  in the trailer string
-	int fd;// the directory the path is relative to
-};
-/**
-*The structure holds counter to the trailer string,
-*The length of total trailer string,
-*An po_offset type with a pointer to the trailer string
-*/
-struct po_packed_map{
-	int count;//counter to the relative paths in trailer string  
-	int trailer_len;// length of the  trailer string
-	struct po_offset *data; //pointer to po_offset struct and a reserved memory for the trailer string
-};
+
 /**
  * Create a @ref po_map of at least the specified capacity.
  */

@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 2016 Stanley Uche Godfrey
- * Copyright (c) 2016 Jonathan Anderson
+ * Copyright (c) 2016-2017 Stanley Uche Godfrey
+ * Copyright (c) 2016-2017 Jonathan Anderson
  * All rights reserved.
  *
  * This software was developed at Memorial University under the
@@ -58,6 +58,27 @@ struct po_map {
 	struct po_dir *entries;
 	size_t capacity;
 	size_t length;
+};
+
+/**
+ * An entry in the packed version of `struct po_map`.
+ */
+struct po_packed_entry {
+	int fd;         /* file descriptor */
+	int offset;     /* offset of name within trailer string */
+	int len;        /* name length */
+};
+
+/**
+ * Packed-in-a-buffer representation of a `struct po_map`.
+ *
+ * An object of this type will be immediately followed in memory by a trailer
+ * of string data of length `trailer_len`.
+ */
+struct po_packed_map{
+	int count;              /* number of entries */
+	int trailer_len;        /* length of trailer string */
+	struct po_packed_entry *entries;
 };
 
 /**

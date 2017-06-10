@@ -199,7 +199,7 @@ int po_create_shmdata(struct po_map *map){
 		
 	}
 	const size_t shardmemory_blocksize=sizeof(struct po_packed_map)
-		+(map->length)*sizeof(struct po_offset)+(trailer_len)*sizeof(char);
+		+(map->length)*sizeof(struct po_packed_entry)+(trailer_len)*sizeof(char);
 	
   	fd = shm_open(SHM_ANON, O_CREAT |O_RDWR, 0666);
 	if (fd == -1){
@@ -212,8 +212,8 @@ int po_create_shmdata(struct po_map *map){
   	else{
 		data_array=(struct po_packed_map*)ptr;
  	}
-	data_array->data=(struct po_offset*)data_array+sizeof(struct po_packed_map);
-	trailerstring =(char*)data_array->data+(map->length)*sizeof(struct po_offset);
+	data_array->entries=(struct po_packed_entry*)data_array+sizeof(struct po_packed_map);
+	trailerstring =(char*)data_array->entries+(map->length)*sizeof(struct po_packed_entry);
 	assert(trailerstring !=NULL);
 	for(i=0;i<map->length;i++){
 		strcat(trailerstring,map->entries[i].dirname);
@@ -222,10 +222,10 @@ int po_create_shmdata(struct po_map *map){
 	data_array->trailer_len=trailer_len;
 	offset=0;
 	for(i=0;i<map->length;i++){
-		data_array->data[i].offset=offset;
-		data_array->data[i].len=strlen(map->entries[i].dirname);
-		data_array->data[i].fd=map->entries[i].dirfd;
-		offset+=data_array->data[i].len;	
+		data_array->entries[i].offset=offset;
+		data_array->entries[i].len=strlen(map->entries[i].dirname);
+		data_array->entries[i].fd=map->entries[i].dirfd;
+		offset+=data_array->entries[i].len;	
 	}
 	return fd;
 }
@@ -244,9 +244,9 @@ struct po_map* po_unpack_shm(int fd){
   	else{
 		data_array=(struct po_packed_map*)ptr;
  	}
-	data_array->data=(struct po_offset*)data_array+sizeof(struct po_packed_map);
-	trailerstring =(char*)data_array->data+data_array->count*sizeof(struct po_offset);
-	assert(data_array->data !=NULL);
+	data_array->entries=(struct po_packed_entry*)data_array+sizeof(struct po_packed_map);
+	trailerstring =(char*)data_array->entries+data_array->count*sizeof(struct po_packed_entry);
+	assert(data_array->entries !=NULL);
 	assert(trailerstring !=NULL);
 	map = malloc(sizeof(struct po_map));
 	if (map == NULL) {
@@ -259,9 +259,9 @@ struct po_map* po_unpack_shm(int fd){
 	}
 	map->length =data_array->count;
 	for(i=0;i<map->length;i++){
-		map->entries[i].dirfd=data_array->data[i].fd;
-		tempstr=trailerstring+data_array->data[i].offset;
-		map->entries[i].dirname=strndup(tempstr,data_array->data[i].len);
+		map->entries[i].dirfd=data_array->entries[i].fd;
+		tempstr=trailerstring+data_array->entries[i].offset;
+		map->entries[i].dirname=strndup(tempstr,data_array->entries[i].len);
 	}
 	return map;	
 }

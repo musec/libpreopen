@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Jonathan Anderson
+ * Copyright (c) 2016 Jonathan Anderson and Stanley Uche Godfrey
  * All rights reserved.
  *
  * This software was developed at Memorial University under the
@@ -29,7 +29,7 @@
 /*
  * RUN: %cc -c %cflags -D TEST_DATA_DIR="\"%p/Inputs\"" %s -o %t.o
  * RUN: %cc %t.o %ldflags -o %t
- * RUN: %t > %t.out
+ * RUN: %p/run-with-preload %lib %t > %t.out
  * RUN: %filecheck %s -input-file %t.out
  */
 
@@ -38,53 +38,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
 #include "libpreopen.h"
+
 #define TEST_DIR(name) \
-	"/" TEST_DATA_DIR name
+	TEST_DATA_DIR name
 
-
-static void find(const char *absolute, struct po_map *map);
 
 int main(int argc, char *argv[])
 {
-	// CHECK: map: [[MAP:.*]]
-	struct po_map *map = po_map_create(4);
-	printf("map: 0x%tx\n", map);
+	struct po_map *map = po_map_get();
+	
+	int foo = openat(AT_FDCWD, TEST_DIR("/foo"), O_RDONLY);
+	po_add(map, "foo", foo);
 
-	// CHECK: foo: [[FOO:.*]]
-	int foo = open(TEST_DIR("/foo"), O_RDONLY | O_DIRECTORY);
-	printf("foo: %d\n", foo);
-	assert(foo != -1);
-
-	// CHECK: map after foo: [[MAP]]
-	map = po_add(map, "/foo", foo);
-	printf("map after foo: 0x%tx\n", map);
-
-	// CHECK: wibble: [[WIBBLE:.*]]
 	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"));
-	printf("wibble: %d\n", wibble);
 	assert(wibble != -1);
 
-	// CHECK: map after wibble: [[MAP]]
-	map = po_add(map, "/wibble", wibble);
-	printf("map after wibble: 0x%tx\n", map);
+	// CHECK: Opening foo/bar/hi.txt...
+	printf("Opening foo/bar/hi.txt...\n");
+	int fd = open("foo/bar/hi.txt", O_RDONLY);
 
-	// CHECK: /foo/bar/baz -> [[FOO]]:bar/baz
-	find("/foo/bar/baz", map);
+	// CHECK-NOT: hi.txt: -1
+	printf("hi.txt: %d\n", fd);
 
-	// CHECK: /wibble/foo -> [[WIBBLE]]:foo
-	find("/wibble/foo", map);
+	// CHECK: Opening baz/wibble/bye.txt...
+	printf("Opening baz/wibble/bye.txt...\n");
+	fd = access(TEST_DIR("/baz/wibble") "/bye.txt", O_RDONLY);
 
-	// CHECK: /bar/wibble/foo -> -1:
-	find("/bar/wibble/foo", map);
+	// CHECK-NOT: bye.txt: -1
+	printf("bye.txt: %d\n", fd);
 
 	return 0;
-}
-
-
-static void
-find(const char *absolute, struct po_map *map)
-{
-	struct po_relpath rel = po_find(map, absolute, NULL);
-	printf("%s -> %d:%s\n", absolute, rel.dirfd, rel.relative_path);
 }

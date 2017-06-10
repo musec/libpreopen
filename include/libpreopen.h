@@ -1,14 +1,15 @@
-/*-
+
+/*
  * Copyright (c) 2016 Stanley Uche Godfrey
  * Copyright (c) 2016 Jonathan Anderson
  * All rights reserved.
  *
  * This software was developed at Memorial University under the
  * NSERC Discovery program (RGPIN-2015-06048).
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
@@ -39,25 +40,38 @@
 
 /**
  * A mapping from paths to pre-opened directories.
- *
- * This type is opaque to clients, but can be thought of as containing
+ *This type is opaque to clients, but can be thought of as containing
  * a set (with no particular ordering guarantees) of path->dirfd mappings.
  */
 struct po_map;
-
-
 /**
  * A filesystem path, relative to a directory descriptor.
  */
 struct po_relpath {
 	/** The directory the path is relative to */
 	int dirfd;
-
 	/** The path, relative to the directory represented by @ref dirfd */
 	const char *relative_path;
 };
-
-
+/**
+*The structure holds the offset and the length of a string element
+*of the trailer string pointer
+*/
+struct po_offset{
+	int offset;//offset of the string element in trailer string  
+	int len;// length of the string element  in the trailer string
+	int fd;// the directory the path is relative to
+};
+/**
+*The structure holds counter to the trailer string,
+*The length of total trailer string,
+*An po_offset type with a pointer to the trailer string
+*/
+struct po_packed_map{
+	int count;//counter to the relative paths in trailer string  
+	int trailer_len;// length of the  trailer string
+	struct po_offset *data; //pointer to po_offset struct and a reserved memory for the trailer string
+};
 /**
  * Create a @ref po_map of at least the specified capacity.
  */
@@ -67,18 +81,15 @@ struct po_map* po_map_create(int capacity);
  * Free a @ref po_map and all of its owned memory.
  */
 void po_map_free(struct po_map *);
-
 /**
  * Retrieve (and possibly create) the default map.
- *
  * This can fail if there is no existing map and memory allocation fails.
  */
 struct po_map* po_map_get(void);
 
 /**
  * Set the default map, taking ownership of its memory allocation(s).
- *
- * If there is an existing default map, it will be freed before it is replaced.
+ *If there is an existing default map, it will be freed before it is replaced.
  * It is permissible to pass in a NULL map in order to clear the current
  * default map.
  */
@@ -93,7 +104,6 @@ void po_map_set(struct po_map*);
  * @param   fd      the directory descriptor (must be a directory!)
  */
 struct po_map* po_add(struct po_map *map, const char *path, int fd);
-
 /**
  * Pre-open a path and store it in a @ref po_map for later use.
  *
@@ -106,18 +116,49 @@ int po_preopen(struct po_map *, const char *path);
 /**
  * Find a directory whose path is a prefix of @b path and (on platforms that
  * support Capsicum) that has the rights required by @b rights.
- *
- * @param   map     the map to look for a directory in
+ *@param   map     the map to look for a directory in
  * @param   path    the path we want to find a pre-opened prefix for
  * @param   rights  if non-NULL on a platform with Capsicum support,
  *                  the rights any directory descriptor must have to
  *                  qualify as a match
- *
  * @returns a @ref po_relpath containing the descriptor of the best-match
  *          directory in the map (or -1 if none was found) and the remaining
  *          path, relative to the file (or undefined if no match found)
  */
 struct po_relpath po_find(struct po_map *map, const char *path,
 	cap_rights_t *rights);
-
+/**
+*Prints and error message when an error occurs
+*@param  msg the error message to be printed alongside system error message
+*/
+void po_errormessage(char *msg);
+/**
+*creates a shared memory block which points to po_shmstruct 
+*returns a fd of the shared memory created.
+*@param map  the map to map into the shared memory block
+*/
+int po_create_shmdata(struct po_map *map);
+/**
+*create a po_map* from the fd returned by the po_create_shmdata function
+*by accessing the shared memory block created by po_create_shmdata function
+*@param fd     the file descriptor returned by po_create_shmdata function
+*/
+struct po_map* po_unpack_shm(int fd);
+/**
+*Returns the number of elements in the pointer to the map struct
+*@param map the map struct pointer which its lenght will be returned
+*/
+int  po_map_length(struct po_map *map);
+/**
+*Returns the directory name at an index  in the pointer to the map struct
+*@param map the map struct pointer which contains the directory name to be returned
+*@param k   index at which to look for the directory name to be returned
+*/
+char *  po_map_dirname(struct po_map *map,int k);
+/**
+*Returns the directoy fd at an index  in the pointer to the map struct
+*@param map the map struct pointer which contains the directory name to be returned
+*@param k   index at which to look for the directory name to be returned
+*/
+int po_map_fd(struct po_map *map,int k);
 #endif /* !LIBPO_H */

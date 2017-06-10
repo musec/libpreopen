@@ -1,6 +1,5 @@
-
-/*-
- * Copyright (c) 2016 Stanley Uche Godfrey
+/*
+ * Copyright (c) 2016 Jonathan Anderson and Stanley Uche Godfrey
  * All rights reserved.
  *
  * This software was developed at Memorial University under the
@@ -27,20 +26,51 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+/*
+ * RUN: %cc -c %cflags -D TEST_DATA_DIR="\"%p/Inputs\"" %s -o %t.o
+ * RUN: %cc %t.o %ldflags -o %t
+ * RUN: %p/run-with-preload %lib %t > %t.out
+ * RUN: %filecheck %s -input-file %t.out
+ */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-
-#include <dirent.h>
-#include <errno.h>
+#include <assert.h>
+#include <sys/capsicum.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
-
 #include "libpreopen.h"
 
-int access(const char *pathname,int mode)
-{
-	return faccessat(AT_FDCWD,pathname,mode, AT_EACCESS);
+#define TEST_DIR(name) \
+	TEST_DATA_DIR name
+int main(int argc, char *argv[])
+{	
+	struct stat st;
+	struct po_map *map = po_map_get();
+	
+	int foo = openat(AT_FDCWD, TEST_DIR("/foo"), O_RDONLY);
+	po_add(map, "foo", foo);
+
+	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"));
+	assert(wibble != -1);
+
+	cap_enter();
+
+	// CHECK: Opening foo/bar/hi.txt...
+	printf("Opening foo/bar/hi.txt...\n");
+	int fd = open("foo/bar/hi.txt", O_RDONLY);
+
+	// CHECK-NOT: hi.txt: -1
+	printf("hi.txt: %d\n", fd);
+
+	// CHECK: Opening baz/wibble/bye.txt...
+	printf("Opening baz/wibble/bye.txt...\n");
+	fd = stat(TEST_DIR("/baz/wibble") "/bye.txt", &st);
+
+	// CHECK-NOT: bye.txt: -1
+	printf("bye.txt: %d\n", fd);
+
+	return 0;
 }

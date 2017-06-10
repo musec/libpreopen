@@ -29,6 +29,13 @@
  * SUCH DAMAGE.
  */
 
+#include <sys/param.h>
+
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -36,12 +43,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/mman.h>
-#include <sys/param.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <unistd.h>
+
 #include "internal.h"
 #include "libpreopen.h"
 

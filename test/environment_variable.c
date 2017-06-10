@@ -51,7 +51,7 @@ int main(int arg, char *argv[]){
 	assert(wibble != -1);
 	i= po_map_length( map);
 	char env_data[j];
-	k=po_create_shmdata(map);
+	k=po_pack(map);
 	i=snprintf (buffer, sizeof(buffer),"%d",k);
 	if(fcntl(k,  F_GETFD)!=0){
 		fcntl(k,F_SETFD,0);
@@ -78,7 +78,7 @@ int main(int arg, char *args[]){
 	shmfd=atoi(getenv("LIB_PO_MAP"));
 	// CHECK: Opening foo/bar/hi.txt...
 	printf("Opening foo/bar/hi.txt...\n");
-	map=po_unpack_shm(shmfd);
+	map=po_unpack(shmfd);
 	po_map_set(map);
 	printf("map dir fd before passing eviro variable\n");
 	for(i=0;i<po_map_length(map);i++){

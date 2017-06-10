@@ -189,7 +189,8 @@ po_errormessage(char *msg){
 	asprintf(&msg,"%s\n",strerror(errno));
 	
  }
-int po_create_shmdata(struct po_map *map){
+
+int po_pack(struct po_map *map){
 	int fd,i,r,trailer_len,offset;
 	char* trailerstring;
 	struct po_packed_map* data_array=NULL;
@@ -229,7 +230,7 @@ int po_create_shmdata(struct po_map *map){
 	}
 	return fd;
 }
-struct po_map* po_unpack_shm(int fd){
+struct po_map* po_unpack(int fd){
 	struct po_map *map;
 	struct stat fdStat;
 	struct po_packed_map* data_array=NULL;

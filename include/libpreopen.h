@@ -37,8 +37,7 @@
 
 /**
  * A mapping from paths to pre-opened directories.
- *
- * This type is opaque to clients, but can be thought of as containing
+ *This type is opaque to clients, but can be thought of as containing
  * a set (with no particular ordering guarantees) of path->dirfd mappings.
  */
 struct po_map;
@@ -101,7 +100,6 @@ void po_map_set(struct po_map*);
  * @param   fd      the directory descriptor (must be a directory!)
  */
 struct po_map* po_add(struct po_map *map, const char *path, int fd);
-
 /**
  * Pre-open a path and store it in a @ref po_map for later use.
  *
@@ -114,13 +112,11 @@ int po_preopen(struct po_map *, const char *path);
 /**
  * Find a directory whose path is a prefix of @b path and (on platforms that
  * support Capsicum) that has the rights required by @b rights.
- *
- * @param   map     the map to look for a directory in
+ *@param   map     the map to look for a directory in
  * @param   path    the path we want to find a pre-opened prefix for
  * @param   rights  if non-NULL on a platform with Capsicum support,
  *                  the rights any directory descriptor must have to
  *                  qualify as a match
- *
  * @returns a @ref po_relpath containing the descriptor of the best-match
  *          directory in the map (or -1 if none was found) and the remaining
  *          path, relative to the file (or undefined if no match found)

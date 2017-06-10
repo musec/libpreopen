@@ -34,19 +34,17 @@
  */
 
 #include <assert.h>
+#include <sys/capsicum.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include "libpreopen.h"
-#include <sys/capsicum.h>
 #include <sys/stat.h>
 #include <sys/types.h>
- 
+#include <unistd.h>
+#include "libpreopen.h"
+
 #define TEST_DIR(name) \
 	TEST_DATA_DIR name
-
-
 int main(int argc, char *argv[])
 {	
 	struct stat st;

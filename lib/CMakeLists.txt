@@ -6,5 +6,4 @@ add_library(preopen SHARED
 	libpreopen.c
 	 wrappers.c
 )
-
 install(TARGETS preopen DESTINATION lib)

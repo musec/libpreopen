@@ -48,6 +48,8 @@
 #include "internal.h"
 #include "libpreopen.h"
 
+static char error_buffer[1024];
+
 static struct po_map *global_map;
 
 /**
@@ -192,11 +194,12 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 }
 
 void 
-po_errormessage(char *msg){
+po_errormessage(const char *msg)
+{
 
-	asprintf(&msg,"%s\n",strerror(errno));
-	
- }
+	snprintf(error_buffer, sizeof(error_buffer), "%s: %s",
+	         msg, strerror(errno));
+}
 
 int po_pack(struct po_map *map){
 	int fd,i,r,trailer_len,offset;

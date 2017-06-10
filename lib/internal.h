@@ -91,4 +91,9 @@ struct po_packed_map{
  */
 bool po_isprefix(const char *dir, size_t dirlen, const char *path);
 
+/**
+ * Store an error message in the global "last error message" buffer.
+ */
+void po_errormessage(const char *msg);
+
 #endif /* LIBPO_INTERNAL_H */

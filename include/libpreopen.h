@@ -118,11 +118,11 @@ struct po_relpath po_find(struct po_map *map, const char *path,
 	cap_rights_t *rights);
 
 /**
- * Print an error message when an error occurs.
+ * Retrieve a message from with the last libpreopen error.
  *
- * @param  msg the error message to be printed alongside system error message
+ * @returns NULL if there are no errors, null-terminated string otherwise
  */
-void po_errormessage(char *msg);
+const char* po_last_error(void);
 
 /**
  * Pack a `struct po_map` into a shared memory segment.

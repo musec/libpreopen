@@ -60,6 +60,7 @@ static struct po_map *global_map;
  * map will remain valid.
  */
 static struct po_map* po_map_enlarge(struct po_map *map);
+
 struct po_map*
 po_map_create(int capacity)
 {
@@ -294,9 +295,12 @@ struct po_map* po_unpack(int fd){
 int po_map_length(struct po_map* map){
 	return (int)map->length;
 }
-char *  po_map_dirname(struct po_map *map,int k){
-	return (char*)map->entries[k].dirname;
+
+const char* po_map_name(struct po_map *map, int k)
+{
+	return map->entries[k].dirname;
 }
+
 int po_map_fd(struct po_map *map,int k){
 	return map->entries[k].dirfd;
 }

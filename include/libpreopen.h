@@ -159,7 +159,7 @@ int po_map_length(struct po_map *map);
  * @param map     the map to look up an entry from
  * @param i       index of an entry in the map
  */
-char* po_map_dirname(struct po_map *map, int i);
+const char* po_map_name(struct po_map *map, int i);
 
 /**
  * Get the file descriptor of an entry in a `struct po_map`.

@@ -34,11 +34,11 @@
  * RUN: %filecheck %s -input-file %t.out
  */
 
-#include <sys/capsicum.h>
 #include <sys/mman.h>
 
 #include <assert.h>
 #include <err.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -119,8 +119,6 @@ int main(int argc, char *argv[])
 	printf("%s\n", argv[0]);
 	printf("----------------------------------------"
 		"----------------------------------------\n");
-
-	cap_enter();
 
 	// CHECK: got shmfd: [[SHMFD]]
 	shmfd = atoi(getenv("LIB_PO_MAP"));

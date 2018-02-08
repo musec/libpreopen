@@ -24,28 +24,61 @@
  * SUCH DAMAGE.
  */
 #include <dirent.h>
+
 #include <errno.h>
+
 #include <fcntl.h>
+
 #include <stdio.h>
+
+#include <stdlib.h>
+
 #include <string.h>
+
 #include <sys/stat.h>
+
 #include <sys/types.h>
+
 #include <unistd.h>
+
+#include <assert.h>
+
 #include "libpreopen.h"
+
+
+
+//extern char **environ;
+
+int get_shared_memoryFD(){
+    
+    int k = atoi(getenv("SHARED_MEMORYFD"));
+  
+    return k ;
+    
+}
 int access(const char *path, int mode)
 {
-	struct po_map *map = po_map_get();
+	int fd = get_shared_memoryFD();
+	struct po_map *map = po_unpack(fd);
+        assert(map != NULL);
 	struct po_relpath rel = po_find(map, path, NULL);
 	return faccessat(rel.dirfd, rel.relative_path, mode,0);
 }
 int open(const char *path, int mode, ...)
-{	struct po_map *map = po_map_get();
+{
+        int fd = get_shared_memoryFD();
+	struct po_map *map = po_unpack(fd);
+        assert(map != NULL);
 	struct po_relpath rel = po_find(map, path, NULL);
-	return openat(rel.dirfd, rel.relative_path, mode);
+       	return openat(rel.dirfd, rel.relative_path, mode);
 }
+
 int stat(const char *path, struct stat *st)
 {
-	struct po_map *map = po_map_get();
+        printf("stat path: '%s'\n", path);  
+        int fd = get_shared_memoryFD();
+	struct po_map *map = po_unpack(fd);
+        assert(map != NULL);
 	struct po_relpath rel = po_find(map, path, NULL);
-	return fstatat(rel.dirfd, rel.relative_path,st,AT_SYMLINK_NOFOLLOW);
+     	return fstatat(rel.dirfd, rel.relative_path,st,AT_SYMLINK_NOFOLLOW);
 }

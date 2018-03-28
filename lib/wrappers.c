@@ -46,9 +46,6 @@
 #include "libpreopen.h"
 
 
-
-//extern char **environ;
-
 int get_shared_memoryFD(){
     
     int k = atoi(getenv("SHARED_MEMORYFD"));

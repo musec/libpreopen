@@ -47,6 +47,9 @@
 
 #include "internal.h"
 #include "libpreopen.h"
+#include <sys/cdefs.h>
+
+
 
 static char error_buffer[1024];
 
@@ -86,6 +89,7 @@ po_map_create(int capacity)
 void
 po_map_free(struct po_map *map)
 {
+        //free strdup call
 	if (map == NULL) {
 		return;
 	}
@@ -125,10 +129,10 @@ po_add(struct po_map *map, const char *path, int fd)
 		}
 	}
 	
-	d = map->entries + map->length;
+	d = map->entries + map->length*sizeof(struct po_dir);
 	map->length++;
 
-	d->dirname = path;
+	d->dirname = strdup(path); 
 	d->dirfd = fd;
 
 #ifdef WITH_CAPSICUM
@@ -143,12 +147,28 @@ po_add(struct po_map *map, const char *path, int fd)
 int
 po_preopen(struct po_map *map, const char *path)
 {
-	int fd;
-
-	fd = openat(AT_FDCWD, path, O_DIRECTORY);
-	if (fd == -1) {
-		return (-1);
-	}
+	int fd=0,  is_reg_path;
+        struct stat statbuff;
+         fstatat(AT_FDCWD,path,&statbuff,AT_SYMLINK_NOFOLLOW);
+         is_reg_path = S_ISREG(statbuff.st_mode);
+         if(  is_reg_path == 0){
+             fd = openat(AT_FDCWD, path, O_DIRECTORY);
+              if (fd == -1) {
+                    return (-1);
+                }
+         }
+         else if( is_reg_path != 0){
+             char* temp_path = po_split_file_fromPath(path);
+             fd = openat(AT_FDCWD, temp_path, O_DIRECTORY);
+              if (fd == -1) {
+                    return (-1);
+                }
+         }
+        
+         else{
+             po_errormessage("Specify path type\n");
+         }
+	
 
 	if (po_add(map, path, fd) == NULL) {
 		return (-1);
@@ -157,13 +177,25 @@ po_preopen(struct po_map *map, const char *path)
 	return (fd);
 }
 
+char* 
+po_split_file_fromPath(const char *relative_path){
+    
+    const char slash='/';
+   	char *filename;
+	char *dirName;
+	filename= strrchr(relative_path, slash);
+	dirName=strndup(relative_path,(strlen(relative_path)- strlen(filename)+1));
+	return dirName;
+}
+
 struct po_relpath
 po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 {
+	const char *relpath ;
 	struct po_relpath match;
 	size_t bestlen = 0;
 	int best = -1;
-
+        
 	for(size_t i = 0; i < map->length; i++){
 		const struct po_dir *d = map->entries + i;
 		const char *dirname = d->dirname;
@@ -183,7 +215,8 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 		bestlen = len;
 	}
 
-	const char *relpath = path + bestlen;
+	 relpath = path + strlen(po_split_file_fromPath(path));
+        
 	if (*relpath == '/') {
 		relpath++;
 	}

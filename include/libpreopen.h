@@ -32,11 +32,12 @@
 #ifndef LIBPO_H
 #define LIBPO_H
 
-#ifdef WITH_CAPSICUM
 #include <sys/capsicum.h>
-#else
-#define cap_rights_t void
-#endif
+
+
+
+#include <sys/cdefs.h>
+__BEGIN_DECLS
 
 /**
  * A mapping from paths to pre-opened directories.
@@ -100,6 +101,16 @@ struct po_map* po_add(struct po_map *map, const char *path, int fd);
  *          the @ref po_map cannot store the directory (e.g., resizing fails)
  */
 int po_preopen(struct po_map *, const char *path);
+
+/**
+ * 
+ * 
+ *Splits file name from absolute file a path and returns the absolute
+ * path to the directory containing the file.
+ * @param   relative_path  the absolute path to the file
+ */
+
+char* po_split_file_fromPath(const char *relative_path);
 
 /**
  * Find a directory whose path is a prefix of @b path and (on platforms that
@@ -168,5 +179,7 @@ const char* po_map_name(struct po_map *map, int i);
  * @param i       index of an entry in the map
  */
 int po_map_fd(struct po_map *map, int i);
+__END_DECLS
 
 #endif /* !LIBPO_H */
+

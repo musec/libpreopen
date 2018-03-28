@@ -36,6 +36,7 @@
 #endif
 
 #include <stdbool.h>
+#include <sys/cdefs.h>
 
 /**
  * A directory that has been pre-opened.
@@ -95,5 +96,6 @@ bool po_isprefix(const char *dir, size_t dirlen, const char *path);
  * Store an error message in the global "last error message" buffer.
  */
 void po_errormessage(const char *msg);
+
 
 #endif /* LIBPO_INTERNAL_H */

@@ -35,7 +35,6 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -77,7 +76,6 @@ open(const char *path, int mode, ...)
 
 int stat(const char *path, struct stat *st)
 {
-	printf("stat path: '%s'\n", path);
 	int fd = get_shared_memoryFD();
 
 	struct po_map *map = po_unpack(fd);

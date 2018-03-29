@@ -74,7 +74,8 @@ open(const char *path, int mode, ...)
 	return openat(rel.dirfd, rel.relative_path, mode);
 }
 
-int stat(const char *path, struct stat *st)
+int
+stat(const char *path, struct stat *st)
 {
 	int fd = get_shared_memoryFD();
 

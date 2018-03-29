@@ -229,8 +229,8 @@ void
 po_errormessage(const char *msg)
 {
 
-	snprintf(error_buffer, sizeof(error_buffer), "%s: %s",
-		 msg, strerror(errno));
+	snprintf(error_buffer, sizeof(error_buffer), "%s: error %d",
+		msg, errno);
 }
 
 const char*

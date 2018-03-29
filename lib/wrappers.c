@@ -35,6 +35,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -63,15 +64,19 @@ access(const char *path, int mode)
 }
 
 int
-open(const char *path, int mode, ...)
+open(const char *path, int flags, ...)
 {
+	va_list args;
+	va_start(args, flags);
+
+	int mode = va_arg(args, int);
 	int fd = get_shared_memoryFD();
 
 	struct po_map *map = po_unpack(fd);
 	assert(map != NULL);
 
 	struct po_relpath rel = po_find(map, path, NULL);
-	return openat(rel.dirfd, rel.relative_path, mode);
+	return openat(rel.dirfd, rel.relative_path, flags, mode);
 }
 
 int

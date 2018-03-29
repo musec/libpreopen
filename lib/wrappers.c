@@ -1,5 +1,6 @@
 /*-
  * Copyright (c) 2016 Stanley Uche Godfrey
+ * Copyright (c) 2018 Jonathan Anderson
  * All rights reserved.
  *
  * This software was developed at Memorial University under the
@@ -31,7 +32,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <assert.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -43,50 +43,102 @@
 #include <libpreopen.h>
 
 
-int
-get_shared_memoryFD()
-{
-    int k = atoi(getenv("SHARED_MEMORYFD"));
+/**
+ * Find a relative path within the po_map given by SHARED_MEMORYFD (if it
+ * exists).
+ *
+ * @returns  a struct po_relpath with dirfd and relative_path as set by po_find
+ *           if there is an available po_map, or AT_FDCWD/path otherwise
+ */
+static struct po_relpath find_relative(const char *path, cap_rights_t *);
 
-    return k ;
-}
+// Get the map handed into the process via SHARED_MEMORYFD (if it exists)
+static struct po_map*	get_shared_map(void);
+
 
 int
 access(const char *path, int mode)
 {
-	int fd = get_shared_memoryFD();
+	struct po_relpath rel = find_relative(path, NULL);
 
-	struct po_map *map = po_unpack(fd);
-	assert(map != NULL);
-
-	struct po_relpath rel = po_find(map, path, NULL);
 	return faccessat(rel.dirfd, rel.relative_path, mode,0);
 }
 
 int
 open(const char *path, int flags, ...)
 {
+	struct po_relpath rel;
 	va_list args;
+	int mode;
+
 	va_start(args, flags);
+	mode = va_arg(args, int);
+	rel = find_relative(path, NULL);
 
-	int mode = va_arg(args, int);
-	int fd = get_shared_memoryFD();
-
-	struct po_map *map = po_unpack(fd);
-	assert(map != NULL);
-
-	struct po_relpath rel = po_find(map, path, NULL);
 	return openat(rel.dirfd, rel.relative_path, flags, mode);
 }
 
 int
 stat(const char *path, struct stat *st)
 {
-	int fd = get_shared_memoryFD();
+	struct po_relpath rel = find_relative(path, NULL);
 
-	struct po_map *map = po_unpack(fd);
-	assert(map != NULL);
-
-	struct po_relpath rel = po_find(map, path, NULL);
 	return fstatat(rel.dirfd, rel.relative_path,st,AT_SYMLINK_NOFOLLOW);
+}
+
+
+static struct po_relpath
+find_relative(const char *path, cap_rights_t *rights)
+{
+	struct po_relpath rel;
+	struct po_map *map;
+
+	map = get_shared_map();
+	if (map == NULL) {
+		rel.dirfd = AT_FDCWD;
+		rel.relative_path = path;
+	} else {
+		rel = po_find(map, path, NULL);
+	}
+
+	return (rel);
+}
+
+static struct po_map*
+get_shared_map()
+{
+	static struct po_map *stored_map;
+	struct po_map *map;
+	char *end, *env;
+	long fd;
+
+	// If the map variable has been set, it must have been set as the
+	// default libpreopen map.
+	if (stored_map) {
+		return (stored_map);
+	}
+
+	// Attempt to unwrap po_map from a shared memory segment specified by
+	// SHARED_MEMORYFD
+	env = getenv("SHARED_MEMORYFD");
+	if (env == NULL || *env == '\0') {
+		return (NULL);
+	}
+
+	// We expect this environment variable to be an integer and nothing but
+	// an integer.
+	fd = strtol(env, &end, 10);
+	if (*end != '\0') {
+		return (NULL);
+	}
+
+	map = po_unpack(fd);
+	if (map == NULL) {
+		return (NULL);
+	}
+
+	po_map_set(map);
+	stored_map = map;
+
+	return (map);
 }

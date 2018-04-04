@@ -294,7 +294,7 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 		bestlen = len;
 	}
 
-	relpath = path + strlen(po_split_file_fromPath(path));
+	relpath = path + bestlen;
 
 	if (*relpath == '/') {
 		relpath++;

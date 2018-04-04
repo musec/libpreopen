@@ -155,6 +155,10 @@ po_add(struct po_map *map, const char *path, int fd)
 
 	po_map_assertvalid(map);
 
+	if (path == NULL || fd < 0) {
+		return (NULL);
+	}
+
 	if (map->length == map->capacity) {
 		map = po_map_enlarge(map);
 		if (map == NULL) {
@@ -187,6 +191,10 @@ po_preopen(struct po_map *map, const char *path)
 
 	po_map_assertvalid(map);
 
+	if (path == NULL) {
+		return (-1);
+	}
+
 	fstatat(AT_FDCWD,path,&statbuff,AT_SYMLINK_NOFOLLOW);
 	is_reg_path = S_ISREG(statbuff.st_mode);
 	if(is_reg_path == 0) {
@@ -204,6 +212,9 @@ po_preopen(struct po_map *map, const char *path)
 		po_errormessage("Specify path type\n");
 	}
 
+	assert(path != NULL);
+	assert(fd != -1);
+
 	if (po_add(map, path, fd) == NULL) {
 		return (-1);
 	}
@@ -220,6 +231,10 @@ po_split_file_fromPath(const char *relative_path)
 	char *filename;
 	char *dirName;
 
+	if (relative_path == NULL) {
+		return (NULL);
+	}
+
 	filename = strrchr(relative_path, slash);
 	dirName = strndup(relative_path,
 			strlen(relative_path) - strlen(filename) + 1);
@@ -231,11 +246,15 @@ struct po_relpath
 po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 {
 	const char *relpath ;
-	struct po_relpath match;
+	struct po_relpath match = { .relative_path = NULL, .dirfd = -1 };
 	size_t bestlen = 0;
 	int best = -1;
 
 	po_map_assertvalid(map);
+
+	if (path == NULL) {
+		return (match);
+	}
 
 	for(size_t i = 0; i < map->length; i++) {
 		const struct po_dir *d = map->entries + i;

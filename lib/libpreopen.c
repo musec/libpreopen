@@ -463,7 +463,7 @@ po_map_fd(struct po_map *map,int k)
 
 /* Internal (service) functions: */
 
-struct po_map*
+static struct po_map*
 po_map_enlarge(struct po_map *map)
 {
 	struct po_dir *enlarged;

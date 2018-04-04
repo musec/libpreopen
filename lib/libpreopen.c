@@ -124,6 +124,25 @@ po_map_free(struct po_map *map)
 	free(map);
 }
 
+size_t
+po_map_foreach(const struct po_map *map, po_dir_callback cb)
+{
+	struct po_dir *dir;
+	size_t n;
+
+	po_map_assertvalid(map);
+
+	for (n = 0; n < map->length; n++) {
+		dir = map->entries + n;
+
+		if (!cb(dir->dirname, dir->dirfd, dir->rights)) {
+			break;
+		}
+	}
+
+	return (n);
+}
+
 struct po_map*
 po_map_get()
 {

@@ -37,6 +37,10 @@
 
 
 #include <sys/cdefs.h>
+
+#include <stdbool.h>
+
+
 __BEGIN_DECLS
 
 /**
@@ -45,6 +49,16 @@ __BEGIN_DECLS
  * a set (with no particular ordering guarantees) of path->dirfd mappings.
  */
 struct po_map;
+
+/**
+ * A callback that can be used to inpect the contents of a @ref po_map.
+ *
+ * This callback can be invoked by iteration code to expose elements of a
+ * @ref po_map (in no particular order).
+ *
+ * @returns   whether or not to continue iterating over the @ref po_map
+ */
+typedef bool (po_dir_callback)(const char *dirname, int dirfd, cap_rights_t);
 
 /**
  * A filesystem path, relative to a directory descriptor.
@@ -66,6 +80,17 @@ struct po_map* po_map_create(int capacity);
  * Free a @ref po_map and all of its owned memory.
  */
 void po_map_free(struct po_map *);
+
+/**
+ * Iterate over a @ref po_map, invoking a callback for each element in the map.
+ *
+ * This function will cause @b callback to be invoked repeatedly, in no
+ * particular order, until the entire map has been iterated over or until the
+ * callback returns `false`.
+ *
+ * @return   number of elements iterated over
+ */
+size_t po_map_foreach(const struct po_map*, po_dir_callback);
 
 /**
  * Retrieve (and possibly create) the default map.

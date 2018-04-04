@@ -99,6 +99,9 @@ int main(int argc, char *argv[])
 	// CHECK: -----
 	printf("-------------------------------------------------------\n");
 
+	// CHECK: /foo -> [[FOO]]:
+	find("/foo", map);
+
 	// CHECK: /foo/bar/baz -> [[FOO]]:bar/baz
 	find("/foo/bar/baz", map);
 

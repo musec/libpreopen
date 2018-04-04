@@ -300,6 +300,10 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 		relpath++;
 	}
 
+	if (*relpath == '\0') {
+		relpath = ".";
+	}
+
 	match.relative_path = relpath;
 	match.dirfd = best;
 

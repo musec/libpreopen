@@ -1,6 +1,6 @@
 /*-
  * Copyright (c) 2016 Stanley Uche Godfrey
- * Copyright (c) 2016 Jonathan Anderson
+ * Copyright (c) 2016, 2018 Jonathan Anderson
  * All rights reserved.
  *
  * This software was developed at Memorial University under the
@@ -54,6 +54,30 @@ static char error_buffer[1024];
 static struct po_map *global_map;
 
 /**
+ * Check that a @ref po_map is valid (assert out if it's not).
+ */
+#ifdef NDEBUG
+#define po_map_assertvalid(...)
+#else
+static void
+po_map_assertvalid(const struct po_map *map)
+{
+	const struct po_dir *dir;
+	size_t i;
+
+	assert(map->length <= map->capacity);
+	assert(map->entries != NULL || map->capacity == 0);
+
+	for (i = 0; i < map->length; i++) {
+		dir = map->entries + i;
+
+		assert(dir->dirname != NULL);
+		assert(dir->dirfd >= 0);
+	}
+}
+#endif
+
+/**
  * Enlarge a @ref po_map's capacity.
  *
  * This results in new memory being allocated and existing entries being copied.
@@ -81,6 +105,8 @@ po_map_create(int capacity)
 	map->capacity = capacity;
 	map->length = 0;
 
+	po_map_assertvalid(map);
+
 	return (map);
 }
 
@@ -91,6 +117,8 @@ po_map_free(struct po_map *map)
 	if (map == NULL) {
 		return;
 	}
+
+	po_map_assertvalid(map);
 
 	free(map->entries);
 	free(map);
@@ -103,12 +131,16 @@ po_map_get()
 		global_map = po_map_create(4);
 	}
 
+	po_map_assertvalid(global_map);
+
 	return (global_map);
 }
 
 void
 po_map_set(struct po_map *map)
 {
+	po_map_assertvalid(map);
+
 	if (global_map != NULL) {
 		po_map_free(global_map);
 	}
@@ -120,6 +152,8 @@ struct po_map*
 po_add(struct po_map *map, const char *path, int fd)
 {
 	struct po_dir *d;
+
+	po_map_assertvalid(map);
 
 	if (map->length == map->capacity) {
 		map = po_map_enlarge(map);
@@ -140,6 +174,8 @@ po_add(struct po_map *map, const char *path, int fd)
 	}
 #endif
 
+	po_map_assertvalid(map);
+
 	return (map);
 }
 
@@ -148,6 +184,9 @@ po_preopen(struct po_map *map, const char *path)
 {
 	int fd=0,  is_reg_path;
 	struct stat statbuff;
+
+	po_map_assertvalid(map);
+
 	fstatat(AT_FDCWD,path,&statbuff,AT_SYMLINK_NOFOLLOW);
 	is_reg_path = S_ISREG(statbuff.st_mode);
 	if(is_reg_path == 0) {
@@ -168,6 +207,8 @@ po_preopen(struct po_map *map, const char *path)
 	if (po_add(map, path, fd) == NULL) {
 		return (-1);
 	}
+
+	po_map_assertvalid(map);
 
 	return (fd);
 }
@@ -193,6 +234,8 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 	struct po_relpath match;
 	size_t bestlen = 0;
 	int best = -1;
+
+	po_map_assertvalid(map);
 
 	for(size_t i = 0; i < map->length; i++) {
 		const struct po_dir *d = map->entries + i;
@@ -246,6 +289,8 @@ po_pack(struct po_map *map)
 	char* trailerstring;
 	struct po_packed_map* data_array;
 	int fd, i, r, trailer_len, offset;
+
+	po_map_assertvalid(map);
 
 	trailer_len=0;
 	for(i=0;i<map->length;i++) {
@@ -336,6 +381,8 @@ po_unpack(int fd)
 		map->entries[i].dirname=strndup(tempstr,data_array->entries[i].len);
 	}
 
+	po_map_assertvalid(map);
+
 	return map;
 }
 
@@ -343,18 +390,24 @@ po_unpack(int fd)
 int
 po_map_length(struct po_map* map)
 {
+	po_map_assertvalid(map);
+
 	return (int)map->length;
 }
 
 const char*
 po_map_name(struct po_map *map, int k)
 {
+	po_map_assertvalid(map);
+
 	return map->entries[k].dirname;
 }
 
 int
 po_map_fd(struct po_map *map,int k)
 {
+	po_map_assertvalid(map);
+
 	return map->entries[k].dirfd;
 }
 

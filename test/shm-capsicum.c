@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016 Stanley Uche Godfrey
- * Copyright (c) 2017 Jonathan Anderson
+ * Copyright (c) 2017-2018 Jonathan Anderson
  * All rights reserved.
  *
  * This software was developed at Memorial University under the
@@ -108,6 +108,8 @@ int main(int argc, char *argv[]){
 
 #include <sys/stat.h>
 
+static bool print(const char *, int, cap_rights_t);
+
 int main(int argc, char *argv[])
 {
 	char buffer[1024];
@@ -134,12 +136,10 @@ int main(int argc, char *argv[])
 	po_map_set(map);
 
 	// CHECK: contents of [[MAP]]:
-	// CHECK-NEXT: [[FOO]]: "foo"
-	// CHECK-NEXT: [[WIBBLE]]: "[[WIBBLE_PATH]]"
+	// CHECK-DAG: [[FOO]]: "foo"
+	// CHECK-DAG: [[WIBBLE]]: "[[WIBBLE_PATH]]"
 	printf("contents of %p:\n", map);
-	for(i = 0; i < po_map_length(map); i++) {
-		printf("%8d: \"%s\"\n", po_map_fd(map, i), po_map_name(map, i));
-	}
+	po_map_foreach(map, print);
 
 	// CHECK: hi.txt size: 3
 	i = stat("foo/bar/hi.txt", &st);
@@ -170,6 +170,13 @@ int main(int argc, char *argv[])
 	printf("non-existent: %d\n", fd);
 
 	return 0;
+}
+
+static bool
+print(const char *dirname, int dirfd, cap_rights_t rights)
+{
+	printf("\t%d: \"%s\"\n", dirfd, dirname);
+	return (true);
 }
 
 #endif

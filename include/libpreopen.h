@@ -184,26 +184,6 @@ int po_pack(struct po_map *map);
  */
 struct po_map* po_unpack(int fd);
 
-/**
- * Returns the number of elements in a `stuct po_map`.
- */
-int po_map_length(struct po_map *map);
-
-/**
- * Get the name of an entry in a `struct po_map`.
- *
- * @param map     the map to look up an entry from
- * @param i       index of an entry in the map
- */
-const char* po_map_name(struct po_map *map, int i);
-
-/**
- * Get the file descriptor of an entry in a `struct po_map`.
- *
- * @param map     the map to look up an entry from
- * @param i       index of an entry in the map
- */
-int po_map_fd(struct po_map *map, int i);
 __END_DECLS
 
 #endif /* !LIBPO_H */

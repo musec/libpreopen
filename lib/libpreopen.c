@@ -185,7 +185,7 @@ po_add(struct po_map *map, const char *path, int fd)
 		}
 	}
 
-	d = map->entries + map->length*sizeof(struct po_dir);
+	d = map->entries + map->length;
 	map->length++;
 
 	d->dirname = strdup(path); 

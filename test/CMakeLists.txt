@@ -1,5 +1,10 @@
 if (NOT LLVM_LIT)
-	find_program(LLVM_LIT llvm-lit)
+	find_program(LLVM_LIT llvm-lit
+		PATHS /usr/bin /usr/local/bin
+			/usr/local/llvm40-bin
+			/usr/local/llvm50-bin
+			/usr/local/llvm60-bin
+	)
 endif()
 
 if (NOT LLVM_LIT)

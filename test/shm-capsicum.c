@@ -50,6 +50,8 @@
 #define TEST_DIR(name) \
 	TEST_DATA_DIR name
 
+static bool print(const char *, int, cap_rights_t);
+
 #ifdef PARENT
 
 char **environ;
@@ -88,6 +90,16 @@ int main(int argc, char *argv[]){
 	shmfd = po_pack(map);
 	printf("packed map into SHM %d\n", shmfd);
 
+	// CHECK: unpacked SHM into map at [[COPY:0x.*]]
+	struct po_map *unpacked_copy = po_unpack(shmfd);
+	printf("unpacked SHM into map at %p\n", unpacked_copy);
+
+	// CHECK: contents of copy at [[COPY]]:
+	// CHECK-DAG: [[FOO]]: "foo"
+	// CHECK-DAG: [[WIBBLE]]: "[[WIBBLE_PATH]]"
+	printf("contents of copy at %p:\n", unpacked_copy);
+	po_map_foreach(unpacked_copy, print);
+
 	// clear close-on-exec flag: we want this to be propagated!
 	fcntl(shmfd, F_SETFD, 0);
 
@@ -107,8 +119,6 @@ int main(int argc, char *argv[]){
 #else
 
 #include <sys/stat.h>
-
-static bool print(const char *, int, cap_rights_t);
 
 int main(int argc, char *argv[])
 {
@@ -141,36 +151,10 @@ int main(int argc, char *argv[])
 	printf("contents of %p:\n", map);
 	po_map_foreach(map, print);
 
-	// CHECK: hi.txt size: 3
-	i = stat("foo/bar/hi.txt", &st);
-	if (i != 0) {
-		errx(-1, "stat(\"foo/bar/hi.txt\") failed");
-	}
-	printf("hi.txt size: %lu\n", st.st_size);
-
-	// CHECK-NEXT: hi.txt contents: hi
-	fd = open("foo/bar/hi.txt", O_RDONLY);
-	read(fd, buffer, sizeof(buffer));
-	printf("hi.txt contents: %s\n", buffer);
-
-	// CHECK: bye.txt size: 4
-	i = stat(TEST_DIR("/baz/wibble") "/bye.txt", &st);
-	if (i != 0) {
-		errx(-1, "stat(TEST_DIR(\"/baz/wibble\")) failed");
-	}
-	printf("bye.txt size: %lu\n", st.st_size);
-
-	// CHECK-NEXT: bye.txt contents: bye
-	fd = open(TEST_DIR("/baz/wibble") "/bye.txt", O_RDONLY);
-	read(fd, buffer, sizeof(buffer));
-	printf("bye.txt contents: %s\n", buffer);
-
-	// CHECK: non-existent: -1
-	fd = open("non-existent", O_RDONLY);
-	printf("non-existent: %d\n", fd);
-
 	return 0;
 }
+
+#endif
 
 static bool
 print(const char *dirname, int dirfd, cap_rights_t rights)
@@ -178,5 +162,3 @@ print(const char *dirname, int dirfd, cap_rights_t rights)
 	printf("\t%d: \"%s\"\n", dirfd, dirname);
 	return (true);
 }
-
-#endif

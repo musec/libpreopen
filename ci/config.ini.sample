@@ -1,0 +1,10 @@
+[job_builder]
+ignore_cache=True
+
+[__future__]
+param_order_from_yaml=True
+
+[jenkins]
+user=<USERNAME>
+password=<API_TOKEN>
+url=<SERVER_URI>

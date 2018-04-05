@@ -1,0 +1,34 @@
+= Continuous integration
+
+
+== Jenkins
+
+We use http://docs.openstack.org/infra/jenkins-job-builder[Jenkins Job Builder]
+to configure CI jobs on a local Jenkins instance.
+
+
+=== Setup
+
+First, install Jenkins Job Builder:
+
+[%header, cols="1,3,3"]
+|===
+| OS | Package | Source ("port")
+| FreeBSD | `py27-jenkins-job-builder` | `devel/py-jenkins-job-builder`
+|===
+
+Next, copy link:config.ini.sample[] to `config.ini` and edit it to include your
+Jenkins server's URI as well as your credentials on that server
+(visit `${SERVER_URI}/me/configure` and click "Show API token").
+
+
+=== Usage
+
+To check the configuration, run `make test` (or simply `make`).
+This will report any errors in the configuration.
+
+To update jobs on the Jenkins server, run `make update`.
+This will create new jobs or modify existing jobs as appropriate.
+It will _not_ delete jobs, as the absence of a job in the configuration file
+may simply mean that the job is managed by a different configuration (or is
+managed manually).

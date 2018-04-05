@@ -1,0 +1,61 @@
+- project:
+    name: libpreopen
+    jobs:
+      - 'Capsicum/libpreopen-{buildtype}':
+          buildtype: Debug
+      - 'Capsicum/libpreopen-{buildtype}':
+          buildtype: Release
+
+#
+# Default settings for all jobs
+#
+- defaults:
+    name: global
+    project-type: freestyle
+    block-downstream: false
+    block-upstream: false
+    concurrent: false
+    description: 'Managed via Jenkins Job Builder, do not modify manually'
+
+#
+# Template for generating a Debug or Release version of the build
+#
+- job-template:
+    name: 'Capsicum/libpreopen-{buildtype}'
+    defaults: global
+    properties:
+      - github:
+          url: https://github.com/musec/libpreopen
+    scm:
+      - git:
+          url: https://github.com/musec/libpreopen
+          branches:
+            - '*/master'    # TODO: consider job-template, {branch}, etc.
+    triggers: [ github ]
+    builders:
+      - shell: 'sh -ex ci/build.sh {buildtype}'
+    publishers:
+      - archive:
+          artifacts: 'build/{buildtype}/*/libpreopen.*'
+          fingerprint: true
+      - publish-clang-warnings
+      - publish-junit-results
+
+#
+# Support for publishing Clang warnings
+#
+- publisher:
+    name: publish-clang-warnings
+    publishers:
+      - warnings:
+          console-log-parsers:
+            - Clang (LLVM based)
+
+#
+# Support for publishing JUnit test results
+#
+- publisher:
+    name: publish-junit-results
+    publishers:
+      - junit:
+          results: test-report.xml

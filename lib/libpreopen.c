@@ -328,50 +328,58 @@ po_last_error()
 int
 po_pack(struct po_map *map)
 {
-	char* trailerstring;
-	struct po_packed_map* data_array;
-	int fd, i, r, trailer_len, offset;
+	struct po_packed_entry *entry;
+	struct po_packed_map *packed;
+	char *trailer;
+	size_t chars;   /* total characters to be copied into trailer data */
+	size_t size;
+	int fd, i, offset;
 
 	po_map_assertvalid(map);
 
-	trailer_len=0;
-	for(i=0;i<map->length;i++) {
-		trailer_len+=strlen(map->entries[i].dirname);
-	}
-
-	const size_t shardmemory_blocksize=sizeof(struct po_packed_map)
-		+(map->length)*sizeof(struct po_packed_entry)+(trailer_len)*sizeof(char);
-
-	fd = shm_open(SHM_ANON, O_CREAT |O_RDWR, 0666);
+	fd = shm_open(SHM_ANON, O_CREAT | O_RDWR, 0600);
 	if (fd == -1){
-		po_errormessage("shm_open");
+		po_errormessage("failed to shm_open SHM for packed map");
 		return (-1);
 	}
 
-	r = ftruncate(fd,shardmemory_blocksize);
-	void *ptr = mmap(0,shardmemory_blocksize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-	if (ptr == MAP_FAILED) {
-		po_errormessage("shm_open");
+	chars = 0;
+	for(i = 0; i < map->length; i++) {
+		chars += strlen(map->entries[i].dirname) + 1;
+	}
+
+	size = sizeof(struct po_packed_map)
+		+ map->length * sizeof(struct po_packed_entry)
+		+ chars;
+
+	if (ftruncate(fd, size) != 0) {
+		po_errormessage("failed to truncate shared memory segment");
+		close(fd);
 		return (-1);
-	} else{
-		data_array=(struct po_packed_map*)ptr;
 	}
 
-	data_array->entries=(struct po_packed_entry*)data_array+sizeof(struct po_packed_map);
-	trailerstring =(char*)data_array->entries+(map->length)*sizeof(struct po_packed_entry);
-	assert(trailerstring !=NULL);
-	for(i=0;i<map->length;i++){
-		strcat(trailerstring,map->entries[i].dirname);
+	packed = mmap(0, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	if (packed == MAP_FAILED) {
+		po_errormessage("shm_open");
+		close(fd);
+		return (-1);
 	}
 
-	data_array->count=map->length;
-	data_array->trailer_len=trailer_len;
-	offset=0;
-	for(i=0;i<map->length;i++){
-		data_array->entries[i].offset=offset;
-		data_array->entries[i].len=strlen(map->entries[i].dirname);
-		data_array->entries[i].fd=map->entries[i].dirfd;
-		offset+=data_array->entries[i].len;
+	packed->count = map->length;
+	packed->trailer_len = chars;
+	trailer = ((char*) packed) + size - chars;
+	offset = 0;
+
+	for(i=0; i < map->length; i++){
+		entry = packed->entries + i;
+
+		entry->fd = map->entries[i].dirfd;
+		entry->offset = offset;
+		entry->len = strlen(map->entries[i].dirname);
+		strlcpy(trailer + offset, map->entries[i].dirname,
+			chars - offset);
+
+		offset += entry->len;
 	}
 
 	return fd;
@@ -381,46 +389,49 @@ po_pack(struct po_map *map)
 struct po_map*
 po_unpack(int fd)
 {
+	struct stat sb;
+	struct po_dir *entry;
 	struct po_map *map;
-	struct stat fdStat;
-	struct po_packed_map* data_array=NULL;
-	char *trailerstring, *tempstr;
+	struct po_packed_map *packed;
+	char *trailer;
 	int i;
 
-	if(fstat(fd,&fdStat) < 0) {
-		po_errormessage("fdStat");
+	if(fstat(fd, &sb) < 0) {
+		po_errormessage("failed to fstat() shared memory segment");
 		return (NULL);
 	}
 
-	void *ptr = mmap(0,fdStat.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-	if (ptr == MAP_FAILED) {
+	packed = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	if (packed == MAP_FAILED) {
 		po_errormessage("mmap");
 		return (NULL);
-	} else {
-		data_array=(struct po_packed_map*)ptr;
 	}
 
-	data_array->entries=(struct po_packed_entry*)data_array+sizeof(struct po_packed_map);
-	trailerstring =(char*)data_array->entries+data_array->count*sizeof(struct po_packed_entry);
-	assert(data_array->entries !=NULL);
-	assert(trailerstring !=NULL);
+	trailer = ((char*) packed->entries)
+		+ packed->count * sizeof(struct po_packed_entry);
+	assert(trailer - ((char*) packed) < sb.st_size);
 
 	map = malloc(sizeof(struct po_map));
 	if (map == NULL) {
+		munmap(packed, sb.st_size);
 		return (NULL);
 	}
 
-	map->entries = calloc(sizeof(struct po_dir),data_array->count);
+	map->entries = calloc(packed->count, sizeof(struct po_dir));
 	if (map->entries == NULL) {
+		munmap(packed, sb.st_size);
 		free(map);
 		return (NULL);
 	}
 
-	map->length =data_array->count;
-	for(i=0; i < map->length; i++) {
-		map->entries[i].dirfd=data_array->entries[i].fd;
-		tempstr=trailerstring+data_array->entries[i].offset;
-		map->entries[i].dirname=strndup(tempstr,data_array->entries[i].len);
+	map->capacity = packed->count;
+	map->length = packed->count;
+	for(i = 0; i < map->length; i++) {
+		entry = map->entries + i;
+
+		entry->dirfd = packed->entries[i].fd;
+		entry->dirname = strndup(trailer + packed->entries[i].offset,
+			packed->entries[i].len);
 	}
 
 	po_map_assertvalid(map);

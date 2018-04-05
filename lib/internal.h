@@ -79,7 +79,7 @@ struct po_packed_entry {
 struct po_packed_map{
 	int count;              /* number of entries */
 	int trailer_len;        /* length of trailer string */
-	struct po_packed_entry *entries;
+	struct po_packed_entry entries[0];
 };
 
 /**

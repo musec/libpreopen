@@ -116,7 +116,7 @@ def which(commands, paths = default_path):
 			if os.path.exists(full):
 				return full
 
-	raise ValueError('No command from %s in path %s' % (commands, paths))
+	raise ValueError('Unable to find %s in path %s' % (commands, paths))
 
 
 

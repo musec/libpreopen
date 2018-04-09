@@ -1,5 +1,7 @@
 if (NOT LIT_EXECUTABLE)
 	find_program(LIT_EXECUTABLE lit
+		# Look in user's Pip installation as well as system PATH::
+		PATHS $ENV{HOME}/.local/bin
 		DOC "Path to 'lit' (LLVM Integrated Tester) executable"
 	)
 endif()

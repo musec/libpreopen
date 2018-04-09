@@ -15,6 +15,7 @@
     block-downstream: false
     block-upstream: false
     concurrent: false
+    quiet-period: 5
 
 #
 # Template for generating a Debug or Release version of the build

@@ -33,7 +33,16 @@
             - '*/master'    # TODO: consider job-template, {branch}, etc.
     triggers: [ github ]
     builders:
-      - shell: 'sh -ex ci/build.sh {buildtype}'
+      - cmake:
+          source-dir: '.'
+          build-type: '{buildtype}'
+          clean-build-dir: true
+          generator: Ninja
+          working-dir: 'build/{buildtype}'
+
+      - shell: 'nice ninja -C build/{buildtype}'
+      - shell: 'nice ninja -C build/{buildtype} check'
+
     publishers:
       - archive:
           artifacts: 'build/{buildtype}/*/libpreopen.*'

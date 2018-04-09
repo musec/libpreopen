@@ -15,7 +15,6 @@
     block-downstream: false
     block-upstream: false
     concurrent: false
-    description: 'Managed via Jenkins Job Builder, do not modify manually'
 
 #
 # Template for generating a Debug or Release version of the build

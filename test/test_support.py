@@ -126,5 +126,3 @@ class Config:
 
 	def __getitem__(self, name):
 		return run_command(self.command, [ '--' + name ]).strip()
-
-llvm_config = Config(which([ 'llvm-config33', 'llvm-config' ]))

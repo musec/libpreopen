@@ -1,15 +1,12 @@
-if (NOT LLVM_LIT)
-	find_program(LLVM_LIT llvm-lit
-		PATHS /usr/bin /usr/local/bin
-			/usr/local/llvm40/bin
-			/usr/local/llvm50/bin
-			/usr/local/llvm60/bin
+if (NOT LIT_EXECUTABLE)
+	find_program(LIT_EXECUTABLE lit REQUIRED
+		DOC "Path to 'lit' (LLVM Integrated Tester) executable"
 	)
 endif()
 
-if (NOT LLVM_LIT)
-	message(FATAL_ERROR "unable to find llvm-lit: change PATH "
-		" or specify -D LLVM_LIT=/path/to/lit")
+if (NOT LIT_EXECUTABLE)
+	message(FATAL_ERROR "Unable to find lit in PATH! If installed,"
+		" specify -D LIT_EXECUTABLE=/path/to/lit")
 endif()
 
 set(SHOW_TEST_STATS true CACHE BOOL "Show statistics after running tests")
@@ -24,7 +21,7 @@ endif ()
 
 add_custom_target(check
 	COMMAND
-		${LLVM_LIT} ${LIT_OPTIONS} ${CMAKE_CURRENT_SOURCE_DIR}
+		${LIT_EXECUTABLE} ${LIT_OPTIONS} ${CMAKE_CURRENT_SOURCE_DIR}
 		--param=build_dir=${CMAKE_BINARY_DIR}
 		--param=source_dir=${CMAKE_SOURCE_DIR}
 		--param=output_dir=${CMAKE_CURRENT_BINARY_DIR}

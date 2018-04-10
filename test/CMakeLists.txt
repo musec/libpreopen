@@ -12,10 +12,6 @@ set(TEST_LIBRARY_NAME
 	"${CMAKE_SHARED_LIBRARY_PREFIX}preopen${CMAKE_SHARED_LIBRARY_SUFFIX}")
 set(TEST_LIBRARY_PATH "${LIBRARY_BUILD_DIR}/${TEST_LIBRARY_NAME}")
 
-configure_file(
-	${CMAKE_CURRENT_SOURCE_DIR}/lit.site.cfg.in
-	${CMAKE_CURRENT_BINARY_DIR}/lit.site.cfg)
-
 #
 # Attempt to find FileCheck and lit:
 #
@@ -40,7 +36,21 @@ if (NOT LIT_EXECUTABLE)
 	)
 endif()
 
-if (LIT_EXECUTABLE)
+
+
+if (NOT LIT_EXECUTABLE)
+	 message(WARNING "Unable to find lit in PATH! If installed,"
+		" specify -D LIT_EXECUTABLE=/path/to/lit (or adjust PATH)")
+
+elseif(NOT FILECHECK_EXECUTABLE)
+	message(WARNING "Unable to find FileCheck in PATH! In installed,"
+		" specify -D FILECHECK_EXECUTABLE=/path/to/FileCheck (or adjust PATH)")
+
+else() # All's well: we have both lit and FileCheck
+	configure_file(
+		${CMAKE_CURRENT_SOURCE_DIR}/lit.site.cfg.in
+		${CMAKE_CURRENT_BINARY_DIR}/lit.site.cfg)
+
 	add_custom_target(check
 		COMMAND
 			${LIT_EXECUTABLE} ${LIT_OPTIONS} ${CMAKE_CURRENT_BINARY_DIR}
@@ -52,8 +62,5 @@ if (LIT_EXECUTABLE)
 	)
 
 	 add_dependencies(check preopen)
-else()
-	 message(WARNING "Unable to find lit in PATH! If installed,"
-		" specify -D LIT_EXECUTABLE=/path/to/lit")
 endif()
 

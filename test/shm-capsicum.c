@@ -125,6 +125,7 @@ int main(int argc, char *argv[])
 	char buffer[1024];
 	struct stat st;
 	struct po_map *map;
+	char *end, *env;
 	int fd, i, shmfd;
 
 	// CHECK: {{.*}}.child
@@ -135,14 +136,29 @@ int main(int argc, char *argv[])
 		"----------------------------------------\n");
 
 	cap_enter();
+	// Attempt to unwrap po_map from a shared memory segment specified by
+	// SHARED_MEMORYFD
+	env = getenv("LIB_PO_MAP");
+	if (env == NULL || *env == '\0') {
+		return (NULL);
+	}
 
+	// We expect this environment variable to be an integer and nothing but
+	// an integer.
 	// CHECK: got shmfd: [[SHMFD]]
-	shmfd = atoi(getenv("LIB_PO_MAP"));
+	shmfd = strtol(env, &end, 10);
+	if (*end != '\0') {
+		err(-1, "failed to extract SHM FD from envvar '%s'", env);
+	}
 	printf("got shmfd: %d\n", shmfd);
 
 	// CHECK: unpacked map: [[MAP:0x[0-9a-f]+]]
 	map = po_unpack(shmfd);
+	if (map == NULL) {
+		err(-1, "failed to unpack map");
+	}
 	printf("unpacked map: %p\n", map);
+
 	po_map_set(map);
 
 	// CHECK: contents of [[MAP]]:

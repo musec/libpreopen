@@ -37,6 +37,7 @@
 #include <sys/mman.h>
 
 #include <assert.h>
+#include <err.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,7 +57,7 @@ char **environ;
 int main(int argc, char *argv[]){
 	char buffer[20];
 	struct po_map *map;
-	int len, shmfd;
+	int shmfd;
 	int foo, wibble;
 
 	// CHECK: {{.*}}.parent
@@ -119,10 +120,8 @@ int main(int argc, char *argv[]){
 
 int main(int argc, char *argv[])
 {
-	char buffer[1024];
-	struct stat st;
 	struct po_map *map;
-	int fd, i, shmfd;
+	int shmfd;
 
 	// CHECK: {{.*}}.child
 	printf("----------------------------------------"

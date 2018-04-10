@@ -44,7 +44,6 @@
 
 
 static void find(const char *absolute, struct po_map *map);
-static bool print(const char *, int, cap_rights_t);
 
 int main(int argc, char *argv[])
 {
@@ -67,7 +66,7 @@ int main(int argc, char *argv[])
 	printf("po_add(\"/foo\", %d) returned: 0x%tx\n", foo, map);
 
 	// CHECK: - dirname: '/foo', dirfd: [[FOO]]
-	po_map_foreach(map, print);
+	po_map_foreach(map, po_dir_print);
 
 	// CHECK: -----
 	printf("-------------------------------------------------------\n");
@@ -79,7 +78,7 @@ int main(int argc, char *argv[])
 
 	// CHECK-DAG: - dirname: '/foo', dirfd: [[FOO]]
 	// CHECK-DAG: - dirname: '{{.*}}/Inputs/baz/wibble', dirfd: [[WIBBLE]]
-	po_map_foreach(map, print);
+	po_map_foreach(map, po_dir_print);
 
 	// CHECK: -----
 	printf("-------------------------------------------------------\n");
@@ -94,7 +93,7 @@ int main(int argc, char *argv[])
 	// CHECK-DAG: - dirname: '/foo', dirfd: [[FOO]]
 	// CHECK-DAG: - dirname: '{{.*}}/Inputs/baz/wibble', dirfd: [[WIBBLE]]
 	// CHECK-DAG: - dirname: '/wibble', dirfd: [[WIBBLE]]
-	po_map_foreach(map, print);
+	po_map_foreach(map, po_dir_print);
 
 	// CHECK: -----
 	printf("-------------------------------------------------------\n");
@@ -122,12 +121,4 @@ find(const char *absolute, struct po_map *map)
 {
 	struct po_relpath rel = po_find(map, absolute, NULL);
 	printf("%s -> %d:%s\n", absolute, rel.dirfd, rel.relative_path);
-}
-
-static bool
-print(const char *dirname, int dirfd, cap_rights_t rights)
-{
-	printf(" - dirname: '%s', dirfd: %d, rights: <rights>\n",
-	       dirname, dirfd);
-	return (true);
 }

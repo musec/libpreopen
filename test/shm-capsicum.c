@@ -50,8 +50,6 @@
 #define TEST_DIR(name) \
 	TEST_DATA_DIR name
 
-static bool print(const char *, int, cap_rights_t);
-
 #ifdef PARENT
 
 char **environ;
@@ -95,10 +93,10 @@ int main(int argc, char *argv[]){
 	printf("unpacked SHM into map at %p\n", unpacked_copy);
 
 	// CHECK: contents of copy at [[COPY]]:
-	// CHECK-DAG: [[FOO]]: "foo"
-	// CHECK-DAG: [[WIBBLE]]: "[[WIBBLE_PATH]]"
+	// CHECK-DAG: dirname: 'foo', dirfd: [[FOO]]
+	// CHECK-DAG: dirname: '[[WIBBLE_PATH]]', dirfd: [[WIBBLE]]
 	printf("contents of copy at %p:\n", unpacked_copy);
-	po_map_foreach(unpacked_copy, print);
+	po_map_foreach(unpacked_copy, po_dir_print);
 
 	// clear close-on-exec flag: we want this to be propagated!
 	fcntl(shmfd, F_SETFD, 0);
@@ -162,19 +160,12 @@ int main(int argc, char *argv[])
 	po_map_set(map);
 
 	// CHECK: contents of [[MAP]]:
-	// CHECK-DAG: [[FOO]]: "foo"
-	// CHECK-DAG: [[WIBBLE]]: "[[WIBBLE_PATH]]"
+	// CHECK-DAG: dirname: 'foo', dirfd: [[FOO]]
+	// CHECK-DAG: dirname: '[[WIBBLE_PATH]]', dirfd: [[WIBBLE]]
 	printf("contents of %p:\n", map);
-	po_map_foreach(map, print);
+	po_map_foreach(map, po_dir_print);
 
 	return 0;
 }
 
 #endif
-
-static bool
-print(const char *dirname, int dirfd, cap_rights_t rights)
-{
-	printf("\t%d: \"%s\"\n", dirfd, dirname);
-	return (true);
-}

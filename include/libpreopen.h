@@ -61,6 +61,12 @@ struct po_map;
 typedef bool (po_dir_callback)(const char *dirname, int dirfd, cap_rights_t);
 
 /**
+ * A simple @ref po_dir_callback that will print a @ref po_map's entries,
+ * one per line.
+ */
+po_dir_callback	po_dir_print;
+
+/**
  * A filesystem path, relative to a directory descriptor.
  */
 struct po_relpath {

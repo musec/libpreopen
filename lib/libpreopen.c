@@ -86,6 +86,14 @@ po_map_assertvalid(const struct po_map *map)
  */
 static struct po_map* po_map_enlarge(struct po_map *map);
 
+bool
+po_dir_print(const char *dirname, int dirfd, cap_rights_t rights)
+{
+	printf(" - dirname: '%s', dirfd: %d, rights: <rights>\n",
+	       dirname, dirfd);
+	return (true);
+}
+
 struct po_map*
 po_map_create(int capacity)
 {

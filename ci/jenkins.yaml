@@ -67,4 +67,4 @@
     name: publish-junit-results
     publishers:
       - junit:
-          results: test-report.xml
+          results: 'build/**/test/test-results.xml'

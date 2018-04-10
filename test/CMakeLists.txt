@@ -29,6 +29,5 @@ else() # All's well: we have both lit and FileCheck
 		COMMENT "Running unit tests"
 	)
 
-	 add_dependencies(check preopen)
+	add_dependencies(check preopen)
 endif()
-

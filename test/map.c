@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
 	// CHECK: Creating map: [[MAP:.*]]
 	struct po_map *map = po_map_create(4);
-	printf("0x%tx\n", map);
+	printf("0x%p\n", map);
 
 	printf("-------------------------------------------------------\n");
 
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 
 	// CHECK: po_add("/foo", [[FOO]]) returned: [[MAP]]
 	map = po_add(map, "/foo", foo);
-	printf("po_add(\"/foo\", %d) returned: 0x%tx\n", foo, map);
+	printf("po_add(\"/foo\", %d) returned: 0x%p\n", foo, map);
 
 	// CHECK: - dirname: '/foo', dirfd: [[FOO]]
 	po_map_foreach(map, po_dir_print);
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 
 	// CHECK: po_add("/wibble", [[WIBBLE]]) returned: [[MAP]]
 	map = po_add(map, "/wibble", wibble);
-	printf("po_add(\"/wibble\", %d) returned: 0x%tx\n", wibble, map);
+	printf("po_add(\"/wibble\", %d) returned: 0x%p\n", wibble, map);
 
 	// CHECK-DAG: - dirname: '/foo', dirfd: [[FOO]]
 	// CHECK-DAG: - dirname: '{{.*}}/Inputs/baz/wibble', dirfd: [[WIBBLE]]

@@ -113,7 +113,8 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 
 INPUT                  = ${CMAKE_SOURCE_DIR}/include \
-                         ${CMAKE_SOURCE_DIR}/lib
+                         ${CMAKE_SOURCE_DIR}/lib \
+                         ${CMAKE_SOURCE_DIR}/README.md
 
 INPUT_ENCODING         = UTF-8
 

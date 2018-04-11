@@ -431,38 +431,6 @@ po_unpack(int fd)
 }
 
 
-int
-po_map_length(struct po_map* map)
-{
-	po_map_assertvalid(map);
-
-	return (int)map->length;
-}
-
-const char*
-po_map_name(struct po_map *map, int k)
-{
-	po_map_assertvalid(map);
-
-	if (k >= map->length) {
-		return (NULL);
-	}
-
-	return map->entries[k].dirname;
-}
-
-int
-po_map_fd(struct po_map *map,int k)
-{
-	po_map_assertvalid(map);
-
-	if (k >= map->length) {
-		return (-1);
-	}
-
-	return map->entries[k].dirfd;
-}
-
 /* Internal (service) functions: */
 
 static struct po_map*

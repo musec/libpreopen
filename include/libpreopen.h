@@ -133,11 +133,17 @@ struct po_map* po_add(struct po_map *map, const char *path, int fd);
 /**
  * Pre-open a path and store it in a @ref po_map for later use.
  *
+ * @param   map     the map to add the path->fd mapping to
+ * @param   path    the path to pre-open (which may be a directory if
+ *                  `O_DIRECTORY` is passed via @b flags)
+ * @param   flags   flags to pass to `open(2)` / `openat(2)`
+ * @param   ...     optional file mode, as accepted by `open(2)`
+ *
  * @returns the file descriptor of the opened directory or -1 if
  *          @b path is not a directory or cannot be opened or if
  *          the @ref po_map cannot store the directory (e.g., resizing fails)
  */
-int po_preopen(struct po_map *, const char *path);
+int po_preopen(struct po_map *, const char *path, int flags, ...);
 
 /**
  * 

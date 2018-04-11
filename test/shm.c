@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
 	po_add(map, "foo", foo);
 
 	// CHECK: pre-opened [[WIBBLE:[0-9]+]] as "[[WIBBLE_PATH:.*]]"
-	wibble = po_preopen(map, TEST_DIR("/baz/wibble"));
+	wibble = po_preopen(map, TEST_DIR("/baz/wibble"), O_DIRECTORY);
 	assert(wibble >= 0);
 	printf("pre-opened %d as \"%s\"\n", wibble, TEST_DIR("/baz/wibble"));
 

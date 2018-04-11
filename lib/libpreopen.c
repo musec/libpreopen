@@ -40,6 +40,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -222,10 +223,13 @@ po_add(struct po_map *map, const char *path, int fd)
 }
 
 int
-po_preopen(struct po_map *map, const char *path)
+po_preopen(struct po_map *map, const char *path, int flags, ...)
 {
-	int fd=0,  is_reg_path;
-	struct stat statbuff;
+	va_list args;
+	int fd, mode;
+
+	va_start(args, flags);
+	mode = va_arg(args, int);
 
 	po_map_assertvalid(map);
 
@@ -233,25 +237,10 @@ po_preopen(struct po_map *map, const char *path)
 		return (-1);
 	}
 
-	fstatat(AT_FDCWD,path,&statbuff,AT_SYMLINK_NOFOLLOW);
-	is_reg_path = S_ISREG(statbuff.st_mode);
-	if(is_reg_path == 0) {
-		fd = openat(AT_FDCWD, path, O_DIRECTORY);
-		if (fd == -1) {
-			return (-1);
-		}
-	} else if(is_reg_path != 0) {
-		char* temp_path = po_split_file_fromPath(path);
-		fd = openat(AT_FDCWD, temp_path, O_DIRECTORY);
-		if (fd == -1) {
-			return (-1);
-		}
-	} else{
-		po_errormessage("Specify path type\n");
+	fd = openat(AT_FDCWD, path, flags, mode);
+	if (fd == -1) {
+		return (-1);
 	}
-
-	assert(path != NULL);
-	assert(fd != -1);
 
 	if (po_add(map, path, fd) == NULL) {
 		return (-1);

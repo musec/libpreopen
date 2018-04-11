@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	int foo = openat(AT_FDCWD, TEST_DIR("/foo"), O_RDONLY);
 	po_add(map, "foo", foo);
 
-	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"));
+	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"), O_DIRECTORY);
 	assert(wibble != -1);
 
 	// CHECK: Opening foo/bar/hi.txt...

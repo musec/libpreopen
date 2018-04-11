@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	po_add(map, "foo", foo);
 
 	// CHECK: wibble: [[WIBBLE:[0-9]+]]
-	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"));
+	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"), O_DIRECTORY);
 	printf("wibble: %d\n", wibble);
 	assert(wibble != -1);
 

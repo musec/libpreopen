@@ -1,3 +1,7 @@
+/**
+ * @file   wrappers.c
+ * @brief  Wrappers of libc functions that access global variables.
+ */
 /*-
  * Copyright (c) 2016 Stanley Uche Godfrey
  * Copyright (c) 2018 Jonathan Anderson
@@ -49,10 +53,24 @@
  */
 static struct po_relpath find_relative(const char *path, cap_rights_t *);
 
-// Get the map handed into the process via SHARED_MEMORYFD (if it exists)
+/**
+ * Get the map that was handed into the process via `SHARED_MEMORYFD`
+ * (if it exists).
+ */
 static struct po_map*	get_shared_map(void);
 
 
+/**
+ * Capability-safe wrapper around the `access(2)` system call.
+ *
+ * `access(2)` accepts a path argument that can reference the global filesystem
+ * namespace. This is not a capability-safe operation, so this wrapper function
+ * attempts to look up the path (or a prefix of it) within the current global
+ * po_map and converts the call into the capability-safe `faccessat(2)` if
+ * possible. If the current po_map does not contain the sought-after path,
+ * this wrapper will call `faccessat(AT_FDCWD, original_path, ...)`, which is
+ * the same as the unwrapped `access(2)` call.
+ */
 int
 access(const char *path, int mode)
 {
@@ -61,6 +79,17 @@ access(const char *path, int mode)
 	return faccessat(rel.dirfd, rel.relative_path, mode,0);
 }
 
+/**
+ * Capability-safe wrapper around the `open(2)` system call.
+ *
+ * `open(2)` accepts a path argument that can reference the global filesystem
+ * namespace. This is not a capability-safe operation, so this wrapper function
+ * attempts to look up the path (or a prefix of it) within the current global
+ * po_map and converts the call into the capability-safe `openat(2)` if
+ * possible. If the current po_map does not contain the sought-after path,
+ * this wrapper will call `openat(AT_FDCWD, original_path, ...)`, which is
+ * the same as the unwrapped `open(2)` call.
+ */
 int
 open(const char *path, int flags, ...)
 {
@@ -75,6 +104,17 @@ open(const char *path, int flags, ...)
 	return openat(rel.dirfd, rel.relative_path, flags, mode);
 }
 
+/**
+ * Capability-safe wrapper around the `stat(2)` system call.
+ *
+ * `stat(2)` accepts a path argument that can reference the global filesystem
+ * namespace. This is not a capability-safe operation, so this wrapper function
+ * attempts to look up the path (or a prefix of it) within the current global
+ * po_map and converts the call into the capability-safe `fstatat(2)` if
+ * possible. If the current po_map does not contain the sought-after path,
+ * this wrapper will call `fstatat(AT_FDCWD, original_path, ...)`, which is
+ * the same as the unwrapped `stat(2)` call.
+ */
 int
 stat(const char *path, struct stat *st)
 {

@@ -1,3 +1,10 @@
+/**
+ * @file   internal.h
+ * @brief  Declarations of internal data structures and functions
+ *
+ * @cond internal
+ */
+
 /*-
  * Copyright (c) 2016-2017 Stanley Uche Godfrey
  * Copyright (c) 2016-2017 Jonathan Anderson
@@ -40,6 +47,8 @@
 
 /**
  * A directory that has been pre-opened.
+ *
+ * @internal
  */
 struct po_dir{
 	/** The path that maps to this directory */
@@ -56,6 +65,7 @@ struct po_dir{
 
 // Documented in external header file
 struct po_map {
+	//! @internal
 	int refcount;
 	struct po_dir *entries;
 	size_t capacity;
@@ -64,6 +74,8 @@ struct po_map {
 
 /**
  * An entry in the packed version of `struct po_map`.
+ *
+ * @internal
  */
 struct po_packed_entry {
 	int fd;         /* file descriptor */
@@ -76,6 +88,8 @@ struct po_packed_entry {
  *
  * An object of this type will be immediately followed in memory by a trailer
  * of string data of length `trailer_len`.
+ *
+ * @internal
  */
 struct po_packed_map{
 	int count;              /* number of entries */
@@ -90,13 +104,18 @@ struct po_packed_map{
  * @param   dirlen  the length of @b dir
  * @param   path    a path that may have @b dir as a prefix,
  *                  e.g., `/foo/bar/baz`
+ *
+ * @internal
  */
 bool po_isprefix(const char *dir, size_t dirlen, const char *path);
 
 /**
  * Store an error message in the global "last error message" buffer.
+ *
+ * @internal
  */
 void po_errormessage(const char *msg);
 
-
 #endif /* LIBPO_INTERNAL_H */
+
+/** @endcond */

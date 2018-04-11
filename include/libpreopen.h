@@ -1,5 +1,7 @@
-
-/*
+/**
+ * @file   libpreopen.h
+ * @brief  Public header for libpreopen
+ *
  * Copyright (c) 2016 Stanley Uche Godfrey
  * Copyright (c) 2016, 2018 Jonathan Anderson
  * All rights reserved.
@@ -44,7 +46,8 @@
 __BEGIN_DECLS
 
 /**
- * A mapping from paths to pre-opened directories.
+ * @struct po_map
+ * @brief  A mapping from paths to pre-opened directories.
  *
  * This type is opaque to clients, but it is reference-counted and can be
  * thought of as containing a set (with no particular ordering guarantees)
@@ -143,7 +146,7 @@ struct po_map* po_add(struct po_map *map, const char *path, int fd);
  *          @b path is not a directory or cannot be opened or if
  *          the @ref po_map cannot store the directory (e.g., resizing fails)
  */
-int po_preopen(struct po_map *, const char *path, int flags, ...);
+int po_preopen(struct po_map *map, const char *path, int flags, ...);
 
 /**
  * Find a directory whose path is a prefix of @b path and (on platforms that

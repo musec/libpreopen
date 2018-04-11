@@ -146,16 +146,6 @@ struct po_map* po_add(struct po_map *map, const char *path, int fd);
 int po_preopen(struct po_map *, const char *path, int flags, ...);
 
 /**
- * 
- * 
- *Splits file name from absolute file a path and returns the absolute
- * path to the directory containing the file.
- * @param   relative_path  the absolute path to the file
- */
-
-char* po_split_file_fromPath(const char *relative_path);
-
-/**
  * Find a directory whose path is a prefix of @b path and (on platforms that
  * support Capsicum) that has the rights required by @b rights.
  *

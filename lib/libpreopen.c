@@ -251,24 +251,6 @@ po_preopen(struct po_map *map, const char *path, int flags, ...)
 	return (fd);
 }
 
-char*
-po_split_file_fromPath(const char *relative_path)
-{
-	const char slash='/';
-	char *filename;
-	char *dirName;
-
-	if (relative_path == NULL) {
-		return (NULL);
-	}
-
-	filename = strrchr(relative_path, slash);
-	dirName = strndup(relative_path,
-			strlen(relative_path) - strlen(filename) + 1);
-
-	return dirName;
-}
-
 struct po_relpath
 po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 {

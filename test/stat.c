@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016 Jonathan Anderson and Stanley Uche Godfrey
+ * Copyright (c) 2016, 2018 Jonathan Anderson
+ * Copyright (c) 2016 Stanley Uche Godfrey
  * All rights reserved.
  *
  * This software was developed at Memorial University under the
@@ -33,44 +34,64 @@
  * RUN: %filecheck %s -input-file %t.out
  */
 
+#include <sys/stat.h>
+
 #include <assert.h>
-#include <sys/capsicum.h>
+#include <err.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
+
 #include "libpreopen.h"
 
 #define TEST_DIR(name) \
 	TEST_DATA_DIR name
+
+
 int main(int argc, char *argv[])
 {	
-	struct stat st;
+	struct stat sb;
+	int result;
+
+	// CHECK: building map in [[MAP:0x[0-9a-f]+]]
 	struct po_map *map = po_map_get();
+	printf("building map in %p\n", map);
 	
+	// CHECK: foo: [[FOO:[0-9]+]]
 	int foo = openat(AT_FDCWD, TEST_DIR("/foo"), O_RDONLY);
+	printf("foo: %d\n", foo);
+	assert(foo != -1);
 	po_add(map, "foo", foo);
 
+	// CHECK: wibble: [[WIBBLE:[0-9]+]]
 	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"));
+	printf("wibble: %d\n", wibble);
 	assert(wibble != -1);
 
+	// CHECK-DAG: dirname: 'foo', dirfd: [[FOO]]
+	// CHECK-DAG: dirname: '{{.*}}/Inputs/baz/wibble', dirfd: [[WIBBLE]]
+	po_map_foreach(map, po_dir_print);
+
+	po_map_set(map);
+
+	// CHECK: entered capability mode
 	cap_enter();
+	printf("entered capability mode to disallow the real stat(2)\n");
 
-	// CHECK: Opening foo/bar/hi.txt...
-	printf("Opening foo/bar/hi.txt...\n");
-	int fd = open("foo/bar/hi.txt", O_RDONLY);
-
-	// CHECK-NOT: hi.txt: -1
-	printf("hi.txt: %d\n", fd);
+	// CHECK-NOT: error in stat('foo')
+	if (stat("foo", &sb) < 0) {
+		err(-1, "error in stat('foo')");
+	} else if (S_ISDIR(sb.st_mode)) {
+		printf("'foo' is a directory\n");
+	}
 
 	// CHECK: Opening baz/wibble/bye.txt...
 	printf("Opening baz/wibble/bye.txt...\n");
-	fd = stat(TEST_DIR("/baz/wibble") "/bye.txt", &st);
+	result = stat(TEST_DIR("/baz/wibble") "/bye.txt", &sb);
 
 	// CHECK-NOT: bye.txt: -1
-	printf("bye.txt: %d\n", fd);
+	printf("bye.txt: %d\n", result);
 
 	return 0;
 }

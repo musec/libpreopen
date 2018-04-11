@@ -1,7 +1,7 @@
 
 /*
  * Copyright (c) 2016 Stanley Uche Godfrey
- * Copyright (c) 2016 Jonathan Anderson
+ * Copyright (c) 2016, 2018 Jonathan Anderson
  * All rights reserved.
  *
  * This software was developed at Memorial University under the
@@ -45,8 +45,10 @@ __BEGIN_DECLS
 
 /**
  * A mapping from paths to pre-opened directories.
- *This type is opaque to clients, but can be thought of as containing
- * a set (with no particular ordering guarantees) of path->dirfd mappings.
+ *
+ * This type is opaque to clients, but it is reference-counted and can be
+ * thought of as containing a set (with no particular ordering guarantees)
+ * of path->dirfd mappings.
  */
 struct po_map;
 
@@ -79,13 +81,17 @@ struct po_relpath {
 
 /**
  * Create a @ref po_map of at least the specified capacity.
+ *
+ * The returned @ref po_map will have a reference count of 1.
  */
 struct po_map* po_map_create(int capacity);
 
 /**
- * Free a @ref po_map and all of its owned memory.
+ * Release a reference to a @ref po_map.
+ *
+ * This may cause memory to be freed.
  */
-void po_map_free(struct po_map *);
+void po_map_release(struct po_map *);
 
 /**
  * Iterate over a @ref po_map, invoking a callback for each element in the map.

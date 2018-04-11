@@ -65,6 +65,7 @@ po_map_assertvalid(const struct po_map *map)
 	const struct po_dir *dir;
 	size_t i;
 
+	assert(map->refcount > 0);
 	assert(map->length <= map->capacity);
 	assert(map->entries != NULL || map->capacity == 0);
 
@@ -110,6 +111,7 @@ po_map_create(int capacity)
 		return (NULL);
 	}
 
+	map->refcount = 1;
 	map->capacity = capacity;
 	map->length = 0;
 
@@ -119,17 +121,20 @@ po_map_create(int capacity)
 }
 
 void
-po_map_free(struct po_map *map)
+po_map_release(struct po_map *map)
 {
-	//free strdup call
 	if (map == NULL) {
 		return;
 	}
 
 	po_map_assertvalid(map);
 
-	free(map->entries);
-	free(map);
+	map->refcount -= 1;
+
+	if (map->refcount == 0) {
+		free(map->entries);
+		free(map);
+	}
 }
 
 size_t
@@ -158,7 +163,11 @@ po_map_get()
 		global_map = po_map_create(4);
 	}
 
-	po_map_assertvalid(global_map);
+	if (global_map != NULL) {
+		po_map_assertvalid(global_map);
+	}
+
+	global_map->refcount += 1;
 
 	return (global_map);
 }
@@ -168,8 +177,10 @@ po_map_set(struct po_map *map)
 {
 	po_map_assertvalid(map);
 
+	map->refcount += 1;
+
 	if (global_map != NULL) {
-		po_map_free(global_map);
+		po_map_release(global_map);
 	}
 
 	global_map = map;
@@ -432,6 +443,7 @@ po_unpack(int fd)
 		return (NULL);
 	}
 
+	map->refcount = 1;
 	map->capacity = packed->count;
 	map->length = packed->count;
 	for(i = 0; i < map->length; i++) {

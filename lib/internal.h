@@ -56,6 +56,7 @@ struct po_dir{
 
 // Documented in external header file
 struct po_map {
+	int refcount;
 	struct po_dir *entries;
 	size_t capacity;
 	size_t length;

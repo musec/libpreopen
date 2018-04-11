@@ -104,15 +104,14 @@ find_relative(const char *path, cap_rights_t *rights)
 static struct po_map*
 get_shared_map()
 {
-	static struct po_map *stored_map;
 	struct po_map *map;
 	char *end, *env;
 	long fd;
 
-	// If the map variable has been set, it must have been set as the
-	// default libpreopen map.
-	if (stored_map) {
-		return (stored_map);
+	// Do we already have a default map?
+	map = po_map_get();
+	if (map) {
+		return (map);
 	}
 
 	// Attempt to unwrap po_map from a shared memory segment specified by
@@ -135,7 +134,6 @@ get_shared_map()
 	}
 
 	po_map_set(map);
-	stored_map = map;
 
 	return (map);
 }

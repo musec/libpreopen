@@ -5,8 +5,8 @@
     <tab type="mainpage" visible="yes" title=""/>
     <tab type="pages" visible="yes" title="" intro=""/>
     <tab type="modules" visible="yes" title="" intro=""/>
-    <tab type="classes" visible="yes" title=""/>
-    <tab type="files" visible="yes" title=""/>
+    <tab type="classlist" visible="yes" title="" intro=""/>
+    <tab type="filelist" visible="yes" title="" intro=""/>
     <tab type="examples" visible="yes" title="" intro=""/>  
   </navindex>
 

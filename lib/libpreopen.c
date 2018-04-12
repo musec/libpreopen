@@ -63,7 +63,7 @@ static struct po_map *global_map;
 static void
 po_map_assertvalid(const struct po_map *map)
 {
-	const struct po_dir *dir;
+	const struct po_map_entry *entry;
 	size_t i;
 
 	assert(map->refcount > 0);
@@ -71,10 +71,10 @@ po_map_assertvalid(const struct po_map *map)
 	assert(map->entries != NULL || map->capacity == 0);
 
 	for (i = 0; i < map->length; i++) {
-		dir = map->entries + i;
+		entry = map->entries + i;
 
-		assert(dir->dirname != NULL);
-		assert(dir->dirfd >= 0);
+		assert(entry->name != NULL);
+		assert(entry->fd >= 0);
 	}
 }
 #endif
@@ -89,10 +89,10 @@ po_map_assertvalid(const struct po_map *map)
 static struct po_map* po_map_enlarge(struct po_map *map);
 
 bool
-po_dir_print(const char *dirname, int dirfd, cap_rights_t rights)
+po_print_entry(const char *name, int fd, cap_rights_t rights)
 {
-	printf(" - dirname: '%s', dirfd: %d, rights: <rights>\n",
-	       dirname, dirfd);
+	printf(" - name: '%s', fd: %d, rights: <rights>\n",
+	       name, fd);
 	return (true);
 }
 
@@ -106,7 +106,7 @@ po_map_create(int capacity)
 		return (NULL);
 	}
 
-	map->entries = calloc(sizeof(struct po_dir), capacity);
+	map->entries = calloc(sizeof(struct po_map_entry), capacity);
 	if (map->entries == NULL) {
 		free(map);
 		return (NULL);
@@ -139,17 +139,17 @@ po_map_release(struct po_map *map)
 }
 
 size_t
-po_map_foreach(const struct po_map *map, po_dir_callback cb)
+po_map_foreach(const struct po_map *map, po_map_iter_cb cb)
 {
-	struct po_dir *dir;
+	struct po_map_entry *entry;
 	size_t n;
 
 	po_map_assertvalid(map);
 
 	for (n = 0; n < map->length; n++) {
-		dir = map->entries + n;
+		entry = map->entries + n;
 
-		if (!cb(dir->dirname, dir->dirfd, dir->rights)) {
+		if (!cb(entry->name, entry->fd, entry->rights)) {
 			break;
 		}
 	}
@@ -190,7 +190,7 @@ po_map_set(struct po_map *map)
 struct po_map*
 po_add(struct po_map *map, const char *path, int fd)
 {
-	struct po_dir *d;
+	struct po_map_entry *entry;
 
 	po_map_assertvalid(map);
 
@@ -205,14 +205,14 @@ po_add(struct po_map *map, const char *path, int fd)
 		}
 	}
 
-	d = map->entries + map->length;
+	entry = map->entries + map->length;
 	map->length++;
 
-	d->dirname = strdup(path);
-	d->dirfd = fd;
+	entry->name = strdup(path);
+	entry->fd = fd;
 
 #ifdef WITH_CAPSICUM
-	if (cap_rights_get(fd, &d->rights) != 0) {
+	if (cap_rights_get(fd, &entry->rights) != 0) {
 		return (NULL);
 	}
 #endif
@@ -266,21 +266,21 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 	}
 
 	for(size_t i = 0; i < map->length; i++) {
-		const struct po_dir *d = map->entries + i;
-		const char *dirname = d->dirname;
-		size_t len = strnlen(dirname, MAXPATHLEN);
+		const struct po_map_entry *entry = map->entries + i;
+		const char *name = entry->name;
+		size_t len = strnlen(name, MAXPATHLEN);
 
-		if ((len <= bestlen) || !po_isprefix(dirname, len, path)) {
+		if ((len <= bestlen) || !po_isprefix(name, len, path)) {
 			continue;
 		}
 
 #ifdef WITH_CAPSICUM
-		if (rights && !cap_rights_contains(&d->rights, rights)) {
+		if (rights && !cap_rights_contains(&entry->rights, rights)) {
 			continue;
 		}
 #endif
 
-		best = d->dirfd;
+		best = entry->fd;
 		bestlen = len;
 	}
 
@@ -335,7 +335,7 @@ po_pack(struct po_map *map)
 
 	chars = 0;
 	for(i = 0; i < map->length; i++) {
-		chars += strlen(map->entries[i].dirname) + 1;
+		chars += strlen(map->entries[i].name) + 1;
 	}
 
 	size = sizeof(struct po_packed_map)
@@ -363,10 +363,10 @@ po_pack(struct po_map *map)
 	for(i=0; i < map->length; i++){
 		entry = packed->entries + i;
 
-		entry->fd = map->entries[i].dirfd;
+		entry->fd = map->entries[i].fd;
 		entry->offset = offset;
-		entry->len = strlen(map->entries[i].dirname);
-		strlcpy(trailer + offset, map->entries[i].dirname,
+		entry->len = strlen(map->entries[i].name);
+		strlcpy(trailer + offset, map->entries[i].name,
 			chars - offset);
 
 		offset += entry->len;
@@ -380,7 +380,7 @@ struct po_map*
 po_unpack(int fd)
 {
 	struct stat sb;
-	struct po_dir *entry;
+	struct po_map_entry *entry;
 	struct po_map *map;
 	struct po_packed_map *packed;
 	char *trailer;
@@ -407,7 +407,7 @@ po_unpack(int fd)
 		return (NULL);
 	}
 
-	map->entries = calloc(packed->count, sizeof(struct po_dir));
+	map->entries = calloc(packed->count, sizeof(struct po_map_entry));
 	if (map->entries == NULL) {
 		munmap(packed, sb.st_size);
 		free(map);
@@ -420,8 +420,8 @@ po_unpack(int fd)
 	for(i = 0; i < map->length; i++) {
 		entry = map->entries + i;
 
-		entry->dirfd = packed->entries[i].fd;
-		entry->dirname = strndup(trailer + packed->entries[i].offset,
+		entry->fd = packed->entries[i].fd;
+		entry->name = strndup(trailer + packed->entries[i].offset,
 			packed->entries[i].len);
 	}
 
@@ -436,8 +436,8 @@ po_unpack(int fd)
 static struct po_map*
 po_map_enlarge(struct po_map *map)
 {
-	struct po_dir *enlarged;
-	enlarged = calloc(sizeof(struct po_dir), 2 * map->capacity);
+	struct po_map_entry *enlarged;
+	enlarged = calloc(sizeof(struct po_map_entry), 2 * map->capacity);
 	if (enlarged == NULL) {
 		return (NULL);
 	}

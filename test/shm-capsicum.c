@@ -93,10 +93,10 @@ int main(int argc, char *argv[]){
 	printf("unpacked SHM into map at %p\n", unpacked_copy);
 
 	// CHECK: contents of copy at [[COPY]]:
-	// CHECK-DAG: dirname: 'foo', dirfd: [[FOO]]
-	// CHECK-DAG: dirname: '[[WIBBLE_PATH]]', dirfd: [[WIBBLE]]
+	// CHECK-DAG: name: 'foo', fd: [[FOO]]
+	// CHECK-DAG: name: '[[WIBBLE_PATH]]', fd: [[WIBBLE]]
 	printf("contents of copy at %p:\n", unpacked_copy);
-	po_map_foreach(unpacked_copy, po_dir_print);
+	po_map_foreach(unpacked_copy, po_print_entry);
 
 	// clear close-on-exec flag: we want this to be propagated!
 	fcntl(shmfd, F_SETFD, 0);
@@ -160,10 +160,10 @@ int main(int argc, char *argv[])
 	po_map_set(map);
 
 	// CHECK: contents of [[MAP]]:
-	// CHECK-DAG: dirname: 'foo', dirfd: [[FOO]]
-	// CHECK-DAG: dirname: '[[WIBBLE_PATH]]', dirfd: [[WIBBLE]]
+	// CHECK-DAG: name: 'foo', fd: [[FOO]]
+	// CHECK-DAG: name: '[[WIBBLE_PATH]]', fd: [[WIBBLE]]
 	printf("contents of %p:\n", map);
-	po_map_foreach(map, po_dir_print);
+	po_map_foreach(map, po_print_entry);
 
 	return 0;
 }

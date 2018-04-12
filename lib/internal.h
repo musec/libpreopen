@@ -46,19 +46,24 @@
 #include <sys/cdefs.h>
 
 /**
- * A directory that has been pre-opened.
+ * An entry in a po_map.
  *
  * @internal
  */
-struct po_dir{
-	/** The path that maps to this directory */
-	const char *dirname;
+struct po_map_entry {
+	/**
+	 * The name this file or directory is mapped to.
+	 *
+	 * This name should look like a path, but it does not necessarily need
+	 * match to match the path it was originally obtained from.
+	 */
+	const char *name;
 
-	/** The directory's descriptor */
-	int dirfd;
+	/** File descriptor (which may be a directory) */
+	int fd;
 
 #ifdef WITH_CAPSICUM
-	/** Capability rights associated with the directory. */
+	/** Capability rights associated with the file descriptor */
 	cap_rights_t rights;
 #endif
 };
@@ -67,7 +72,7 @@ struct po_dir{
 struct po_map {
 	//! @internal
 	int refcount;
-	struct po_dir *entries;
+	struct po_map_entry *entries;
 	size_t capacity;
 	size_t length;
 };

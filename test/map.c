@@ -65,8 +65,8 @@ int main(int argc, char *argv[])
 	map = po_add(map, "/foo", foo);
 	printf("po_add(\"/foo\", %d) returned: 0x%p\n", foo, map);
 
-	// CHECK: - dirname: '/foo', dirfd: [[FOO]]
-	po_map_foreach(map, po_dir_print);
+	// CHECK: - name: '/foo', fd: [[FOO]]
+	po_map_foreach(map, po_print_entry);
 
 	// CHECK: -----
 	printf("-------------------------------------------------------\n");
@@ -76,9 +76,9 @@ int main(int argc, char *argv[])
 	printf("wibble: %d\n", wibble);
 	assert(wibble != -1);
 
-	// CHECK-DAG: - dirname: '/foo', dirfd: [[FOO]]
-	// CHECK-DAG: - dirname: '{{.*}}/Inputs/baz/wibble', dirfd: [[WIBBLE]]
-	po_map_foreach(map, po_dir_print);
+	// CHECK-DAG: - name: '/foo', fd: [[FOO]]
+	// CHECK-DAG: - name: '{{.*}}/Inputs/baz/wibble', fd: [[WIBBLE]]
+	po_map_foreach(map, po_print_entry);
 
 	// CHECK: -----
 	printf("-------------------------------------------------------\n");
@@ -90,10 +90,10 @@ int main(int argc, char *argv[])
 	map = po_add(map, "/wibble", wibble);
 	printf("po_add(\"/wibble\", %d) returned: 0x%p\n", wibble, map);
 
-	// CHECK-DAG: - dirname: '/foo', dirfd: [[FOO]]
-	// CHECK-DAG: - dirname: '{{.*}}/Inputs/baz/wibble', dirfd: [[WIBBLE]]
-	// CHECK-DAG: - dirname: '/wibble', dirfd: [[WIBBLE]]
-	po_map_foreach(map, po_dir_print);
+	// CHECK-DAG: - name: '/foo', fd: [[FOO]]
+	// CHECK-DAG: - name: '{{.*}}/Inputs/baz/wibble', fd: [[WIBBLE]]
+	// CHECK-DAG: - name: '/wibble', fd: [[WIBBLE]]
+	po_map_foreach(map, po_print_entry);
 
 	// CHECK: -----
 	printf("-------------------------------------------------------\n");

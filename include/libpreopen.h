@@ -63,13 +63,13 @@ struct po_map;
  *
  * @returns   whether or not to continue iterating over the @ref po_map
  */
-typedef bool (po_dir_callback)(const char *dirname, int dirfd, cap_rights_t);
+typedef bool (po_map_iter_cb)(const char *dirname, int dirfd, cap_rights_t);
 
 /**
- * A simple @ref po_dir_callback that will print a @ref po_map's entries,
+ * A simple @ref po_map_iter_cb that will print a @ref po_map's entries,
  * one per line.
  */
-po_dir_callback	po_dir_print;
+po_map_iter_cb	po_print_entry;
 
 /**
  * A filesystem path, relative to a directory descriptor.
@@ -105,7 +105,7 @@ void po_map_release(struct po_map *);
  *
  * @return   number of elements iterated over
  */
-size_t po_map_foreach(const struct po_map*, po_dir_callback);
+size_t po_map_foreach(const struct po_map*, po_map_iter_cb);
 
 /**
  * Retrieve (and possibly create) the default map.

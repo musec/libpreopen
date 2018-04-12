@@ -69,9 +69,9 @@ int main(int argc, char *argv[])
 	printf("wibble: %d\n", wibble);
 	assert(wibble != -1);
 
-	// CHECK-DAG: dirname: 'foo', dirfd: [[FOO]]
-	// CHECK-DAG: dirname: '{{.*}}/Inputs/baz/wibble', dirfd: [[WIBBLE]]
-	po_map_foreach(map, po_dir_print);
+	// CHECK-DAG: name: 'foo', fd: [[FOO]]
+	// CHECK-DAG: name: '{{.*}}/Inputs/baz/wibble', fd: [[WIBBLE]]
+	po_map_foreach(map, po_print_entry);
 
 	po_map_set(map);
 

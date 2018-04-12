@@ -1,0 +1,84 @@
+<toc label="libpreopen" topic="index.xhtml">
+  <topic label="Data Structures" href="annotated.xhtml">
+    <topic label="po_map" href="structpo__map.xhtml"/>
+    <topic label="po_packed_entry" href="structpo__packed__entry.xhtml">
+      <topic label="fd" href="structpo__packed__entry.xhtml#a417c380c727c767c06bb666d5bce9173"/>
+      <topic label="len" href="structpo__packed__entry.xhtml#a48e049409e5d5d67e99aa84773635173"/>
+      <topic label="offset" href="structpo__packed__entry.xhtml#abcb4b3288468300ab57563f2cc596c86"/>
+    </topic>
+    <topic label="po_packed_map" href="structpo__packed__map.xhtml">
+      <topic label="count" href="structpo__packed__map.xhtml#a23afb59f3880ee100480505a953f91b1"/>
+      <topic label="entries" href="structpo__packed__map.xhtml#acf9768c2ee0fa19cea48b9ec1cd5a61f"/>
+      <topic label="tablelen" href="structpo__packed__map.xhtml#abd85b6fb48da187f1f19db6dfa7272f3"/>
+    </topic>
+    <topic label="po_relpath" href="structpo__relpath.xhtml">
+      <topic label="dirfd" href="structpo__relpath.xhtml#adbfd907732d872907ff53dee0c17dade"/>
+      <topic label="relative_path" href="structpo__relpath.xhtml#a5315273ae3c6bee251348895e97f951f"/>
+    </topic>
+  </topic>
+  <topic label="File List" href="files.xhtml">
+    <topic label="include" href="dir_d44c64559bbebec7f509842c48db8b23.xhtml">
+      <topic label="libpreopen.h" href="libpreopen_8h.xhtml">
+        <topic label="po_relpath" href="structpo__relpath.xhtml">
+          <topic label="dirfd" href="structpo__relpath.xhtml#adbfd907732d872907ff53dee0c17dade"/>
+          <topic label="relative_path" href="structpo__relpath.xhtml#a5315273ae3c6bee251348895e97f951f"/>
+        </topic>
+        <topic label="po_map_iter_cb" href="libpreopen_8h.xhtml#ae275abcb02b858e80d18bdbd402d0561"/>
+        <topic label="po_add" href="libpreopen_8h.xhtml#aab64d62d21b4ae69326ab732ea859aca"/>
+        <topic label="po_find" href="libpreopen_8h.xhtml#aa829bced964720cf17c5350c643736da"/>
+        <topic label="po_last_error" href="libpreopen_8h.xhtml#adfbce32fb67bd878181e6ef1f0b4cf4b"/>
+        <topic label="po_map_create" href="libpreopen_8h.xhtml#a26cc887be5b3bc545b05b6585d633073"/>
+        <topic label="po_map_foreach" href="libpreopen_8h.xhtml#a13763075e083556dabfda3a317bbbbac"/>
+        <topic label="po_map_get" href="libpreopen_8h.xhtml#af59b34f79c9863d02a96ced18c2544b1"/>
+        <topic label="po_map_release" href="libpreopen_8h.xhtml#a5bde5ee82b0d1cedbdb3bf716044978b"/>
+        <topic label="po_map_set" href="libpreopen_8h.xhtml#a2c8cfba0d480b740f4f4c0f638050c5a"/>
+        <topic label="po_pack" href="libpreopen_8h.xhtml#afcacfc38f21f677e4794748637a3e1d5"/>
+        <topic label="po_preopen" href="libpreopen_8h.xhtml#a1edc9d3bb87b703c9b1db9d199d0947b"/>
+        <topic label="po_unpack" href="libpreopen_8h.xhtml#af11d69efff09c02fc3f3b7bfdeccaa1b"/>
+        <topic label="po_print_entry" href="libpreopen_8h.xhtml#a530ee710dd6c7d6d98bb57204e2fdc33"/>
+      </topic>
+    </topic>
+    <topic label="lib" href="dir_97aefd0d527b934f1d99a682da8fe6a9.xhtml">
+      <topic label="internal.h" href="internal_8h.xhtml"/>
+      <topic label="libpreopen.c" href="libpreopen_8c.xhtml">
+        <topic label="po_add" href="libpreopen_8c.xhtml#aab64d62d21b4ae69326ab732ea859aca"/>
+        <topic label="po_find" href="libpreopen_8c.xhtml#aa829bced964720cf17c5350c643736da"/>
+        <topic label="po_isprefix" href="libpreopen_8c.xhtml#af97372bfa72deabe14b2fc325ec0e1a9"/>
+        <topic label="po_preopen" href="libpreopen_8c.xhtml#a1edc9d3bb87b703c9b1db9d199d0947b"/>
+        <topic label="po_print_entry" href="libpreopen_8c.xhtml#ab78951bca31fec9e2fb46ac57e80d1d4"/>
+      </topic>
+      <topic label="po_err.c" href="po__err_8c.xhtml">
+        <topic label="po_errormessage" href="po__err_8c.xhtml#a2579611c2cf8960421fbef392fd159bf"/>
+        <topic label="po_last_error" href="po__err_8c.xhtml#a6842b5fe3f073e41117513a1ff46e68a"/>
+        <topic label="po_map_assertvalid" href="po__err_8c.xhtml#a67a367198c38d11149314c86191cdcb8"/>
+      </topic>
+      <topic label="po_libc_wrappers.c" href="po__libc__wrappers_8c.xhtml">
+        <topic label="access" href="po__libc__wrappers_8c.xhtml#aeff22ad09b35eda92f6c5632300b05da"/>
+        <topic label="open" href="po__libc__wrappers_8c.xhtml#ad586f56cb2d7d849a4cb20dbd792b543"/>
+        <topic label="po_map_get" href="po__libc__wrappers_8c.xhtml#aa6efc2a19280af103c2ed8f60ac5721b"/>
+        <topic label="po_map_set" href="po__libc__wrappers_8c.xhtml#a8d9b3c7a824de9fdcfaab67f2622aaf2"/>
+        <topic label="stat" href="po__libc__wrappers_8c.xhtml#a8c608fe4dce7b9f98d38263bd30bef56"/>
+      </topic>
+      <topic label="po_map.c" href="po__map_8c.xhtml">
+        <topic label="po_map_create" href="po__map_8c.xhtml#a26cc887be5b3bc545b05b6585d633073"/>
+        <topic label="po_map_enlarge" href="po__map_8c.xhtml#a2a1db96295f5776354b805c388b825d3"/>
+        <topic label="po_map_foreach" href="po__map_8c.xhtml#ac0d04034757942308625dcd397181b1a"/>
+        <topic label="po_map_release" href="po__map_8c.xhtml#acbfc8725e029326c8e02c6c41d44b4a0"/>
+      </topic>
+      <topic label="po_pack.c" href="po__pack_8c.xhtml">
+        <topic label="po_packed_entry" href="structpo__packed__entry.xhtml">
+          <topic label="fd" href="structpo__packed__entry.xhtml#a417c380c727c767c06bb666d5bce9173"/>
+          <topic label="len" href="structpo__packed__entry.xhtml#a48e049409e5d5d67e99aa84773635173"/>
+          <topic label="offset" href="structpo__packed__entry.xhtml#abcb4b3288468300ab57563f2cc596c86"/>
+        </topic>
+        <topic label="po_packed_map" href="structpo__packed__map.xhtml">
+          <topic label="count" href="structpo__packed__map.xhtml#a23afb59f3880ee100480505a953f91b1"/>
+          <topic label="entries" href="structpo__packed__map.xhtml#acf9768c2ee0fa19cea48b9ec1cd5a61f"/>
+          <topic label="tablelen" href="structpo__packed__map.xhtml#abd85b6fb48da187f1f19db6dfa7272f3"/>
+        </topic>
+        <topic label="po_pack" href="po__pack_8c.xhtml#afcacfc38f21f677e4794748637a3e1d5"/>
+        <topic label="po_unpack" href="po__pack_8c.xhtml#af11d69efff09c02fc3f3b7bfdeccaa1b"/>
+      </topic>
+    </topic>
+  </topic>
+</toc>

@@ -1,0 +1,4 @@
+<map id="po_errormessage" name="po_errormessage">
+<area shape="rect" id="node2" href="$po__pack_8c.xhtml#afcacfc38f21f677e4794748637a3e1d5" title="Pack a struct po_map into a shared memory segment. " alt="" coords="185,5,257,32"/>
+<area shape="rect" id="node3" href="$po__pack_8c.xhtml#af11d69efff09c02fc3f3b7bfdeccaa1b" title="Unpack a struct po_map from a file. " alt="" coords="177,56,264,83"/>
+</map>

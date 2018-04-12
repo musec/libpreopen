@@ -1,0 +1,11 @@
+<map id="po_map_assertvalid" name="po_map_assertvalid">
+<area shape="rect" id="node2" href="$libpreopen_8c.xhtml#aab64d62d21b4ae69326ab732ea859aca" title="Add an already&#45;opened directory to a po_map. " alt="" coords="219,5,287,32"/>
+<area shape="rect" id="node3" href="$libpreopen_8c.xhtml#a1edc9d3bb87b703c9b1db9d199d0947b" title="Pre&#45;open a path and store it in a po_map for later use. " alt="" coords="361,31,456,57"/>
+<area shape="rect" id="node4" href="$libpreopen_8c.xhtml#aa829bced964720cf17c5350c643736da" title="Find a directory whose path is a prefix of path and (on platforms that support Capsicum) that has the..." alt="" coords="219,107,286,133"/>
+<area shape="rect" id="node5" href="$po__map_8c.xhtml#a26cc887be5b3bc545b05b6585d633073" title="Create a po_map of at least the specified capacity. " alt="" coords="196,157,309,184"/>
+<area shape="rect" id="node6" href="$po__map_8c.xhtml#ac0d04034757942308625dcd397181b1a" title="Iterate over a po_map, invoking a callback for each element in the map. " alt="" coords="192,208,313,235"/>
+<area shape="rect" id="node7" href="$po__map_8c.xhtml#acbfc8725e029326c8e02c6c41d44b4a0" title="Release a reference to a po_map. " alt="" coords="193,259,312,285"/>
+<area shape="rect" id="node8" href="$po__libc__wrappers_8c.xhtml#a8d9b3c7a824de9fdcfaab67f2622aaf2" title="Set the default map, taking ownership of its memory allocation(s). " alt="" coords="205,309,300,336"/>
+<area shape="rect" id="node9" href="$po__pack_8c.xhtml#afcacfc38f21f677e4794748637a3e1d5" title="Pack a struct po_map into a shared memory segment. " alt="" coords="217,360,289,387"/>
+<area shape="rect" id="node10" href="$po__pack_8c.xhtml#af11d69efff09c02fc3f3b7bfdeccaa1b" title="Unpack a struct po_map from a file. " alt="" coords="209,411,296,437"/>
+</map>

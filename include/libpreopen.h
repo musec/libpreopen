@@ -34,11 +34,8 @@
 #ifndef LIBPO_H
 #define LIBPO_H
 
-#include <sys/capsicum.h>
-
-
-
 #include <sys/cdefs.h>
+#include <sys/capsicum.h>
 
 #include <stdbool.h>
 

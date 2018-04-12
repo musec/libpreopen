@@ -38,13 +38,14 @@
 #ifndef LIBPO_INTERNAL_H
 #define LIBPO_INTERNAL_H
 
+#include <sys/cdefs.h>
+
 #ifdef WITH_CAPSICUM
 #include <sys/capsicum.h>
 #endif
 
 #include <assert.h>
 #include <stdbool.h>
-#include <sys/cdefs.h>
 
 #include "libpreopen.h"
 
@@ -91,7 +92,7 @@ struct po_map {
  *
  * @internal
  */
-bool po_isprefix(const char *dir, size_t dirlen, const char *path);
+bool	po_isprefix(const char *dir, size_t dirlen, const char *path);
 
 
 /**

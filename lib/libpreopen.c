@@ -29,6 +29,11 @@
  * SUCH DAMAGE.
  */
 
+/**
+ * @file  libpreopen.c
+ * @brief Implementation of core libpreopen functions.
+ */
+
 #include <sys/cdefs.h>
 #include <sys/param.h>
 #include <sys/mman.h>
@@ -47,8 +52,6 @@
 #include <unistd.h>
 
 #include "internal.h"
-#include "libpreopen.h"
-
 
 
 bool

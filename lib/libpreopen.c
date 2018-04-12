@@ -31,7 +31,11 @@
 
 /**
  * @file  libpreopen.c
- * @brief Implementation of core libpreopen functions.
+ * Implementation of high-level libpreopen functions.
+ *
+ * The functions defined in this source file are the highest-level API calls
+ * that client code will mostly use (plus po_map_create and po_map_release).
+ * po_isprefix is also defined here because it doesn't fit anywhere else.
  */
 
 #include <assert.h>
@@ -40,15 +44,6 @@
 #include <string.h>
 
 #include "internal.h"
-
-
-bool
-po_print_entry(const char *name, int fd, cap_rights_t rights)
-{
-	printf(" - name: '%s', fd: %d, rights: <rights>\n",
-	       name, fd);
-	return (true);
-}
 
 
 struct po_map*
@@ -84,35 +79,6 @@ po_add(struct po_map *map, const char *path, int fd)
 	po_map_assertvalid(map);
 
 	return (map);
-}
-
-int
-po_preopen(struct po_map *map, const char *path, int flags, ...)
-{
-	va_list args;
-	int fd, mode;
-
-	va_start(args, flags);
-	mode = va_arg(args, int);
-
-	po_map_assertvalid(map);
-
-	if (path == NULL) {
-		return (-1);
-	}
-
-	fd = openat(AT_FDCWD, path, flags, mode);
-	if (fd == -1) {
-		return (-1);
-	}
-
-	if (po_add(map, path, fd) == NULL) {
-		return (-1);
-	}
-
-	po_map_assertvalid(map);
-
-	return (fd);
 }
 
 struct po_relpath
@@ -164,7 +130,6 @@ po_find(struct po_map* map, const char *path, cap_rights_t *rights)
 	return match;
 }
 
-
 bool
 po_isprefix(const char *dir, size_t dirlen, const char *path)
 {
@@ -177,4 +142,41 @@ po_isprefix(const char *dir, size_t dirlen, const char *path)
 			return false;
 	}
 	return path[i] == '/' || path[i] == '\0';
+}
+
+int
+po_preopen(struct po_map *map, const char *path, int flags, ...)
+{
+	va_list args;
+	int fd, mode;
+
+	va_start(args, flags);
+	mode = va_arg(args, int);
+
+	po_map_assertvalid(map);
+
+	if (path == NULL) {
+		return (-1);
+	}
+
+	fd = openat(AT_FDCWD, path, flags, mode);
+	if (fd == -1) {
+		return (-1);
+	}
+
+	if (po_add(map, path, fd) == NULL) {
+		return (-1);
+	}
+
+	po_map_assertvalid(map);
+
+	return (fd);
+}
+
+bool
+po_print_entry(const char *name, int fd, cap_rights_t rights)
+{
+	printf(" - name: '%s', fd: %d, rights: <rights>\n",
+	       name, fd);
+	return (true);
 }

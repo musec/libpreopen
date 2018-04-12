@@ -1,7 +1,3 @@
-/**
- * @file   wrappers.c
- * @brief  Wrappers of libc functions that access global variables.
- */
 /*-
  * Copyright (c) 2016 Stanley Uche Godfrey
  * Copyright (c) 2018 Jonathan Anderson
@@ -33,6 +29,11 @@
  * SUCH DAMAGE.
  */
 
+/**
+ * @file   po_libc_wrappers.c
+ * @brief  Wrappers of libc functions that access global variables.
+ */
+
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -41,8 +42,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <libpreopen.h>
+#include "internal.h"
 
+/**
+ * A default po_map that can be used implicitly by libc wrappers.
+ *
+ * @internal
+ */
+static struct po_map *global_map;
 
 /**
  * Find a relative path within the po_map given by SHARED_MEMORYFD (if it
@@ -58,7 +65,6 @@ static struct po_relpath find_relative(const char *path, cap_rights_t *);
  * (if it exists).
  */
 static struct po_map*	get_shared_map(void);
-
 
 /**
  * Capability-safe wrapper around the `access(2)` system call.
@@ -123,6 +129,35 @@ stat(const char *path, struct stat *st)
 	return fstatat(rel.dirfd, rel.relative_path,st,AT_SYMLINK_NOFOLLOW);
 }
 
+struct po_map*
+po_map_get()
+{
+	if (global_map == NULL) {
+		global_map = po_map_create(4);
+	}
+
+	if (global_map != NULL) {
+		po_map_assertvalid(global_map);
+	}
+
+	global_map->refcount += 1;
+
+	return (global_map);
+}
+
+void
+po_map_set(struct po_map *map)
+{
+	po_map_assertvalid(map);
+
+	map->refcount += 1;
+
+	if (global_map != NULL) {
+		po_map_release(global_map);
+	}
+
+	global_map = map;
+}
 
 static struct po_relpath
 find_relative(const char *path, cap_rights_t *rights)

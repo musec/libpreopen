@@ -42,8 +42,11 @@
 #include <sys/capsicum.h>
 #endif
 
+#include <assert.h>
 #include <stdbool.h>
 #include <sys/cdefs.h>
+
+#include "libpreopen.h"
 
 /**
  * An entry in a po_map.
@@ -77,30 +80,6 @@ struct po_map {
 	size_t length;
 };
 
-/**
- * An entry in the packed version of `struct po_map`.
- *
- * @internal
- */
-struct po_packed_entry {
-	int fd;         /* file descriptor */
-	int offset;     /* offset of name within trailer string */
-	int len;        /* name length */
-};
-
-/**
- * Packed-in-a-buffer representation of a `struct po_map`.
- *
- * An object of this type will be immediately followed in memory by a trailer
- * of string data of length `trailer_len`.
- *
- * @internal
- */
-struct po_packed_map{
-	int count;              /* number of entries */
-	int trailer_len;        /* length of trailer string */
-	struct po_packed_entry entries[0];
-};
 
 /**
  * Is a directory a prefix of a given path?
@@ -113,6 +92,29 @@ struct po_packed_map{
  * @internal
  */
 bool po_isprefix(const char *dir, size_t dirlen, const char *path);
+
+
+/**
+ * Check that a @ref po_map is valid (assert out if it's not).
+ *
+ * @internal
+ */
+#ifdef NDEBUG
+#define po_map_assertvalid(...)
+#else
+void	po_map_assertvalid(const struct po_map *);
+#endif
+
+/**
+ * Enlarge a @ref po_map's capacity.
+ *
+ * This results in new memory being allocated and existing entries being copied.
+ * If the allocation fails, the function will return NULL but the original
+ * map will remain valid.
+ *
+ * @internal
+ */
+struct po_map* po_map_enlarge(struct po_map *map);
 
 /**
  * Store an error message in the global "last error message" buffer.

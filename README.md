@@ -23,7 +23,7 @@ case, to complex IPC primitives.
 
 `libpreopen` can be built with the usual CMake workflow:
 
-```terminal
+```sh
 $ mkdir -p build/Debug
 $ cd build/Debug
 $ cmake -D CMAKE_BUILD_TYPE=Debug -G Ninja ../..

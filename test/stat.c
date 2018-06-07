@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 	int result;
 
 	// CHECK: building map in [[MAP:0x[0-9a-f]+]]
-	struct po_map *map = po_map_get();
+	struct po_map *map = po_map_create(4);
 	printf("building map in %p\n", map);
 	
 	// CHECK: foo: [[FOO:[0-9]+]]

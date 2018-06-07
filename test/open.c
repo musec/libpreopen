@@ -47,13 +47,15 @@
 
 int main(int argc, char *argv[])
 {
-	struct po_map *map = po_map_get();
-	
+	struct po_map *map = po_map_create(4);
+
 	int foo = openat(AT_FDCWD, TEST_DIR("/foo"), O_RDONLY);
 	po_add(map, "foo", foo);
 
 	int wibble = po_preopen(map, TEST_DIR("/baz/wibble"), O_DIRECTORY);
 	assert(wibble != -1);
+
+	po_map_set(map);
 
 	// CHECK: Opening foo/bar/hi.txt...
 	printf("Opening foo/bar/hi.txt...\n");

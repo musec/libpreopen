@@ -69,7 +69,7 @@ int main(int argc, char *argv[]){
 		errx(-1, "Usage: %s <binary to exec as child>", argv[0]);
 	}
 
-	map = po_map_get();
+	map = po_map_create(4);
 
 	// CHECK: saving [[FOO:[0-9]+]] as "foo"
 	foo = openat(AT_FDCWD, TEST_DIR("/foo"), O_RDONLY);
@@ -135,7 +135,6 @@ int main(int argc, char *argv[])
 	// CHECK: unpacked map: [[MAP:0x[0-9a-f]+]]
 	map = po_unpack(shmfd);
 	printf("unpacked map: %p\n", map);
-	po_map_set(map);
 
 	// CHECK: contents of [[MAP]]:
 	// CHECK-DAG: name: 'foo', fd: [[FOO]]

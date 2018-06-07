@@ -40,6 +40,7 @@
 #include <fcntl.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "internal.h"
@@ -107,7 +108,12 @@ open(const char *path, int flags, ...)
 	mode = va_arg(args, int);
 	rel = find_relative(path, NULL);
 
-	return openat(rel.dirfd, rel.relative_path, flags, mode);
+	// If the file is already opened, no need of relative opening!
+	if( strcmp(rel.relative_path,".") == 0 )
+		return dup(rel.dirfd);
+	else
+		return openat(rel.dirfd, rel.relative_path, flags, mode);
+		
 }
 
 /**
@@ -169,6 +175,7 @@ get_shared_map()
 
 	// Do we already have a default map?
 	if (global_map) {
+		po_map_assertvalid(global_map);
 		return (global_map);
 	}
 

@@ -129,24 +129,8 @@ stat(const char *path, struct stat *st)
 	return fstatat(rel.dirfd, rel.relative_path,st,AT_SYMLINK_NOFOLLOW);
 }
 
-struct po_map*
-po_map_get()
-{
-	if (global_map == NULL) {
-		global_map = po_map_create(4);
-	}
-
-	if (global_map != NULL) {
-		po_map_assertvalid(global_map);
-	}
-
-	global_map->refcount += 1;
-
-	return (global_map);
-}
-
 void
-po_map_set(struct po_map *map)
+po_set_libc_map(struct po_map *map)
 {
 	po_map_assertvalid(map);
 
@@ -184,9 +168,8 @@ get_shared_map()
 	long fd;
 
 	// Do we already have a default map?
-	map = po_map_get();
-	if (map) {
-		return (map);
+	if (global_map) {
+		return (global_map);
 	}
 
 	// Attempt to unwrap po_map from a shared memory segment specified by
@@ -208,7 +191,7 @@ get_shared_map()
 		return (NULL);
 	}
 
-	po_map_set(map);
+	global_map = map;
 
 	return (map);
 }

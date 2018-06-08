@@ -7,7 +7,7 @@
 
 /*-
  * Copyright (c) 2016-2017 Stanley Uche Godfrey
- * Copyright (c) 2016-2017 Jonathan Anderson
+ * Copyright (c) 2016-2018 Jonathan Anderson
  * All rights reserved.
  *
  * This software was developed at Memorial University under the
@@ -123,6 +123,14 @@ struct po_map* po_map_enlarge(struct po_map *map);
  * @internal
  */
 void po_errormessage(const char *msg);
+
+/**
+ * Set the default map used by the libpreopen libc wrappers.
+ *
+ * If there is an existing default map, it will be freed before it is replaced.
+ * Passing NULL to this function will thus clear the default map.
+ */
+void po_set_libc_map(struct po_map *);
 
 #endif /* LIBPO_INTERNAL_H */
 

@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 	// CHECK-DAG: name: '{{.*}}/Inputs/baz/wibble', fd: [[WIBBLE]]
 	po_map_foreach(map, po_print_entry);
 
-	po_map_set(map);
+	po_set_libc_map(map);
 
 	// CHECK: entered capability mode
 	cap_enter();

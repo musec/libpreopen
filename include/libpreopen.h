@@ -105,22 +105,6 @@ void po_map_release(struct po_map *);
 size_t po_map_foreach(const struct po_map*, po_map_iter_cb);
 
 /**
- * Retrieve (and possibly create) the default map.
- *
- * This can fail if there is no existing map and memory allocation fails.
- */
-struct po_map* po_map_get(void);
-
-/**
- * Set the default map, taking ownership of its memory allocation(s).
- *
- * If there is an existing default map, it will be freed before it is replaced.
- * It is permissible to pass in a NULL map in order to clear the current
- * default map.
- */
-void po_map_set(struct po_map*);
-
-/**
  * Add an already-opened directory to a @ref po_map.
  *
  * @param   map     the map to add the path->fd mapping to

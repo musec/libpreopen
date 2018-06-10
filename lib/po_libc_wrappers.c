@@ -87,9 +87,9 @@ access(const char *path, int mode)
 }
 
 /**
- * Capability-safe wrapper around the `open(2)` system call.
+ * Capability-safe wrapper around the `_open(2)` system call.
  *
- * `open(2)` accepts a path argument that can reference the global filesystem
+ * `_open(2)` accepts a path argument that can reference the global filesystem
  * namespace. This is not a capability-safe operation, so this wrapper function
  * attempts to look up the path (or a prefix of it) within the current global
  * po_map and converts the call into the capability-safe `openat(2)` if
@@ -98,7 +98,7 @@ access(const char *path, int mode)
  * the same as the unwrapped `open(2)` call.
  */
 int
-open(const char *path, int flags, ...)
+_open(const char *path, int flags, ...)
 {
 	struct po_relpath rel;
 	va_list args;
@@ -112,8 +112,24 @@ open(const char *path, int flags, ...)
 	if( strcmp(rel.relative_path,".") == 0 )
 		return dup(rel.dirfd);
 	else
-		return openat(rel.dirfd, rel.relative_path, flags, mode);
-		
+		return openat(rel.dirfd, rel.relative_path, flags, mode);	
+}
+
+/**
+ * Capability-safe wrapper around the `open(2)` system call.
+ *
+ * `open(2)` will behave just like `_open(2)` if the varargs are unpacked and
+ *  passed.
+ */
+int
+open(const char *path, int flags, ...)
+{
+	va_list args;
+	int mode;
+
+	va_start(args, flags);
+	mode = va_arg(args, int);
+    return _open(path, flags, mode);
 }
 
 /**

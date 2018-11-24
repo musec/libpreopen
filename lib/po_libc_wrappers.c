@@ -43,6 +43,7 @@
 #include <dlfcn.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -197,6 +198,26 @@ open(const char *path, int flags, ...)
 	va_start(args, flags);
 	mode = va_arg(args, int);
     return _open(path, flags, mode);
+}
+
+/**
+ * Capability-safe wrapper around the `rename(2)` system call.
+ *
+ * `rename(2)` accepts a path argument that can reference the global filesystem
+ * namespace. This is not a capability-safe operation, so this wrapper function
+ * attempts to look up the path (or a prefix of it) within the current global
+ * po_map and converts the call into the capability-safe `renameat(2)` if
+ * possible. If the current po_map does not contain the sought-after path,
+ * this wrapper will call `renameat(AT_FDCWD, original_path, ...)`, which is
+ * the same as the unwrapped `rename(2)` call.
+ */
+int
+rename(const char *from, const char *to)
+{
+	struct po_relpath rel_from = find_relative(from, NULL);
+	struct po_relpath rel_to = find_relative(to, NULL);
+
+	return renameat(rel_from.dirfd, rel_from.relative_path, rel_to.dirfd, rel_to.relative_path);
 }
 
 /**

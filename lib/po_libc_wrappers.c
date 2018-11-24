@@ -218,6 +218,25 @@ stat(const char *path, struct stat *st)
 	return fstatat(rel.dirfd, rel.relative_path,st,AT_SYMLINK_NOFOLLOW);
 }
 
+/**
+ * Capability-safe wrapper around the `lstat(2)` system call.
+ *
+ * `lstat(2)` accepts a path argument that can reference the global filesystem
+ * namespace. This is not a capability-safe operation, so this wrapper function
+ * attempts to look up the path (or a prefix of it) within the current global
+ * po_map and converts the call into the capability-safe `fstatat(2)` if
+ * possible. If the current po_map does not contain the sought-after path,
+ * this wrapper will call `fstatat(AT_FDCWD, original_path, ...)`, which is
+ * the same as the unwrapped `lstat(2)` call.
+ */
+int
+lstat(const char *path, struct stat *st)
+{
+	struct po_relpath rel = find_relative(path, NULL);
+
+	return fstatat(rel.dirfd, rel.relative_path,st,AT_SYMLINK_NOFOLLOW);
+}
+
 void
 po_set_libc_map(struct po_map *map)
 {

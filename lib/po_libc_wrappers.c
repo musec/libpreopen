@@ -36,6 +36,8 @@
 
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
 
 #include <fcntl.h>
 #include <stdarg.h>
@@ -103,6 +105,32 @@ eaccess(const char *path, int mode)
 	struct po_relpath rel = find_relative(path, NULL);
 
 	return faccessat(rel.dirfd, rel.relative_path, mode, 0);
+}
+
+/**
+ * Capability-safe wrapper around the `connect(2)` system call.
+ *
+ * `connect(2)` accepts a path argument that can reference the global filesystem
+ * namespace. This is not a capability-safe operation, so this wrapper function
+ * attempts to look up the path (or a prefix of it) within the current global
+ * po_map and converts the call into the capability-safe `connectat(2)` if
+ * possible. If the current po_map does not contain the sought-after path,
+ * this wrapper will call `connectat(AT_FDCWD, original_path, ...)`, which is
+ * the same as the unwrapped `connect(2)` call.
+ */
+int
+connect(int s, const struct sockaddr *name, socklen_t namelen)
+{
+	struct po_relpath rel;
+
+	if (name->sa_family == AF_UNIX) {
+	    struct sockaddr_un *usock = (struct sockaddr_un *)name;
+	    rel = find_relative(usock->sun_path, NULL);
+	    strlcpy(usock->sun_path, rel.relative_path, sizeof(usock->sun_path));
+	    return connectat(rel.dirfd, s, name, namelen);
+	}
+
+	return connectat(AT_FDCWD, s, name, namelen);
 }
 /**
  * Capability-safe wrapper around the `_open(2)` system call.

@@ -40,6 +40,7 @@
 #include <sys/un.h>
 
 #include <fcntl.h>
+#include <dlfcn.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
@@ -132,6 +133,26 @@ connect(int s, const struct sockaddr *name, socklen_t namelen)
 
 	return connectat(AT_FDCWD, s, name, namelen);
 }
+
+/**
+ * Capability-safe wrapper around the `dlopen(3)` libc function.
+ *
+ * `dlopen(3)` accepts a path argument that can reference the global filesystem
+ * namespace. This is not a capability-safe operation, so this wrapper function
+ * attempts to look up the path (or a prefix of it) within the current global
+ * po_map and converts the call into the capability-safe `fdlopen(3)` if
+ * possible. If the current po_map does not contain the sought-after path,
+ * this wrapper will call `fdlopen(openat(AT_FDCWD, original_path), ...)`, which is
+ * the same as the unwrapped `dlopen(3)` call.
+ */
+void *
+dlopen(const char *path, int mode)
+{
+	struct po_relpath rel = find_relative(path, NULL);
+
+	return fdlopen(openat(rel.dirfd, rel.relative_path, 0, mode), mode);
+}
+
 /**
  * Capability-safe wrapper around the `_open(2)` system call.
  *

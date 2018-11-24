@@ -87,6 +87,24 @@ access(const char *path, int mode)
 }
 
 /**
+ * Capability-safe wrapper around the `eaccess(2)` system call.
+ *
+ * `eaccess(2)` accepts a path argument that can reference the global filesystem
+ * namespace. This is not a capability-safe operation, so this wrapper function
+ * attempts to look up the path (or a prefix of it) within the current global
+ * po_map and converts the call into the capability-safe `faccessat(2)` if
+ * possible. If the current po_map does not contain the sought-after path,
+ * this wrapper will call `faccessat(AT_FDCWD, original_path, ...)`, which is
+ * the same as the unwrapped `eaccess(2)` call.
+ */
+int
+eaccess(const char *path, int mode)
+{
+	struct po_relpath rel = find_relative(path, NULL);
+
+	return faccessat(rel.dirfd, rel.relative_path, mode, 0);
+}
+/**
  * Capability-safe wrapper around the `_open(2)` system call.
  *
  * `_open(2)` accepts a path argument that can reference the global filesystem

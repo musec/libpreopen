@@ -71,6 +71,40 @@ static struct po_relpath find_relative(const char *path, cap_rights_t *);
  */
 static struct po_map*	get_shared_map(void);
 
+
+/*
+ * Wrappers around system calls:
+ */
+
+/**
+ * Capability-safe wrapper around the `_open(2)` system call.
+ *
+ * `_open(2)` accepts a path argument that can reference the global filesystem
+ * namespace. This is not a capability-safe operation, so this wrapper function
+ * attempts to look up the path (or a prefix of it) within the current global
+ * po_map and converts the call into the capability-safe `openat(2)` if
+ * possible. If the current po_map does not contain the sought-after path,
+ * this wrapper will call `openat(AT_FDCWD, original_path, ...)`, which is
+ * the same as the unwrapped `open(2)` call (i.e., will fail with `ECAPMODE`).
+ */
+int
+_open(const char *path, int flags, ...)
+{
+	struct po_relpath rel;
+	va_list args;
+	int mode;
+
+	va_start(args, flags);
+	mode = va_arg(args, int);
+	rel = find_relative(path, NULL);
+
+	// If the file is already opened, no need of relative opening!
+	if( strcmp(rel.relative_path,".") == 0 )
+		return dup(rel.dirfd);
+	else
+		return openat(rel.dirfd, rel.relative_path, flags, mode);
+}
+
 /**
  * Capability-safe wrapper around the `access(2)` system call.
  *
@@ -88,25 +122,6 @@ access(const char *path, int mode)
 	struct po_relpath rel = find_relative(path, NULL);
 
 	return faccessat(rel.dirfd, rel.relative_path, mode,0);
-}
-
-/**
- * Capability-safe wrapper around the `eaccess(2)` system call.
- *
- * `eaccess(2)` accepts a path argument that can reference the global filesystem
- * namespace. This is not a capability-safe operation, so this wrapper function
- * attempts to look up the path (or a prefix of it) within the current global
- * po_map and converts the call into the capability-safe `faccessat(2)` if
- * possible. If the current po_map does not contain the sought-after path, this
- * wrapper will call `faccessat(AT_FDCWD, original_path, ...)`, which is the
- * same as the unwrapped `eaccess(2)` call (i.e., will fail with `ECAPMODE`).
- */
-int
-eaccess(const char *path, int mode)
-{
-	struct po_relpath rel = find_relative(path, NULL);
-
-	return faccessat(rel.dirfd, rel.relative_path, mode, 0);
 }
 
 /**
@@ -136,51 +151,41 @@ connect(int s, const struct sockaddr *name, socklen_t namelen)
 }
 
 /**
- * Capability-safe wrapper around the `dlopen(3)` libc function.
+ * Capability-safe wrapper around the `eaccess(2)` system call.
  *
- * `dlopen(3)` accepts a path argument that can reference the global filesystem
+ * `eaccess(2)` accepts a path argument that can reference the global filesystem
  * namespace. This is not a capability-safe operation, so this wrapper function
  * attempts to look up the path (or a prefix of it) within the current global
- * po_map and converts the call into the capability-safe `fdlopen(3)` if
+ * po_map and converts the call into the capability-safe `faccessat(2)` if
  * possible. If the current po_map does not contain the sought-after path, this
- * wrapper will call `fdlopen(openat(AT_FDCWD, original_path), ...)`, which is
- * the same as the unwrapped `dlopen(3)` call (i.e., will fail with `ECAPMODE`).
+ * wrapper will call `faccessat(AT_FDCWD, original_path, ...)`, which is the
+ * same as the unwrapped `eaccess(2)` call (i.e., will fail with `ECAPMODE`).
  */
-void *
-dlopen(const char *path, int mode)
+int
+eaccess(const char *path, int mode)
 {
 	struct po_relpath rel = find_relative(path, NULL);
 
-	return fdlopen(openat(rel.dirfd, rel.relative_path, 0, mode), mode);
+	return faccessat(rel.dirfd, rel.relative_path, mode, 0);
 }
 
 /**
- * Capability-safe wrapper around the `_open(2)` system call.
+ * Capability-safe wrapper around the `lstat(2)` system call.
  *
- * `_open(2)` accepts a path argument that can reference the global filesystem
+ * `lstat(2)` accepts a path argument that can reference the global filesystem
  * namespace. This is not a capability-safe operation, so this wrapper function
  * attempts to look up the path (or a prefix of it) within the current global
- * po_map and converts the call into the capability-safe `openat(2)` if
+ * po_map and converts the call into the capability-safe `fstatat(2)` if
  * possible. If the current po_map does not contain the sought-after path,
- * this wrapper will call `openat(AT_FDCWD, original_path, ...)`, which is
- * the same as the unwrapped `open(2)` call (i.e., will fail with `ECAPMODE`).
+ * this wrapper will call `fstatat(AT_FDCWD, original_path, ...)`, which is
+ * the same as the unwrapped `lstat(2)` call (i.e., will fail with `ECAPMODE`).
  */
 int
-_open(const char *path, int flags, ...)
+lstat(const char *path, struct stat *st)
 {
-	struct po_relpath rel;
-	va_list args;
-	int mode;
+	struct po_relpath rel = find_relative(path, NULL);
 
-	va_start(args, flags);
-	mode = va_arg(args, int);
-	rel = find_relative(path, NULL);
-
-	// If the file is already opened, no need of relative opening!
-	if( strcmp(rel.relative_path,".") == 0 )
-		return dup(rel.dirfd);
-	else
-		return openat(rel.dirfd, rel.relative_path, flags, mode);
+	return fstatat(rel.dirfd, rel.relative_path,st,AT_SYMLINK_NOFOLLOW);
 }
 
 /**
@@ -240,25 +245,30 @@ stat(const char *path, struct stat *st)
 	return fstatat(rel.dirfd, rel.relative_path,st, AT_SYMLINK_NOFOLLOW);
 }
 
+/*
+ * Wrappers around other libc calls:
+ */
+
 /**
- * Capability-safe wrapper around the `lstat(2)` system call.
+ * Capability-safe wrapper around the `dlopen(3)` libc function.
  *
- * `lstat(2)` accepts a path argument that can reference the global filesystem
+ * `dlopen(3)` accepts a path argument that can reference the global filesystem
  * namespace. This is not a capability-safe operation, so this wrapper function
  * attempts to look up the path (or a prefix of it) within the current global
- * po_map and converts the call into the capability-safe `fstatat(2)` if
- * possible. If the current po_map does not contain the sought-after path,
- * this wrapper will call `fstatat(AT_FDCWD, original_path, ...)`, which is
- * the same as the unwrapped `lstat(2)` call (i.e., will fail with `ECAPMODE`).
+ * po_map and converts the call into the capability-safe `fdlopen(3)` if
+ * possible. If the current po_map does not contain the sought-after path, this
+ * wrapper will call `fdlopen(openat(AT_FDCWD, original_path), ...)`, which is
+ * the same as the unwrapped `dlopen(3)` call (i.e., will fail with `ECAPMODE`).
  */
-int
-lstat(const char *path, struct stat *st)
+void *
+dlopen(const char *path, int mode)
 {
 	struct po_relpath rel = find_relative(path, NULL);
 
-	return fstatat(rel.dirfd, rel.relative_path,st,AT_SYMLINK_NOFOLLOW);
+	return fdlopen(openat(rel.dirfd, rel.relative_path, 0, mode), mode);
 }
 
+/* Provide tests with mechanism to set our static po_map */
 void
 po_set_libc_map(struct po_map *map)
 {

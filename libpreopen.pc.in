@@ -1,0 +1,9 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: libpreopen
+Description: Capability-safe libc wrappers for sandboxing
+Version: 0.0.1
+Libs: -L${libdir} -lpreopen
+Cflags: -I${includedir}

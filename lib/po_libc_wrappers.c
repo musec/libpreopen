@@ -80,7 +80,7 @@ static struct po_map*	get_shared_map(void);
  * po_map and converts the call into the capability-safe `faccessat(2)` if
  * possible. If the current po_map does not contain the sought-after path,
  * this wrapper will call `faccessat(AT_FDCWD, original_path, ...)`, which is
- * the same as the unwrapped `access(2)` call.
+ * the same as the unwrapped `access(2)` call (i.e., will fail with `ECAPMODE`).
  */
 int
 access(const char *path, int mode)
@@ -97,9 +97,9 @@ access(const char *path, int mode)
  * namespace. This is not a capability-safe operation, so this wrapper function
  * attempts to look up the path (or a prefix of it) within the current global
  * po_map and converts the call into the capability-safe `faccessat(2)` if
- * possible. If the current po_map does not contain the sought-after path,
- * this wrapper will call `faccessat(AT_FDCWD, original_path, ...)`, which is
- * the same as the unwrapped `eaccess(2)` call.
+ * possible. If the current po_map does not contain the sought-after path, this
+ * wrapper will call `faccessat(AT_FDCWD, original_path, ...)`, which is the
+ * same as the unwrapped `eaccess(2)` call (i.e., will fail with `ECAPMODE`).
  */
 int
 eaccess(const char *path, int mode)
@@ -116,9 +116,9 @@ eaccess(const char *path, int mode)
  * namespace. This is not a capability-safe operation, so this wrapper function
  * attempts to look up the path (or a prefix of it) within the current global
  * po_map and converts the call into the capability-safe `connectat(2)` if
- * possible. If the current po_map does not contain the sought-after path,
- * this wrapper will call `connectat(AT_FDCWD, original_path, ...)`, which is
- * the same as the unwrapped `connect(2)` call.
+ * possible. If the current po_map does not contain the sought-after path, this
+ * wrapper will call `connectat(AT_FDCWD, original_path, ...)`, which is the
+ * same as the unwrapped `connect(2)` call (i.e., will fail with `ECAPMODE`).
  */
 int
 connect(int s, const struct sockaddr *name, socklen_t namelen)
@@ -142,9 +142,9 @@ connect(int s, const struct sockaddr *name, socklen_t namelen)
  * namespace. This is not a capability-safe operation, so this wrapper function
  * attempts to look up the path (or a prefix of it) within the current global
  * po_map and converts the call into the capability-safe `fdlopen(3)` if
- * possible. If the current po_map does not contain the sought-after path,
- * this wrapper will call `fdlopen(openat(AT_FDCWD, original_path), ...)`, which is
- * the same as the unwrapped `dlopen(3)` call.
+ * possible. If the current po_map does not contain the sought-after path, this
+ * wrapper will call `fdlopen(openat(AT_FDCWD, original_path), ...)`, which is
+ * the same as the unwrapped `dlopen(3)` call (i.e., will fail with `ECAPMODE`).
  */
 void *
 dlopen(const char *path, int mode)
@@ -163,7 +163,7 @@ dlopen(const char *path, int mode)
  * po_map and converts the call into the capability-safe `openat(2)` if
  * possible. If the current po_map does not contain the sought-after path,
  * this wrapper will call `openat(AT_FDCWD, original_path, ...)`, which is
- * the same as the unwrapped `open(2)` call.
+ * the same as the unwrapped `open(2)` call (i.e., will fail with `ECAPMODE`).
  */
 int
 _open(const char *path, int flags, ...)
@@ -209,7 +209,7 @@ open(const char *path, int flags, ...)
  * po_map and converts the call into the capability-safe `renameat(2)` if
  * possible. If the current po_map does not contain the sought-after path,
  * this wrapper will call `renameat(AT_FDCWD, original_path, ...)`, which is
- * the same as the unwrapped `rename(2)` call.
+ * the same as the unwrapped `rename(2)` call (i.e., will fail with `ECAPMODE`).
  */
 int
 rename(const char *from, const char *to)
@@ -229,7 +229,7 @@ rename(const char *from, const char *to)
  * po_map and converts the call into the capability-safe `fstatat(2)` if
  * possible. If the current po_map does not contain the sought-after path,
  * this wrapper will call `fstatat(AT_FDCWD, original_path, ...)`, which is
- * the same as the unwrapped `stat(2)` call.
+ * the same as the unwrapped `stat(2)` call (i.e., will fail with `ECAPMODE`).
  */
 int
 stat(const char *path, struct stat *st)
@@ -248,7 +248,7 @@ stat(const char *path, struct stat *st)
  * po_map and converts the call into the capability-safe `fstatat(2)` if
  * possible. If the current po_map does not contain the sought-after path,
  * this wrapper will call `fstatat(AT_FDCWD, original_path, ...)`, which is
- * the same as the unwrapped `lstat(2)` call.
+ * the same as the unwrapped `lstat(2)` call (i.e., will fail with `ECAPMODE`).
  */
 int
 lstat(const char *path, struct stat *st)

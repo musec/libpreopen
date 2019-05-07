@@ -245,6 +245,25 @@ stat(const char *path, struct stat *st)
 	return fstatat(rel.dirfd, rel.relative_path,st, AT_SYMLINK_NOFOLLOW);
 }
 
+/**
+ * Capability-safe wrapper around the `unlink(2)` system call.
+ *
+ * `unlink(2)` accepts a path argument that can reference the global filesystem
+ * namespace. This is not a capability-safe operation, so this wrapper function
+ * attempts to look up the path (or a prefix of it) within the current global
+ * po_map and converts the call into the capability-safe `unlinkat(2)` if
+ * possible. If the current po_map does not contain the sought-after path,
+ * this wrapper will call `unlinkat(AT_FDCWD, original_path, 0) which is
+ * the same as the unwrapped `unlink(2)` call (i.e., will fail with `ECAPMODE`).
+ */
+int
+unlink(const char *path)
+{
+	struct po_relpath rel = find_relative(path, NULL);
+
+	return unlinkat(rel.dirfd, rel.relative_path, 0);
+}
+
 /*
  * Wrappers around other libc calls:
  */

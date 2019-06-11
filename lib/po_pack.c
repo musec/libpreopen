@@ -167,7 +167,7 @@ po_unpack(int fd)
 
 	strtab = ((char*) packed->entries)
 		+ packed->count * sizeof(struct po_packed_entry);
-	assert(strtab - ((char*) packed) < sb.st_size);
+	assert(strtab - ((char*) packed) <= sb.st_size);
 
 	map = malloc(sizeof(struct po_map));
 	if (map == NULL) {
